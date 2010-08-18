@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual C# Express 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C# Express 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PublicationHarvester", "PublicationHarvester\PublicationHarvester.csproj", "{D5749766-1882-4B8F-8B6D-80648D31FAF8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PubMed", "PubMed\PubMed.csproj", "{52C03C14-59CD-40E2-B16D-4E30608A0278}"
