@@ -48,9 +48,10 @@ namespace SCGen
             Folder.Text = AppDomain.CurrentDomain.BaseDirectory;
 
             // Set the people file textbox to its last value
-            if (Application.CommonAppDataRegistry.GetValue("JournalWeightsFile", "").ToString().Length != 0)
+            string journalWeightsFile = PubMed.Settings.GetValueString("JournalWeightsFile", "");
+            if (!String.IsNullOrEmpty(journalWeightsFile))
             {
-                JournalWeights.Text = Application.CommonAppDataRegistry.GetValue("JournalWeightsFile", "").ToString();
+                JournalWeights.Text = journalWeightsFile;
             }
         }
 
@@ -207,7 +208,7 @@ namespace SCGen
         /// </summary>
         private void JournalWeights_TextChanged(object sender, EventArgs e)
         {
-            Application.CommonAppDataRegistry.SetValue("JournalWeightsFile", JournalWeights.Text);
+            PubMed.Settings.SetValue("JournalWeightsFile", JournalWeights.Text);
         }
 
         /// <summary>

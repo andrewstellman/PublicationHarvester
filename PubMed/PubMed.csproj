@@ -60,6 +60,7 @@
     <Compile Include="Publications.cs" />
     <Compile Include="PublicationTypes.cs" />
     <Compile Include="Reports.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="StringConverter.cs" />
     <Compile Include="Unit Tests\MockNCBI.cs" />
     <Compile Include="Unit Tests\TestEnvironment.cs" />
