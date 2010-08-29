@@ -52,15 +52,17 @@ namespace SCGen
             GetODBCDataSourceNames();
 
             // Set the DSN dropdown listbox to its last value
-            if (Application.CommonAppDataRegistry.GetValue("DSN", "").ToString().Length != 0)
+            string dsn = PubMed.Settings.GetValueString("DSN", String.Empty);
+            if (!String.IsNullOrEmpty(dsn))
             {
-                DSN.Text = Application.CommonAppDataRegistry.GetValue("DSN", "").ToString();
+                DSN.Text = dsn; 
             }
 
             // Set the people file textbox to its last value
-            if (Application.CommonAppDataRegistry.GetValue("RosterFile", "").ToString().Length != 0)
+            string rosterFile = PubMed.Settings.GetValueString("RosterFile", String.Empty);
+            if (!String.IsNullOrEmpty(rosterFile))
             {
-                RosterFile.Text = Application.CommonAppDataRegistry.GetValue("RosterFile", "").ToString();
+                RosterFile.Text = rosterFile;
             }
         }
 
@@ -146,7 +148,7 @@ namespace SCGen
         /// </summary>
         private void DSN_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Application.CommonAppDataRegistry.SetValue("DSN", DSN.Text);
+            PubMed.Settings.SetValue("DSN", DSN.Text);
             UpdateStatus();
         }
 
@@ -156,7 +158,7 @@ namespace SCGen
         /// </summary>
         private void RosterFile_TextChanged(object sender, EventArgs e)
         {
-            Application.CommonAppDataRegistry.SetValue("RosterFile", RosterFile.Text);
+            PubMed.Settings.SetValue("RosterFile", RosterFile.Text);
             UpdateStatus();
         }
 

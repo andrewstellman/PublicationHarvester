@@ -156,15 +156,17 @@ namespace PublicationHarvester
             //}
 
             // Set the people file textbox to its last value
-            if (Application.CommonAppDataRegistry.GetValue("PeopleFile", "").ToString().Length != 0)
+            string peopleFile = PubMed.Settings.GetValueString("PeopleFile", "");
+            if (!String.IsNullOrEmpty(peopleFile))
             {
-                PeopleFile.Text = Application.CommonAppDataRegistry.GetValue("PeopleFile", "").ToString();
+                PeopleFile.Text = peopleFile;
             }
 
             // Set the publication type file textbox to its last value
-            if (Application.CommonAppDataRegistry.GetValue("PublicationTypeFile", "").ToString().Length != 0)
+            string publicationTypeFile = PubMed.Settings.GetValueString("PublicationTypeFile", "");
+            if (!String.IsNullOrEmpty(publicationTypeFile))
             {
-                PublicationTypeFile.Text = Application.CommonAppDataRegistry.GetValue("PublicationTypeFile", "").ToString();
+                PublicationTypeFile.Text = publicationTypeFile;
             }
 
             // Enable the GUI objects
@@ -176,7 +178,7 @@ namespace PublicationHarvester
         /// </summary>
         private void DSN_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Application.CommonAppDataRegistry.SetValue("DSN", DSN.Text);
+            PubMed.Settings.SetValue("DSN", DSN.Text);
 
             // The GUI is enabled since this could change, so we should call
             // SetGUIEnabled(true) in order to set the "Resume Harvesting"
@@ -190,7 +192,7 @@ namespace PublicationHarvester
         /// </summary>
         private void PeopleFile_TextChanged(object sender, EventArgs e)
         {
-            Application.CommonAppDataRegistry.SetValue("PeopleFile", PeopleFile.Text);
+            PubMed.Settings.SetValue("PeopleFile", PeopleFile.Text);
         }
 
         /// <summary>
@@ -198,7 +200,7 @@ namespace PublicationHarvester
         /// </summary>
         private void PublicationTypeFile_TextChanged(object sender, EventArgs e)
         {
-            Application.CommonAppDataRegistry.SetValue("PublicationTypeFile", PublicationTypeFile.Text);
+            PubMed.Settings.SetValue("PublicationTypeFile", PublicationTypeFile.Text);
         }
 
         
