@@ -35,6 +35,8 @@ namespace Com.StellmanGreene.PubMed
     /// </summary>
     public class NCBI
     {
+        public static bool UsePostRequest { get; set; }
+
         private string FetchMethod;
 
         /// <summary>
@@ -44,6 +46,7 @@ namespace Com.StellmanGreene.PubMed
         public NCBI(string FetchMethod)
         {
             this.FetchMethod = FetchMethod;
+            NCBI.UsePostRequest = false;
         }
 
         /// <summary>
@@ -65,9 +68,31 @@ namespace Com.StellmanGreene.PubMed
         /// <returns>A string containing the XML result header</returns>
         private static EsearchResults ExecuteEsearch(string Query)
         {
-            string sURL = "http://www.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=Pubmed&retmax=1&usehistory=y&term=";
-            sURL += Query;
-            WebRequest request = WebRequest.Create(sURL);
+            string sURL = "http://www.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi";
+
+            WebRequest request = null;
+
+            // If we're using a GET request (default) instead of a POST request, create the query with the request term
+            if (!UsePostRequest)
+            {
+                sURL += "?db=Pubmed&retmax=1&usehistory=y&term=";
+                sURL += Query;
+                request = WebRequest.Create(sURL);
+            }
+            else
+            {
+                // Create the POST request
+                request = WebRequest.Create(sURL);
+                request.Method = "POST";
+                request.ContentType = "application/x-www-form-urlencoded";
+                byte[] byteArray = UTF8Encoding.UTF8.GetBytes("db=Pubmed&retmax=1&usehistory=y&term=" + Query);
+                request.ContentLength = byteArray.Length;
+                using (Stream dataStream = request.GetRequestStream())
+                {
+                    dataStream.Write(byteArray, 0, byteArray.Length);
+                }
+            }
+
             using (WebResponse response = request.GetResponse())
             using (Stream responseStream = response.GetResponseStream())
             using (StreamReader reader = new StreamReader(responseStream))
