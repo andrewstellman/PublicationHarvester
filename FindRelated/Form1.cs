@@ -28,6 +28,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Data.OleDb;
 using System.Diagnostics;
+using System.IO;
 using Microsoft.Win32;
 
 namespace Com.StellmanGreene.FindRelated
@@ -44,7 +45,15 @@ namespace Com.StellmanGreene.FindRelated
             startButton.Enabled = false;
 
             string dsn = DSN.Text;
-            
+
+            FileInfo inputFileInfo = new FileInfo(inputFileTextBox.Text);
+            if (!inputFileInfo.Exists)
+            {
+                MessageBox.Show("Please specify a valid input file");
+                startButton.Enabled = true;
+                return;
+            }
+
             if (String.IsNullOrEmpty(dsn) || dsn.StartsWith("==") || dsn.EndsWith("DSNs"))
             {
                 MessageBox.Show("Please select an ODBC data source from the dropdown");
@@ -68,7 +77,7 @@ namespace Com.StellmanGreene.FindRelated
             }
 
             // Start the run
-            backgroundWorker1.RunWorkerAsync(new Dictionary<string, string>() { { "dsn", dsn }, { "relatedTableName", relatedTableName } });
+            backgroundWorker1.RunWorkerAsync(new Dictionary<string, object>() { { "dsn", dsn }, { "relatedTableName", relatedTableName }, { "inputFileInfo", inputFileInfo } } );
             cancelButton.Enabled = true;
         }
 
@@ -177,9 +186,9 @@ namespace Com.StellmanGreene.FindRelated
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             Trace.WriteLine(DateTime.Now + " - started run");
-            Dictionary<string, string> args = e.Argument as Dictionary<string, string>;
+            Dictionary<string, object> args = e.Argument as Dictionary<string, object>;
             RelatedFinder relatedFinder = new RelatedFinder() { BackgroundWorker = backgroundWorker1 };
-            relatedFinder.Go(args["dsn"], args["relatedTableName"]);
+            relatedFinder.Go(args["dsn"] as string, args["relatedTableName"] as string, args["inputFileInfo"] as FileInfo);
         }
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -206,6 +215,20 @@ namespace Com.StellmanGreene.FindRelated
             toolStripProgressBar1.Minimum = 0;
             toolStripProgressBar1.Maximum = 100;
             toolStripProgressBar1.Value = e.ProgressPercentage;
+        }
+
+        private void inputFileDialog_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.FileName = inputFileTextBox.Text;
+            openFileDialog.Filter = "Comma-delimited Text Files (*.csv)|*.csv|All files (*.*)|*.*";
+            openFileDialog.Title = "Select the input file";
+            openFileDialog.CheckFileExists = true;
+            openFileDialog.CheckPathExists = true;
+            DialogResult result = openFileDialog.ShowDialog();
+            if (result == DialogResult.Cancel)
+                return;
+            inputFileTextBox.Text = openFileDialog.FileName;
         }
 
     }
