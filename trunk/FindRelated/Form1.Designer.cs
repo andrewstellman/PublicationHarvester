@@ -44,15 +44,18 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.inputFileTextBox = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.inputFileDialog = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // startButton
             // 
-            this.startButton.Location = new System.Drawing.Point(12, 104);
+            this.startButton.Location = new System.Drawing.Point(15, 131);
             this.startButton.Name = "startButton";
             this.startButton.Size = new System.Drawing.Size(75, 23);
-            this.startButton.TabIndex = 0;
+            this.startButton.TabIndex = 30;
             this.startButton.Text = "Start";
             this.startButton.UseVisualStyleBackColor = true;
             this.startButton.Click += new System.EventHandler(this.startButton_Click);
@@ -64,7 +67,7 @@
             this.DSN.Margin = new System.Windows.Forms.Padding(2);
             this.DSN.Name = "DSN";
             this.DSN.Size = new System.Drawing.Size(411, 21);
-            this.DSN.TabIndex = 132;
+            this.DSN.TabIndex = 5;
             this.DSN.Click += new System.EventHandler(this.DSN_Click);
             // 
             // ODBCPanel
@@ -74,7 +77,7 @@
             this.ODBCPanel.Margin = new System.Windows.Forms.Padding(2);
             this.ODBCPanel.Name = "ODBCPanel";
             this.ODBCPanel.Size = new System.Drawing.Size(16, 19);
-            this.ODBCPanel.TabIndex = 133;
+            this.ODBCPanel.TabIndex = 7;
             this.ODBCPanel.Text = "...";
             this.ODBCPanel.Click += new System.EventHandler(this.ODBCPanel_Click);
             // 
@@ -93,7 +96,7 @@
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(162, 19);
-            this.label1.TabIndex = 134;
+            this.label1.TabIndex = 10;
             this.label1.Text = "&Related publications table";
             // 
             // relatedTable
@@ -101,34 +104,34 @@
             this.relatedTable.Location = new System.Drawing.Point(14, 69);
             this.relatedTable.Name = "relatedTable";
             this.relatedTable.Size = new System.Drawing.Size(263, 20);
-            this.relatedTable.TabIndex = 135;
+            this.relatedTable.TabIndex = 15;
             this.relatedTable.Text = "relatedpublications";
             // 
             // logFilename
             // 
-            this.logFilename.Location = new System.Drawing.Point(12, 159);
+            this.logFilename.Location = new System.Drawing.Point(11, 286);
             this.logFilename.Margin = new System.Windows.Forms.Padding(2);
             this.logFilename.Name = "logFilename";
             this.logFilename.ReadOnly = true;
             this.logFilename.Size = new System.Drawing.Size(316, 20);
-            this.logFilename.TabIndex = 137;
+            this.logFilename.TabIndex = 199;
             this.logFilename.TabStop = false;
             // 
             // label5
             // 
-            this.label5.Location = new System.Drawing.Point(12, 144);
+            this.label5.Location = new System.Drawing.Point(11, 271);
             this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(162, 19);
-            this.label5.TabIndex = 136;
-            this.label5.Text = "&Log file";
+            this.label5.TabIndex = 198;
+            this.label5.Text = "Log file";
             // 
             // openInNotepad
             // 
-            this.openInNotepad.Location = new System.Drawing.Point(333, 158);
+            this.openInNotepad.Location = new System.Drawing.Point(332, 285);
             this.openInNotepad.Name = "openInNotepad";
             this.openInNotepad.Size = new System.Drawing.Size(105, 20);
-            this.openInNotepad.TabIndex = 138;
+            this.openInNotepad.TabIndex = 200;
             this.openInNotepad.Text = "Open in &Notepad";
             this.openInNotepad.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.openInNotepad.UseVisualStyleBackColor = true;
@@ -138,19 +141,19 @@
             // 
             this.log.FormattingEnabled = true;
             this.log.HorizontalScrollbar = true;
-            this.log.Location = new System.Drawing.Point(12, 199);
+            this.log.Location = new System.Drawing.Point(11, 326);
             this.log.Name = "log";
             this.log.Size = new System.Drawing.Size(426, 134);
-            this.log.TabIndex = 140;
+            this.log.TabIndex = 220;
             // 
             // label4
             // 
-            this.label4.Location = new System.Drawing.Point(11, 184);
+            this.label4.Location = new System.Drawing.Point(10, 311);
             this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(162, 19);
-            this.label4.TabIndex = 139;
-            this.label4.Text = "Log";
+            this.label4.TabIndex = 210;
+            this.label4.Text = "&Log";
             // 
             // backgroundWorker1
             // 
@@ -163,10 +166,10 @@
             // cancelButton
             // 
             this.cancelButton.Enabled = false;
-            this.cancelButton.Location = new System.Drawing.Point(98, 104);
+            this.cancelButton.Location = new System.Drawing.Point(101, 131);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
-            this.cancelButton.TabIndex = 141;
+            this.cancelButton.TabIndex = 40;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
@@ -176,7 +179,7 @@
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripProgressBar1,
             this.toolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 341);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 463);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(449, 22);
             this.statusStrip1.SizingGrip = false;
@@ -194,11 +197,42 @@
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(118, 17);
             this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
             // 
+            // inputFileTextBox
+            // 
+            this.inputFileTextBox.Location = new System.Drawing.Point(14, 105);
+            this.inputFileTextBox.Name = "inputFileTextBox";
+            this.inputFileTextBox.Size = new System.Drawing.Size(409, 20);
+            this.inputFileTextBox.TabIndex = 25;
+            this.inputFileTextBox.Text = "findrelated_input.csv";
+            // 
+            // label3
+            // 
+            this.label3.Location = new System.Drawing.Point(12, 92);
+            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(162, 19);
+            this.label3.TabIndex = 20;
+            this.label3.Text = "&Input file";
+            // 
+            // inputFileDialog
+            // 
+            this.inputFileDialog.AutoEllipsis = true;
+            this.inputFileDialog.Location = new System.Drawing.Point(428, 106);
+            this.inputFileDialog.Margin = new System.Windows.Forms.Padding(2);
+            this.inputFileDialog.Name = "inputFileDialog";
+            this.inputFileDialog.Size = new System.Drawing.Size(16, 19);
+            this.inputFileDialog.TabIndex = 27;
+            this.inputFileDialog.Text = "...";
+            this.inputFileDialog.Click += new System.EventHandler(this.inputFileDialog_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(449, 363);
+            this.ClientSize = new System.Drawing.Size(449, 485);
+            this.Controls.Add(this.inputFileDialog);
+            this.Controls.Add(this.inputFileTextBox);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.logFilename);
@@ -243,6 +277,9 @@
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.TextBox inputFileTextBox;
+        internal System.Windows.Forms.Label label3;
+        internal System.Windows.Forms.Button inputFileDialog;
     }
 }
 
