@@ -113,6 +113,11 @@ namespace Com.StellmanGreene.PubMed
         /// </summary>
         public ArrayList MeSHHeadings;
 
+        public override string ToString()
+        {
+            return PMID + " " + (Title ?? "[no title]");
+        }
+
     }
 
 
