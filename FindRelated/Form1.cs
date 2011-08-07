@@ -35,6 +35,13 @@ namespace Com.StellmanGreene.FindRelated
 {
     public partial class Form1 : Form
     {
+        private static readonly char[] EXCLUDE_CATEGORIES_SEPARATORS = new char[] { ';', ',', ' ', '|' };
+
+        /// <summary>
+        /// Currently entered exclude categories
+        /// </summary>
+        private IEnumerable<int> excludeCategoriesValues = new List<int>();
+
         public Form1()
         {
             InitializeComponent();
@@ -76,8 +83,36 @@ namespace Com.StellmanGreene.FindRelated
                 return;
             }
 
+            PublicationFilter publicationFilter = null;
+            try
+            {
+                publicationFilter = new PublicationFilter(
+                    sameJournal.Checked,
+                    !enableUpperBound.Checked ? null : (int?)pubWindowUpperBound.Value,
+                    !enableLowerBound.Checked ? null : (int?)pubWindowLowerBound.Value,
+                    !enableMaximumLinkRanking.Checked ? null : (int?)maximumLinkRanking.Value,
+                    excludeCategoriesValues);
+
+                Trace.WriteLine(DateTime.Now + " - " + publicationFilter);
+
+                if (publicationFilter == null)
+                    throw new NullReferenceException("Error creating publication filter");
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine("Exception caught creating filters:");
+                Trace.WriteLine(ex.Message);
+                startButton.Enabled = true;
+                return;
+            }
+
             // Start the run
-            backgroundWorker1.RunWorkerAsync(new Dictionary<string, object>() { { "dsn", dsn }, { "relatedTableName", relatedTableName }, { "inputFileInfo", inputFileInfo } } );
+            backgroundWorker1.RunWorkerAsync(new Dictionary<string, object>() { 
+                { "dsn", dsn }, 
+                { "relatedTableName", relatedTableName }, 
+                { "inputFileInfo", inputFileInfo },
+                { "publicationFilter", publicationFilter },
+            } );
             cancelButton.Enabled = true;
         }
 
@@ -188,7 +223,10 @@ namespace Com.StellmanGreene.FindRelated
             Trace.WriteLine(DateTime.Now + " - started run");
             Dictionary<string, object> args = e.Argument as Dictionary<string, object>;
             RelatedFinder relatedFinder = new RelatedFinder() { BackgroundWorker = backgroundWorker1 };
-            relatedFinder.Go(args["dsn"] as string, args["relatedTableName"] as string, args["inputFileInfo"] as FileInfo);
+            relatedFinder.Go(args["dsn"] as string, 
+                args["relatedTableName"] as string, 
+                args["inputFileInfo"] as FileInfo,
+                args["publicationFilter"] as PublicationFilter);
         }
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -222,13 +260,72 @@ namespace Com.StellmanGreene.FindRelated
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.FileName = inputFileTextBox.Text;
             openFileDialog.Filter = "Comma-delimited Text Files (*.csv)|*.csv|All files (*.*)|*.*";
-            openFileDialog.Title = "Select the input file";
+           openFileDialog.Title = "Select the input file";
             openFileDialog.CheckFileExists = true;
             openFileDialog.CheckPathExists = true;
             DialogResult result = openFileDialog.ShowDialog();
             if (result == DialogResult.Cancel)
                 return;
             inputFileTextBox.Text = openFileDialog.FileName;
+        }
+
+        private void enableUpperBound_CheckedChanged(object sender, EventArgs e)
+        {
+            pubWindowUpperBound.Enabled = enableUpperBound.Checked;
+
+        }
+
+        private void enableLowerBound_CheckedChanged(object sender, EventArgs e)
+        {
+            pubWindowLowerBound.Enabled = enableLowerBound.Checked;
+        }
+
+        private void enableMaximumLinkRanking_CheckedChanged(object sender, EventArgs e)
+        {
+            maximumLinkRanking.Enabled = enableMaximumLinkRanking.Checked;
+        }
+
+        private void excludeCategories_TextChanged(object sender, EventArgs e)
+        {
+            // Build a new excludeCategoriesValues based on the values in the text box
+            excludeCategoriesValues = new List<int>();
+
+            excludeCategories.SuspendLayout();
+            
+            int selectionStart = excludeCategories.SelectionStart;
+            int selectionLength = excludeCategories.SelectionLength;
+
+            bool invalidValueFound = false;
+            string invalidValue = String.Empty;
+
+            List<string> values = new List<string>(excludeCategories.Text.Split(EXCLUDE_CATEGORIES_SEPARATORS, StringSplitOptions.RemoveEmptyEntries));
+            foreach (string value in values)
+            {
+                int i;
+                if (int.TryParse(value, out i))
+                {
+                    ((List<int>)excludeCategoriesValues).Add(i);
+                }
+                else
+                {
+                    invalidValueFound = true;
+                    invalidValue = value;
+                }
+            }
+
+            if (invalidValueFound)
+            {
+                MessageBox.Show("Invalid value in excluded categories: " + invalidValue);
+                excludeCategories.Text = excludeCategories.Text.Remove(
+                    excludeCategories.Text.IndexOf(invalidValue),
+                    invalidValue.Length);
+                if (selectionStart > 0)
+                    excludeCategories.SelectionStart = selectionStart - 1;
+                if (selectionLength > 0)
+                    excludeCategories.SelectionLength = selectionLength - 1;
+            }
+
+            excludeCategories.ResumeLayout();
         }
 
     }

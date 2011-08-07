@@ -47,15 +47,32 @@
             this.inputFileTextBox = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.inputFileDialog = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.sameJournal = new System.Windows.Forms.CheckBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.enableUpperBound = new System.Windows.Forms.CheckBox();
+            this.pubWindowUpperBound = new System.Windows.Forms.NumericUpDown();
+            this.pubWindowLowerBound = new System.Windows.Forms.NumericUpDown();
+            this.enableLowerBound = new System.Windows.Forms.CheckBox();
+            this.maximumLinkRanking = new System.Windows.Forms.NumericUpDown();
+            this.enableMaximumLinkRanking = new System.Windows.Forms.CheckBox();
+            this.excludeCategories = new System.Windows.Forms.TextBox();
             this.statusStrip1.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pubWindowUpperBound)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pubWindowLowerBound)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.maximumLinkRanking)).BeginInit();
             this.SuspendLayout();
             // 
             // startButton
             // 
-            this.startButton.Location = new System.Drawing.Point(15, 131);
+            this.startButton.Location = new System.Drawing.Point(12, 301);
             this.startButton.Name = "startButton";
             this.startButton.Size = new System.Drawing.Size(75, 23);
-            this.startButton.TabIndex = 30;
+            this.startButton.TabIndex = 80;
             this.startButton.Text = "Start";
             this.startButton.UseVisualStyleBackColor = true;
             this.startButton.Click += new System.EventHandler(this.startButton_Click);
@@ -109,7 +126,7 @@
             // 
             // logFilename
             // 
-            this.logFilename.Location = new System.Drawing.Point(11, 286);
+            this.logFilename.Location = new System.Drawing.Point(11, 342);
             this.logFilename.Margin = new System.Windows.Forms.Padding(2);
             this.logFilename.Name = "logFilename";
             this.logFilename.ReadOnly = true;
@@ -119,7 +136,7 @@
             // 
             // label5
             // 
-            this.label5.Location = new System.Drawing.Point(11, 271);
+            this.label5.Location = new System.Drawing.Point(11, 327);
             this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(162, 19);
@@ -128,7 +145,7 @@
             // 
             // openInNotepad
             // 
-            this.openInNotepad.Location = new System.Drawing.Point(332, 285);
+            this.openInNotepad.Location = new System.Drawing.Point(332, 341);
             this.openInNotepad.Name = "openInNotepad";
             this.openInNotepad.Size = new System.Drawing.Size(105, 20);
             this.openInNotepad.TabIndex = 200;
@@ -141,19 +158,19 @@
             // 
             this.log.FormattingEnabled = true;
             this.log.HorizontalScrollbar = true;
-            this.log.Location = new System.Drawing.Point(11, 326);
+            this.log.Location = new System.Drawing.Point(11, 382);
             this.log.Name = "log";
             this.log.Size = new System.Drawing.Size(426, 134);
             this.log.TabIndex = 220;
             // 
             // label4
             // 
-            this.label4.Location = new System.Drawing.Point(10, 311);
+            this.label4.Location = new System.Drawing.Point(10, 367);
             this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(162, 19);
             this.label4.TabIndex = 210;
-            this.label4.Text = "&Log";
+            this.label4.Text = "Lo&g";
             // 
             // backgroundWorker1
             // 
@@ -166,10 +183,10 @@
             // cancelButton
             // 
             this.cancelButton.Enabled = false;
-            this.cancelButton.Location = new System.Drawing.Point(101, 131);
+            this.cancelButton.Location = new System.Drawing.Point(93, 301);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
-            this.cancelButton.TabIndex = 40;
+            this.cancelButton.TabIndex = 90;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
@@ -179,7 +196,7 @@
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripProgressBar1,
             this.toolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 463);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 519);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(449, 22);
             this.statusStrip1.SizingGrip = false;
@@ -225,11 +242,166 @@
             this.inputFileDialog.Text = "...";
             this.inputFileDialog.Click += new System.EventHandler(this.inputFileDialog_Click);
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.excludeCategories);
+            this.groupBox1.Controls.Add(this.maximumLinkRanking);
+            this.groupBox1.Controls.Add(this.enableMaximumLinkRanking);
+            this.groupBox1.Controls.Add(this.pubWindowLowerBound);
+            this.groupBox1.Controls.Add(this.enableLowerBound);
+            this.groupBox1.Controls.Add(this.pubWindowUpperBound);
+            this.groupBox1.Controls.Add(this.enableUpperBound);
+            this.groupBox1.Controls.Add(this.label9);
+            this.groupBox1.Controls.Add(this.label8);
+            this.groupBox1.Controls.Add(this.label7);
+            this.groupBox1.Controls.Add(this.label6);
+            this.groupBox1.Controls.Add(this.sameJournal);
+            this.groupBox1.Location = new System.Drawing.Point(12, 131);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(429, 159);
+            this.groupBox1.TabIndex = 30;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Filters";
+            // 
+            // sameJournal
+            // 
+            this.sameJournal.AutoSize = true;
+            this.sameJournal.Location = new System.Drawing.Point(9, 136);
+            this.sameJournal.Name = "sameJournal";
+            this.sameJournal.Size = new System.Drawing.Size(87, 17);
+            this.sameJournal.TabIndex = 75;
+            this.sameJournal.Text = "&Same journal";
+            this.sameJournal.UseVisualStyleBackColor = true;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(6, 16);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(258, 13);
+            this.label6.TabIndex = 33;
+            this.label6.Text = "&Upper bound for the publication window (pubdate+t1)";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(6, 55);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(255, 13);
+            this.label7.TabIndex = 40;
+            this.label7.Text = "&Lower bound for the publication window (pubdate-t2)";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(6, 94);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(111, 13);
+            this.label8.TabIndex = 60;
+            this.label8.Text = "&Maximum  link ranking";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(176, 94);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(151, 13);
+            this.label9.TabIndex = 69;
+            this.label9.Text = "&Exclude categories (e.g. 1;2;5)";
+            // 
+            // enableUpperBound
+            // 
+            this.enableUpperBound.AutoSize = true;
+            this.enableUpperBound.Location = new System.Drawing.Point(9, 35);
+            this.enableUpperBound.Name = "enableUpperBound";
+            this.enableUpperBound.Size = new System.Drawing.Size(15, 14);
+            this.enableUpperBound.TabIndex = 36;
+            this.enableUpperBound.UseVisualStyleBackColor = true;
+            this.enableUpperBound.CheckedChanged += new System.EventHandler(this.enableUpperBound_CheckedChanged);
+            // 
+            // pubWindowUpperBound
+            // 
+            this.pubWindowUpperBound.Enabled = false;
+            this.pubWindowUpperBound.Location = new System.Drawing.Point(30, 32);
+            this.pubWindowUpperBound.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.pubWindowUpperBound.Name = "pubWindowUpperBound";
+            this.pubWindowUpperBound.Size = new System.Drawing.Size(55, 20);
+            this.pubWindowUpperBound.TabIndex = 38;
+            // 
+            // pubWindowLowerBound
+            // 
+            this.pubWindowLowerBound.Enabled = false;
+            this.pubWindowLowerBound.Location = new System.Drawing.Point(30, 71);
+            this.pubWindowLowerBound.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.pubWindowLowerBound.Name = "pubWindowLowerBound";
+            this.pubWindowLowerBound.Size = new System.Drawing.Size(55, 20);
+            this.pubWindowLowerBound.TabIndex = 58;
+            // 
+            // enableLowerBound
+            // 
+            this.enableLowerBound.AutoSize = true;
+            this.enableLowerBound.Location = new System.Drawing.Point(9, 74);
+            this.enableLowerBound.Name = "enableLowerBound";
+            this.enableLowerBound.Size = new System.Drawing.Size(15, 14);
+            this.enableLowerBound.TabIndex = 44;
+            this.enableLowerBound.UseVisualStyleBackColor = true;
+            this.enableLowerBound.CheckedChanged += new System.EventHandler(this.enableLowerBound_CheckedChanged);
+            // 
+            // maximumLinkRanking
+            // 
+            this.maximumLinkRanking.Enabled = false;
+            this.maximumLinkRanking.Location = new System.Drawing.Point(30, 110);
+            this.maximumLinkRanking.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.maximumLinkRanking.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.maximumLinkRanking.Name = "maximumLinkRanking";
+            this.maximumLinkRanking.Size = new System.Drawing.Size(55, 20);
+            this.maximumLinkRanking.TabIndex = 64;
+            this.maximumLinkRanking.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // enableMaximumLinkRanking
+            // 
+            this.enableMaximumLinkRanking.AutoSize = true;
+            this.enableMaximumLinkRanking.Location = new System.Drawing.Point(9, 113);
+            this.enableMaximumLinkRanking.Name = "enableMaximumLinkRanking";
+            this.enableMaximumLinkRanking.Size = new System.Drawing.Size(15, 14);
+            this.enableMaximumLinkRanking.TabIndex = 62;
+            this.enableMaximumLinkRanking.UseVisualStyleBackColor = true;
+            this.enableMaximumLinkRanking.CheckedChanged += new System.EventHandler(this.enableMaximumLinkRanking_CheckedChanged);
+            // 
+            // excludeCategories
+            // 
+            this.excludeCategories.Location = new System.Drawing.Point(179, 110);
+            this.excludeCategories.Name = "excludeCategories";
+            this.excludeCategories.Size = new System.Drawing.Size(136, 20);
+            this.excludeCategories.TabIndex = 72;
+            this.excludeCategories.TextChanged += new System.EventHandler(this.excludeCategories_TextChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(449, 485);
+            this.ClientSize = new System.Drawing.Size(449, 541);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.inputFileDialog);
             this.Controls.Add(this.inputFileTextBox);
             this.Controls.Add(this.label3);
@@ -254,6 +426,11 @@
             this.Load += new System.EventHandler(this.Form1_Load);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pubWindowUpperBound)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pubWindowLowerBound)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.maximumLinkRanking)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -280,6 +457,19 @@
         private System.Windows.Forms.TextBox inputFileTextBox;
         internal System.Windows.Forms.Label label3;
         internal System.Windows.Forms.Button inputFileDialog;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.CheckBox sameJournal;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.NumericUpDown pubWindowLowerBound;
+        private System.Windows.Forms.CheckBox enableLowerBound;
+        private System.Windows.Forms.NumericUpDown pubWindowUpperBound;
+        private System.Windows.Forms.CheckBox enableUpperBound;
+        private System.Windows.Forms.TextBox excludeCategories;
+        private System.Windows.Forms.NumericUpDown maximumLinkRanking;
+        private System.Windows.Forms.CheckBox enableMaximumLinkRanking;
     }
 }
 

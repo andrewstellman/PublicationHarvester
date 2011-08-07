@@ -58,7 +58,9 @@ namespace Com.StellmanGreene.FindRelated
 
         public override void WriteLine(string message)
         {
-            listBox.Invoke(new WriteMethod(WriteLineOnGuiThread), message);
+            IEnumerable<string> lines = message.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+            foreach (string line in lines)
+                listBox.Invoke(new WriteMethod(WriteLineOnGuiThread), line);
         }
 
         private void WriteLineOnGuiThread(string message)
