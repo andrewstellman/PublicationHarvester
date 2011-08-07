@@ -30,7 +30,7 @@ using Com.StellmanGreene.PubMed;
 
 namespace Com.StellmanGreene.FindRelated
 {
-    public class RelatedFinder
+    internal class RelatedFinder
     {
         const string ELINK_URL = "http://www.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi";
         const string ELINK_DB = "pubmed";
@@ -40,7 +40,7 @@ namespace Com.StellmanGreene.FindRelated
 
         public System.ComponentModel.BackgroundWorker BackgroundWorker { get; set; }
 
-        public void Go(string odbcDsn, string relatedTable, FileInfo inputFileInfo)
+        public void Go(string odbcDsn, string relatedTable, FileInfo inputFileInfo, PublicationFilter publicationFilter)
         {
             DataTable input = null;
             try
@@ -108,6 +108,14 @@ namespace Com.StellmanGreene.FindRelated
                         return;
                     }
 
+                    // Read the author publication from the database -- skipping MeSH headings and grants because we don't use them
+                    Publication authorPublication;
+                    bool retrievedPublication = Publications.GetPublication(db, authorPublicationPmid, out authorPublication, true);
+                    if (!retrievedPublication) {
+                        Trace.WriteLine(DateTime.Now + " - unable to read publication " + authorPublicationPmid + " from the database");
+                        continue;
+                    }
+
                     // Only write this article's related publications to the database if they haven't already been added.
                     // (Multiple authors might link to the same publication, and each will add the same links.)
                     int relatedCount = db.GetIntValue("SELECT Count(*) FROM " + relatedTable + " WHERE PMID = (?)",
@@ -134,6 +142,10 @@ namespace Com.StellmanGreene.FindRelated
                         NCBI.UsePostRequest = true;
                         string searchResults = ncbi.Search(searchQuery.ToString());
 
+                        int publicationsWritten = 0;
+                        int publicationsExcluded = 0;
+                        int publicationsNullAuthors = 0;
+
                         // Write each publication to the database
                         Publications publications = new Publications(searchResults, pubTypes);
                         foreach (Publication relatedPublication in publications.PublicationList)
@@ -144,23 +156,29 @@ namespace Com.StellmanGreene.FindRelated
                                 return;
                             }
 
-                            // A small number of publications come back with a null set of authors, which the database schema doesn't support.
-                            if (relatedPublication.Authors != null)
+                            int rank;
+                            if (relatedRank.ContainsKey(relatedPublication.PMID))
+                                rank = relatedRank[relatedPublication.PMID];
+                            else
+                            {
+                                rank = -1;
+                                Trace.WriteLine(DateTime.Now + " - publication " + authorPublicationPmid + " could not find rank for related " + relatedPublication.PMID);
+                            }
+
+                            // A small number of publications come back with a null set of authors, which the database schema doesn't support 
+                            if (relatedPublication.Authors == null)
+                            {    
+                             publicationsNullAuthors++;   
+                            }
+
+                            // Use the publication filter to include only publications that match the filter
+                            else if (publicationFilter.FilterPublication(relatedPublication, rank, authorPublication, pubTypes))
                             {
                                 try
                                 {
                                     // Add the publication to the publications table
                                     // (this will only add it if it's not already there)
                                     Publications.WriteToDB(relatedPublication, db, pubTypes, null);
-
-                                    int rank;
-                                    if (relatedRank.ContainsKey(relatedPublication.PMID))
-                                        rank = relatedRank[relatedPublication.PMID];
-                                    else
-                                    {
-                                        rank = -1;
-                                        Trace.WriteLine(DateTime.Now + " - publication " + authorPublicationPmid + " could not find rank for related " + relatedPublication.PMID);
-                                    }
 
                                     // Write the pmid/relatedPmid pair to the related publications table.
                                     db.ExecuteNonQuery(
@@ -170,15 +188,24 @@ namespace Com.StellmanGreene.FindRelated
                                             Database.Parameter(relatedPublication.PMID),
                                             Database.Parameter(rank),
                                         });
+
+                                    publicationsWritten++;
                                 }
                                 catch (Exception ex)
                                 {
                                     Trace.WriteLine("Unable to add related article " + relatedPublication.PMID + ", error message follows");
                                     Trace.WriteLine(ex.Message);
-
                                 }
                             }
+                            else
+                            {
+                                publicationsExcluded++;
+                            }
                         }
+
+                        Trace.WriteLine(DateTime.Now + " - " +
+                            String.Format("Wrote {0}, excluded {1}{2}", publicationsWritten, publicationsExcluded,
+                            publicationsNullAuthors == 0 ? String.Empty : ", " + publicationsNullAuthors + " had no author list"));
                     }
                 }
             }
