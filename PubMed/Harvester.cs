@@ -210,7 +210,8 @@ namespace Com.StellmanGreene.PubMed
             Last = 2,
             Second = 3,
             NextToLast = 4,
-            Middle = 5
+            Middle = 5,
+            None = 6
         }
 
         /// <summary>
@@ -363,10 +364,19 @@ namespace Com.StellmanGreene.PubMed
                     int AuthorPosition = 0;
                     for (int i = 1; (publication.Authors != null) && (AuthorPosition == 0) && (i <= publication.Authors.Length); i++)
                         foreach (string name in person.Names)
+                        {
                             if (StringComparer.CurrentCultureIgnoreCase.Equals(
-                                publication.Authors[i - 1], name.ToUpper()
+                                publication.Authors[i - 1], name //.ToUpper()
                                 ))
+                            {
                                 AuthorPosition = i;
+                            }
+                            else if (name == "*")
+                            {
+                                AuthorPosition = -1;
+                            }
+                        }
+
                     // If for some reason the author doesn't exist in the publication, send a message back
                     // This should never happen
                     if (AuthorPosition == 0)
