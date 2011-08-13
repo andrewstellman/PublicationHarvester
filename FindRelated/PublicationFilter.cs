@@ -52,9 +52,9 @@ namespace Com.StellmanGreene.FindRelated
         public int? MaximumLinkRanking { get; private set; }
 
         /// <summary>
-        /// Collection of publication categories to exclude (null value disables the filter)
+        /// Collection of publication categories to include (null value disables the filter)
         /// </summary>
-        public IEnumerable<int> ExcludeCategories { get; private set; }
+        public IEnumerable<int> IncludeCategories { get; private set; }
 
         /// <summary>
         /// Create a publication filter to test whether publications match criteria
@@ -63,9 +63,9 @@ namespace Com.StellmanGreene.FindRelated
         /// <param name="pubWindowUpperBound">Upper bound for the publication window (pubdate+t1) from 0 to +10 (null value disables the filter)</param>
         /// <param name="pubWindowLowerBound">Lower bound for the publication window (pubdate-t2) from 0 to +10 (null value disables the filter)</param>
         /// <param name="maximumLinkRanking">Only include link rankings up to this value (null value disables the filter)</param>
-        /// <param name="excludeCategories">Collection of publication categories to exclude (null value disables the filter)</param>
+        /// <param name="includeCategories">Collection of publication categories to include (null value disables the filter)</param>
         public PublicationFilter(bool sameJournal, int? pubWindowUpperBound, int? pubWindowLowerBound, 
-            int? maximumLinkRanking, IEnumerable<int> excludeCategories)
+            int? maximumLinkRanking, IEnumerable<int> includeCategories)
         {
             SameJournal = sameJournal;
 
@@ -81,7 +81,7 @@ namespace Com.StellmanGreene.FindRelated
                 throw new ArgumentException("maximumLinkRanking", "Maximum link ranking must be >= 0");
             MaximumLinkRanking = maximumLinkRanking;
 
-            ExcludeCategories = excludeCategories;
+            IncludeCategories = includeCategories;
         }
 
         /// <summary>
@@ -106,9 +106,9 @@ namespace Com.StellmanGreene.FindRelated
             if (linkRanking > MaximumLinkRanking)
                 return false;
 
-            if ((ExcludeCategories != null)
-                && (ExcludeCategories.Count() > 0)
-                && (!ExcludeCategories.Contains(publicationTypes.GetCategoryNumber(publication.PubType))))
+            if ((IncludeCategories != null)
+                && (IncludeCategories.Count() > 0)
+                && (!IncludeCategories.Contains(publicationTypes.GetCategoryNumber(publication.PubType))))
                 return false;
 
             return true;
@@ -122,12 +122,12 @@ namespace Com.StellmanGreene.FindRelated
  Publication window lower bound: {1}
  Publication window upper bound: {2}
  Maximum link ranking: {3}
- Exclude pubtype 'bins': {4}",
+ Include pubtype categories: {4}",
                             SameJournal,
                             PubWindowLowerBound == null ? "filter not set" : PubWindowLowerBound.ToString(),
                             PubWindowUpperBound == null ? "filter not set" : PubWindowLowerBound.ToString(),
                             MaximumLinkRanking == null ? "filter not set" : PubWindowLowerBound.ToString(),
-                            ((ExcludeCategories == null) || (ExcludeCategories.Count() == 0)) ? "filter not set" : String.Join(", ", ExcludeCategories));
+                            ((IncludeCategories == null) || (IncludeCategories.Count() == 0)) ? "filter not set" : String.Join(", ", IncludeCategories));
         }
     }
 }

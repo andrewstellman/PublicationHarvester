@@ -59,7 +59,7 @@
             this.enableLowerBound = new System.Windows.Forms.CheckBox();
             this.maximumLinkRanking = new System.Windows.Forms.NumericUpDown();
             this.enableMaximumLinkRanking = new System.Windows.Forms.CheckBox();
-            this.excludeCategories = new System.Windows.Forms.TextBox();
+            this.includeCategories = new System.Windows.Forms.TextBox();
             this.statusStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pubWindowUpperBound)).BeginInit();
@@ -244,7 +244,7 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.excludeCategories);
+            this.groupBox1.Controls.Add(this.includeCategories);
             this.groupBox1.Controls.Add(this.maximumLinkRanking);
             this.groupBox1.Controls.Add(this.enableMaximumLinkRanking);
             this.groupBox1.Controls.Add(this.pubWindowLowerBound);
@@ -307,7 +307,7 @@
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(151, 13);
             this.label9.TabIndex = 69;
-            this.label9.Text = "&Exclude categories (e.g. 1;2;5)";
+            this.label9.Text = "In&clude categories (e.g. 1;2;5)";
             // 
             // enableUpperBound
             // 
@@ -388,13 +388,13 @@
             this.enableMaximumLinkRanking.UseVisualStyleBackColor = true;
             this.enableMaximumLinkRanking.CheckedChanged += new System.EventHandler(this.enableMaximumLinkRanking_CheckedChanged);
             // 
-            // excludeCategories
+            // includeCategories
             // 
-            this.excludeCategories.Location = new System.Drawing.Point(179, 110);
-            this.excludeCategories.Name = "excludeCategories";
-            this.excludeCategories.Size = new System.Drawing.Size(136, 20);
-            this.excludeCategories.TabIndex = 72;
-            this.excludeCategories.TextChanged += new System.EventHandler(this.excludeCategories_TextChanged);
+            this.includeCategories.Location = new System.Drawing.Point(179, 110);
+            this.includeCategories.Name = "includeCategories";
+            this.includeCategories.Size = new System.Drawing.Size(136, 20);
+            this.includeCategories.TabIndex = 72;
+            this.includeCategories.TextChanged += new System.EventHandler(this.includeCategories_TextChanged);
             // 
             // Form1
             // 
@@ -467,7 +467,7 @@
         private System.Windows.Forms.CheckBox enableLowerBound;
         private System.Windows.Forms.NumericUpDown pubWindowUpperBound;
         private System.Windows.Forms.CheckBox enableUpperBound;
-        private System.Windows.Forms.TextBox excludeCategories;
+        private System.Windows.Forms.TextBox includeCategories;
         private System.Windows.Forms.NumericUpDown maximumLinkRanking;
         private System.Windows.Forms.CheckBox enableMaximumLinkRanking;
     }

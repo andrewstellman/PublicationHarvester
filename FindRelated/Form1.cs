@@ -35,12 +35,12 @@ namespace Com.StellmanGreene.FindRelated
 {
     public partial class Form1 : Form
     {
-        private static readonly char[] EXCLUDE_CATEGORIES_SEPARATORS = new char[] { ';', ',', ' ', '|' };
+        private static readonly char[] INCLUDE_CATEGORIES_SEPARATORS = new char[] { ';', ',', ' ', '|' };
 
         /// <summary>
-        /// Currently entered exclude categories
+        /// Currently entered include categories
         /// </summary>
-        private IEnumerable<int> excludeCategoriesValues = new List<int>();
+        private IEnumerable<int> includeCategoriesValues = new List<int>();
 
         public Form1()
         {
@@ -91,7 +91,7 @@ namespace Com.StellmanGreene.FindRelated
                     !enableUpperBound.Checked ? null : (int?)pubWindowUpperBound.Value,
                     !enableLowerBound.Checked ? null : (int?)pubWindowLowerBound.Value,
                     !enableMaximumLinkRanking.Checked ? null : (int?)maximumLinkRanking.Value,
-                    excludeCategoriesValues);
+                    includeCategoriesValues);
 
                 Trace.WriteLine(DateTime.Now + " - " + publicationFilter);
 
@@ -285,26 +285,26 @@ namespace Com.StellmanGreene.FindRelated
             maximumLinkRanking.Enabled = enableMaximumLinkRanking.Checked;
         }
 
-        private void excludeCategories_TextChanged(object sender, EventArgs e)
+        private void includeCategories_TextChanged(object sender, EventArgs e)
         {
-            // Build a new excludeCategoriesValues based on the values in the text box
-            excludeCategoriesValues = new List<int>();
+            // Build a new includeCategoriesValues based on the values in the text box
+            includeCategoriesValues = new List<int>();
 
-            excludeCategories.SuspendLayout();
+            includeCategories.SuspendLayout();
             
-            int selectionStart = excludeCategories.SelectionStart;
-            int selectionLength = excludeCategories.SelectionLength;
+            int selectionStart = includeCategories.SelectionStart;
+            int selectionLength = includeCategories.SelectionLength;
 
             bool invalidValueFound = false;
             string invalidValue = String.Empty;
 
-            List<string> values = new List<string>(excludeCategories.Text.Split(EXCLUDE_CATEGORIES_SEPARATORS, StringSplitOptions.RemoveEmptyEntries));
+            List<string> values = new List<string>(includeCategories.Text.Split(INCLUDE_CATEGORIES_SEPARATORS, StringSplitOptions.RemoveEmptyEntries));
             foreach (string value in values)
             {
                 int i;
                 if (int.TryParse(value, out i))
                 {
-                    ((List<int>)excludeCategoriesValues).Add(i);
+                    ((List<int>)includeCategoriesValues).Add(i);
                 }
                 else
                 {
@@ -315,17 +315,17 @@ namespace Com.StellmanGreene.FindRelated
 
             if (invalidValueFound)
             {
-                MessageBox.Show("Invalid value in excluded categories: " + invalidValue);
-                excludeCategories.Text = excludeCategories.Text.Remove(
-                    excludeCategories.Text.IndexOf(invalidValue),
+                MessageBox.Show("Invalid value in included categories: " + invalidValue);
+                includeCategories.Text = includeCategories.Text.Remove(
+                    includeCategories.Text.IndexOf(invalidValue),
                     invalidValue.Length);
                 if (selectionStart > 0)
-                    excludeCategories.SelectionStart = selectionStart - 1;
+                    includeCategories.SelectionStart = selectionStart - 1;
                 if (selectionLength > 0)
-                    excludeCategories.SelectionLength = selectionLength - 1;
+                    includeCategories.SelectionLength = selectionLength - 1;
             }
 
-            excludeCategories.ResumeLayout();
+            includeCategories.ResumeLayout();
         }
 
     }
