@@ -88,7 +88,7 @@ namespace Com.StellmanGreene.PubMed
             }
             else
             {
-                PublicationList = new Publication[0];
+                List<Publication> tempList = new List<Publication>();
                 // Read each publication
                 foreach (DataRow PMIDRow in Pubs.Rows)
                 {
@@ -98,9 +98,9 @@ namespace Com.StellmanGreene.PubMed
                     {
                         throw new Exception("No publication found in the database for PMID " + PMID.ToString());
                     }
-                    Array.Resize(ref PublicationList, PublicationList.Length + 1);
-                    PublicationList[PublicationList.GetUpperBound(0)] = publication;
+                    tempList.Add(publication);
                 }
+                PublicationList = tempList.Count > 0 ? tempList.ToArray() : null;
             }
         }
 
@@ -113,21 +113,14 @@ namespace Com.StellmanGreene.PubMed
         {
             // Get each publication from MedlineData and add it to PublicationList[]
             Publication publication;
+            List<Publication> tempList = new List<Publication>();
+            if (PublicationList != null) tempList.AddRange(PublicationList);
             while (GetNextPublication(ref MedlineData, out publication, pubTypes))
             {
-                // Do garbage collection to avoid "Out of Memory" exceptions
-                // (probably due to Array.Resize leaving the old array lying around)
-                GC.Collect();
-
                 // Add the publication to the end of PublicationList[]
-                if (PublicationList == null)
-                    PublicationList = new Publication[1];
-                else
-                {
-                    Array.Resize(ref PublicationList, PublicationList.Length + 1);
-                }
-                PublicationList[PublicationList.GetUpperBound(0)] = publication;
+                tempList.Add(publication);
             }
+            PublicationList = tempList.Count > 0 ? tempList.ToArray() : null;
         }
 
 
@@ -578,10 +571,18 @@ namespace Com.StellmanGreene.PubMed
             int AuthorPosition = 0;
             for (int i = 1; (AuthorPosition == 0) && (i <= publication.Authors.Length); i++)
                 foreach (string name in person.Names)
+                {
                     if (StringComparer.CurrentCultureIgnoreCase.Equals(
-                        publication.Authors[i - 1], name.ToUpper()
+                        publication.Authors[i - 1], name //.ToUpper()
                         ))
+                    {
                         AuthorPosition = i;
+                    }
+                    else if (name == "*")
+                    {
+                        AuthorPosition = -1;
+                    }
+                }
 
             // From the SRS -- definition of position type: 
             // •	1 if the person is the first author
@@ -594,10 +595,12 @@ namespace Com.StellmanGreene.PubMed
                 PositionType = Harvester.AuthorPositions.First;
             else if (AuthorPosition == publication.Authors.Length)
                 PositionType = Harvester.AuthorPositions.Last;
-            else if ( (AuthorPosition == 2) && (publication.Authors.Length >= 5) )
+            else if ((AuthorPosition == 2) && (publication.Authors.Length >= 5))
                 PositionType = Harvester.AuthorPositions.Second;
             else if ((AuthorPosition == publication.Authors.Length - 1) && (publication.Authors.Length >= 5))
                 PositionType = Harvester.AuthorPositions.NextToLast;
+            else if (AuthorPosition == -1)
+                PositionType = Harvester.AuthorPositions.None;
             else
                 PositionType = Harvester.AuthorPositions.Middle;
 

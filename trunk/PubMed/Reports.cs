@@ -161,6 +161,7 @@ namespace Com.StellmanGreene.PubMed
                             NextToLastWeighted += Weight;
                             break;
                         case Harvester.AuthorPositions.Middle:
+                        case Harvester.AuthorPositions.None:
                             Middle++;
                             MiddleWeighted += Weight;
                             break;
