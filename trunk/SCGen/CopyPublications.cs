@@ -13,7 +13,8 @@ namespace SCGen
         /// </summary>
         /// <param name="DB">Database containing the unharvested colleagues</param>
         /// <param name="SourceDatabaseName">Source database to copy the publications from</param>
-        public static void DoCopy(Database DB, string SourceDatabaseName, string PublicationTypes)
+        /// <param name="colleaguePublicationsTable">Name of the colleague publications table</param>
+        public static void DoCopy(Database DB, string SourceDatabaseName, string PublicationTypes, string colleaguePublicationsTable)
         {
             // Copy authors from the source database's PublicationAuthors
             DB.ExecuteNonQuery(@"/* copy authors */
@@ -113,7 +114,7 @@ namespace SCGen
             DB.ExecuteNonQuery(@"/*
                                   * copy colleaguepublications
                                   */
-                                INSERT IGNORE INTO colleaguepublications
+                                INSERT IGNORE INTO " + colleaguePublicationsTable + @"
                                 (Setnb, PMID, AuthorPosition, PositionType)
                                 SELECT pp.Setnb, pp.PMID, pp.AuthorPosition, pp.PositionType
                                 FROM colleagues c,
