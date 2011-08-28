@@ -64,7 +64,7 @@ namespace SCGen.Unit_Tests
             ncbi = new MockNCBI("Medline");
 
             // Find the colleagues and publications
-            ColleagueFinder finder = new ColleagueFinder(DB, roster, ncbi);
+            ColleagueFinder finder = new ColleagueFinder(DB, roster, ncbi, null);
             People people = new People(DB);
             foreach (Person person in people.PersonList)
             {

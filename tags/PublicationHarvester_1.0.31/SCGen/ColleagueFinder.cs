@@ -21,18 +21,24 @@ namespace SCGen
         // The AAMC roster object
         private Roster roster;
 
+        /// <summary>
+        /// An alternate PeoplePublications table name, null if not using alternate table name
+        /// </summary>
+        public string AlternateTableName { get; private set; }
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="roster">AAMC roster object</param>
-        public ColleagueFinder(Database DB, Roster roster, NCBI ncbi)
+        /// <param name="alternateTableName">Alternate PeoplePublications table name, null if not using it</param>
+        public ColleagueFinder(Database DB, Roster roster, NCBI ncbi, string alternateTableName)
         {
             this.DB = DB;
             this.roster = roster;
             this.ncbi = ncbi;
             this.harvester = new Harvester(DB);
             this.pubTypes = new PublicationTypes(DB);
+            AlternateTableName = alternateTableName;
         }
 
 
@@ -56,7 +62,10 @@ namespace SCGen
             Publications pubs;
             try
             {
-                pubs = new Publications(DB, Star, true);
+                if (String.IsNullOrEmpty(AlternateTableName))
+                    pubs = new Publications(DB, Star, true);
+                else
+                    pubs = new Publications(DB, Star, AlternateTableName, true);
             }
             catch 
             {
