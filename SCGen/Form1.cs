@@ -64,6 +64,18 @@ namespace SCGen
             {
                 RosterFile.Text = rosterFile;
             }
+
+            // Set the alternate table checkbox and textbox
+            bool useAlternateCheckboxValue;
+            if (!bool.TryParse(PubMed.Settings.GetValueString("UseAlternateTableName", "False"), out useAlternateCheckboxValue))
+                useAlternateCheckboxValue = false;
+            useAlternateCheckbox.Checked = useAlternateCheckboxValue;
+            string alternateTableNameValue = PubMed.Settings.GetValueString("AlternateTableName", "PeoplePublications");
+            if (!String.IsNullOrEmpty(alternateTableNameValue))
+            {
+                alternateTableName.Text = alternateTableNameValue;
+            }
+
         }
 
 
@@ -348,7 +360,8 @@ namespace SCGen
             }
 
             NCBI ncbi = new NCBI("Medline");
-            ColleagueFinder finder = new ColleagueFinder(DB, roster, ncbi);
+            ColleagueFinder finder = new ColleagueFinder(DB, roster, ncbi,
+                GetPeoplePublicationTableName());
             People Stars = new People(DB);
             int NumStars = Stars.PersonList.Count;
             toolStripProgressBar1.Minimum = 0;
@@ -492,7 +505,8 @@ namespace SCGen
 
             // Retrieve the publications for each unharvested colleague
             NCBI ncbi = new NCBI("Medline");
-            ColleagueFinder finder = new ColleagueFinder(DB, roster, ncbi);
+            ColleagueFinder finder = new ColleagueFinder(DB, roster, ncbi,
+                GetPeoplePublicationTableName());
             People Colleagues = new People(DB, "Colleagues");
             int Total = Colleagues.PersonList.Count;
             int Count = 0;
@@ -555,6 +569,17 @@ namespace SCGen
 
             this.Cursor = Cursors.Default;
             this.Enabled = true;
+        }
+
+        private string GetPeoplePublicationTableName()
+        {
+            
+            string tableName = useAlternateCheckbox.Checked ? alternateTableName.Text : null;
+            if (String.IsNullOrEmpty(tableName))
+                AddLogEntry("Using default PeoplePublication table name");
+            else
+                AddLogEntry("Using alternate PeoplePublicationtable name: " + tableName);
+            return tableName;
         }
 
 
@@ -621,6 +646,20 @@ namespace SCGen
 
             this.Cursor = Cursors.Default;
             this.Enabled = true;
+        }
+
+        private void useAlternateCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            alternateTableName.Enabled = useAlternateCheckbox.Checked;
+
+            PubMed.Settings.SetValue("UseAlternateTableName", useAlternateCheckbox.Checked.ToString());
+            UpdateStatus();
+        }
+
+        private void alternateTableName_TextChanged(object sender, EventArgs e)
+        {
+            PubMed.Settings.SetValue("AlternateTableName", alternateTableName.Text);
+            UpdateStatus();
         }
 
 
