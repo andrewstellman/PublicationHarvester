@@ -123,7 +123,7 @@ namespace SCGen.Unit_Tests
             // two publications (because he's harvested), and ignore Fakerson (because
             // he's not a colleague.)
             Database DB = new Database("Colleague Generator Unit Test");
-            CopyPublications.DoCopy(DB, "CGUnitTestCopyPublications", "1,2,3,4", "ColleaguePublications");
+            CopyPublications.DoCopy(DB, "CGUnitTestCopyPublications", "1,2,3,4");
             
 
             // Verify that Bintliff's publications were copied (including their
@@ -198,7 +198,7 @@ namespace SCGen.Unit_Tests
                    WHERE Setnb = 'A4800524'"), 5);
 
             // Make sure it doesn't copy publications with nonmatching publication types
-            CopyPublications.DoCopy(DB, "CGUnitTestCopyPublications", "5,6,7,8", "ColleaguePublications");
+            CopyPublications.DoCopy(DB, "CGUnitTestCopyPublications", "5,6,7,8");
 
             // Verify that Bunn STILL has five publications
             Assert.AreEqual(DB.GetIntValue(
@@ -207,7 +207,7 @@ namespace SCGen.Unit_Tests
                    WHERE Setnb = 'A4800524'"), 5);
 
             // Copy the publications with the right publication types
-            CopyPublications.DoCopy(DB, "CGUnitTestCopyPublications", "1,2,3,4", "ColleaguePublications");
+            CopyPublications.DoCopy(DB, "CGUnitTestCopyPublications", "1,2,3,4");
 
             // Verify that Bunn now has seven publications (two were copied 
             // from CGUnitTestCopyPublications)
