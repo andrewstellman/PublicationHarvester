@@ -32,6 +32,12 @@ namespace Com.StellmanGreene.FindRelated
 {
     internal class RelatedFinder
     {
+        struct RankAndScore
+        {
+            public int Rank { get; set; }
+            public int Score { get; set; }
+        }
+
         const string ELINK_URL = "http://www.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi";
         const string ELINK_DB = "pubmed";
         const string ELINK_DBFROM = "pubmed";
@@ -88,7 +94,7 @@ namespace Com.StellmanGreene.FindRelated
                 // This returns a Dictionary that maps author publications (from the PeoplePublications table)
                 // to linked publications, so each key is one of the author publications read from the DB originally.
                 string xml = ExecuteRelatedSearch(authorPmids);
-                Dictionary<int, Dictionary<int, int>> relatedRanks;
+                Dictionary<int, Dictionary<int, RankAndScore>> relatedRanks;
                 Dictionary<int, List<int>> relatedSearchResults = GetIdsFromXml(xml, out relatedRanks);
 
                 int total = 0;
@@ -124,11 +130,11 @@ namespace Com.StellmanGreene.FindRelated
                     {
                         // Get the list of related PMIDs and their ranks from the search results
                         List<int> relatedPmids = relatedSearchResults[authorPublicationPmid];
-                        Dictionary<int, int> relatedRank;
+                        Dictionary<int, RankAndScore> relatedRank;
                         if (relatedRanks.ContainsKey(authorPublicationPmid))
                             relatedRank = relatedRanks[authorPublicationPmid];
                         else
-                            relatedRank = new Dictionary<int, int>();
+                            relatedRank = new Dictionary<int, RankAndScore>();
 
                         Trace.WriteLine(DateTime.Now + " - [" + ++count + "/" + relatedSearchResults.Keys.Count + "] adding " + relatedPmids.Count + " related articles found for " + authorPublicationPmid);
 
@@ -157,18 +163,23 @@ namespace Com.StellmanGreene.FindRelated
                             }
 
                             int rank;
+                            int score;
                             if (relatedRank.ContainsKey(relatedPublication.PMID))
-                                rank = relatedRank[relatedPublication.PMID];
+                            {
+                                rank = relatedRank[relatedPublication.PMID].Rank;
+                                score = relatedRank[relatedPublication.PMID].Score;
+                            }
                             else
                             {
                                 rank = -1;
+                                score = -1;
                                 Trace.WriteLine(DateTime.Now + " - publication " + authorPublicationPmid + " could not find rank for related " + relatedPublication.PMID);
                             }
 
                             // A small number of publications come back with a null set of authors, which the database schema doesn't support 
                             if (relatedPublication.Authors == null)
-                            {    
-                             publicationsNullAuthors++;   
+                            {
+                                publicationsNullAuthors++;
                             }
 
                             // Use the publication filter to include only publications that match the filter
@@ -182,11 +193,12 @@ namespace Com.StellmanGreene.FindRelated
 
                                     // Write the pmid/relatedPmid pair to the related publications table.
                                     db.ExecuteNonQuery(
-                                        "INSERT INTO " + relatedTable + " (PMID, RelatedPMID, Rank) VALUES (?, ?, ?)",
+                                        "INSERT INTO " + relatedTable + " (PMID, RelatedPMID, Rank, Score) VALUES (?, ?, ?, ?)",
                                         new System.Collections.ArrayList() { 
                                             Database.Parameter(authorPublicationPmid), 
                                             Database.Parameter(relatedPublication.PMID),
                                             Database.Parameter(rank),
+                                            Database.Parameter(score),
                                         });
 
                                     publicationsWritten++;
@@ -224,7 +236,8 @@ namespace Com.StellmanGreene.FindRelated
               PMID int(11) NOT NULL,
               RelatedPMID int(11) NOT NULL,
               Rank int NOT NULL,
-              PRIMARY KEY  (PMID,RelatedPMID)
+              Score int NOT NULL,
+              PRIMARY KEY (PMID, RelatedPMID)
             ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
             ");
         }
@@ -258,6 +271,9 @@ namespace Com.StellmanGreene.FindRelated
             if (!string.IsNullOrEmpty(maxdate))
                 query.AppendFormat("&mindate={0}", maxdate);
 
+            // Add "&cmd=neighbor_score" to get the <Score> elements
+            query.Append("&cmd=neighbor_score");
+            
             WebRequest request = WebRequest.Create(ELINK_URL);
             request.Method = "POST";
             request.ContentType = "application/x-www-form-urlencoded";
@@ -281,12 +297,12 @@ namespace Com.StellmanGreene.FindRelated
         /// Retrieve the IDs from the XML results from ELink
         /// </summary>
         /// <param name="xml">XML results from ELink</param>
-        /// <param name="relatedRansk">Ouput - dictionary that maps PMIDs to map for looking up rank in related results</param>
+        /// <param name="relatedRanks">Ouput - dictionary that maps PMIDs to map for looking up rank in related results</param>
         /// <returns>Dictionary that maps source PMIds to a list of IDs extracted from the XML (or an empty list of none)</returns>
-        private static Dictionary<int, List<int>> GetIdsFromXml(string xml, out Dictionary<int, Dictionary<int, int>> relatedRanks)
+        private static Dictionary<int, List<int>> GetIdsFromXml(string xml, out Dictionary<int, Dictionary<int, RankAndScore>> relatedRanks)
         {
             Dictionary<int, List<int>> result = new Dictionary<int, List<int>>();
-            relatedRanks = new Dictionary<int, Dictionary<int, int>>();
+            relatedRanks = new Dictionary<int, Dictionary<int, RankAndScore>>();
 
             List<int> ids = new List<int>();
             XmlDocument xmlDoc = new XmlDocument();
@@ -298,12 +314,12 @@ namespace Com.StellmanGreene.FindRelated
                 // There's one <LinkSet> for each PMID from the search
                 int pmid;
                 if (int.TryParse(linkSet["IdList"]["Id"].InnerText, out pmid)) {
-                    Dictionary<int, int> relatedRank = null;
+                    Dictionary<int, RankAndScore> relatedRank = null;
                     if (relatedRanks.ContainsKey(pmid))
                         relatedRank = relatedRanks[pmid];
                     else
                     {
-                        relatedRank = new Dictionary<int, int>();
+                        relatedRank = new Dictionary<int, RankAndScore>();
                         relatedRanks.Add(pmid, relatedRank);
                     }
 
@@ -327,11 +343,19 @@ namespace Com.StellmanGreene.FindRelated
                             int rank = 0;
                             foreach (XmlNode link in linkSetDb.SelectNodes("Link"))
                             {
+
+                                int score;
+                                if (!int.TryParse(link["Score"].InnerText, out score))
+                                {
+                                    score = -1;
+                                }
+
                                 int relatedPmid;
-                                if (int.TryParse(link.InnerText, out relatedPmid))
+                                if (int.TryParse(link["Id"].InnerText, out relatedPmid))
                                 {
                                     linkList.Add(relatedPmid);
-                                    relatedRank.Add(relatedPmid, ++rank);
+                                    RankAndScore rankAndScore = new RankAndScore() { Rank = ++rank, Score = score };
+                                    relatedRank.Add(relatedPmid, rankAndScore);
                                 }
                             }
                         }
