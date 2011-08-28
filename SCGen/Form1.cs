@@ -207,7 +207,7 @@ namespace SCGen
                 int ColleaguesHarvested;
                 int ColleaguePublications;
                 int StarsWithColleagues;
-                ColleagueFinder.GetDBStatus(UpdateDB, out ColleaguesFound, out DiadsFound, out ColleaguesHarvested, out ColleaguePublications, out StarsWithColleagues);
+                ColleagueFinder.GetDBStatus(UpdateDB, out ColleaguesFound, out DiadsFound, out ColleaguesHarvested, out ColleaguePublications, out StarsWithColleagues, colleaguePublicationsTable.Text);
                 this.DiadsFound.Text = DiadsFound.ToString();
                 this.ColleaguesFound.Text = ColleaguesFound.ToString();
                 this.ColleaguesHarvested.Text = ColleaguesHarvested.ToString();
@@ -338,7 +338,7 @@ namespace SCGen
             // a past find. If resuming, get the Setnb's of stars from the StarColleagues
             // table so they can be skipped.
             if (ResetDatabase) 
-                ColleagueFinder.CreateTables(DB);
+                ColleagueFinder.CreateTables(DB, colleaguePublicationsTable.Text);
             DataTable StarSetnbsResult = DB.ExecuteQuery("SELECT StarSetnb FROM StarColleagues");
             ArrayList StarSetnbs = new ArrayList();
             foreach (DataRow Row in StarSetnbsResult.Rows)
@@ -348,7 +348,7 @@ namespace SCGen
             }
 
             NCBI ncbi = new NCBI("Medline");
-            ColleagueFinder finder = new ColleagueFinder(DB, roster, ncbi);
+            ColleagueFinder finder = new ColleagueFinder(DB, roster, ncbi, colleaguePublicationsTable.Text);
             People Stars = new People(DB);
             int NumStars = Stars.PersonList.Count;
             toolStripProgressBar1.Minimum = 0;
@@ -492,7 +492,7 @@ namespace SCGen
 
             // Retrieve the publications for each unharvested colleague
             NCBI ncbi = new NCBI("Medline");
-            ColleagueFinder finder = new ColleagueFinder(DB, roster, ncbi);
+            ColleagueFinder finder = new ColleagueFinder(DB, roster, ncbi, colleaguePublicationsTable.Text);
             People Colleagues = new People(DB, "Colleagues");
             int Total = Colleagues.PersonList.Count;
             int Count = 0;
@@ -568,7 +568,7 @@ namespace SCGen
 
             Database DB = new Database(DSN.Text);
             int Before = DB.GetIntValue("SELECT Count(*) FROM StarColleagues");
-            ColleagueFinder.RemoveFalseColleagues(DB, this);
+            ColleagueFinder.RemoveFalseColleagues(DB, this, colleaguePublicationsTable.Text);
             int After = DB.GetIntValue("SELECT Count(*) FROM StarColleagues"); ;
             int Removed = Before - After;
             AddLogEntry("Removed " + Removed.ToString() + " false colleague" +

@@ -21,18 +21,20 @@ namespace SCGen
         // The AAMC roster object
         private Roster roster;
 
+        public string ColleaguePublicationsTable { get; private set; }
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="roster">AAMC roster object</param>
-        public ColleagueFinder(Database DB, Roster roster, NCBI ncbi)
+        public ColleagueFinder(Database DB, Roster roster, NCBI ncbi, string colleaguePublicationsTable)
         {
             this.DB = DB;
             this.roster = roster;
             this.ncbi = ncbi;
             this.harvester = new Harvester(DB);
             this.pubTypes = new PublicationTypes(DB);
+            ColleaguePublicationsTable = colleaguePublicationsTable;
         }
 
 
@@ -170,7 +172,7 @@ namespace SCGen
                                 // Add a row to the ColleaguePublications table -- this will
                                 // return False if the publication doesn't actually belong
                                 // to the colleague
-                                bool PubBelongsToColleague = WriteColleaguePublicationsToDB(DB, Colleague, pub, pubTypes, Languages);
+                                bool PubBelongsToColleague = WriteColleaguePublicationsToDB(DB, Colleague, pub, pubTypes, Languages, ColleaguePublicationsTable);
                                 if (PubBelongsToColleague)
                                 {
                                     // Make sure the publication doesn't already exist, then write
@@ -196,7 +198,7 @@ namespace SCGen
         /// publications with the star
         /// </summary>
         /// <param name="DB"></param>
-        public static void RemoveFalseColleagues(Database DB, Form1 ParentForm)
+        public static void RemoveFalseColleagues(Database DB, Form1 ParentForm, string colleaguePublicationsTable)
         {
             // First load all of the People in the database -- these are the stars
             People Stars = new People(DB);
@@ -244,7 +246,7 @@ namespace SCGen
                         Parameters = new ArrayList();
                         Parameters.Add(Database.Parameter(ColleagueSetnb));
                         DataTable ColleaguePublications = DB.ExecuteQuery(
-                            "SELECT PMID FROM ColleaguePublications WHERE Setnb = ?", Parameters
+                            "SELECT PMID FROM " + colleaguePublicationsTable + " WHERE Setnb = ?", Parameters
                             );
                         ArrayList PMIDs = new ArrayList();
                         foreach (DataRow PubRow in ColleaguePublications.Rows)
@@ -281,7 +283,8 @@ namespace SCGen
         /// Create the Colleague tables
         /// </summary>
         /// <param name="DB">Database to create tables in</param>
-        public static void CreateTables(Database DB) {
+        public static void CreateTables(Database DB, string colleaguePublicationsTable)
+        {
             DB.ExecuteNonQuery("DROP TABLE IF EXISTS StarColleagues");
             DB.ExecuteNonQuery(@"CREATE TABLE StarColleagues (
               StarSetnb char(8) NOT NULL,
@@ -309,8 +312,8 @@ namespace SCGen
             ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
             ");
 
-            DB.ExecuteNonQuery("DROP TABLE IF EXISTS ColleaguePublications");
-            DB.ExecuteNonQuery(@"CREATE TABLE ColleaguePublications (
+            DB.ExecuteNonQuery("DROP TABLE IF EXISTS " + colleaguePublicationsTable);
+            DB.ExecuteNonQuery("CREATE TABLE " + colleaguePublicationsTable + @" (
               Setnb char(8) NOT NULL,
               PMID int(11) NOT NULL,
               AuthorPosition int(11) NOT NULL,
@@ -344,7 +347,7 @@ namespace SCGen
         /// <param name="person">Colleague who is the author of the publication</param>
         /// <param name="publication">Publication to write</param>
         /// <returns>True if the publication really matches the colleague, False otherwise</returns>
-        public static bool WriteColleaguePublicationsToDB(Database DB, Person Colleague, Publication publication, PublicationTypes pubTypes, string[] Languages)
+        public static bool WriteColleaguePublicationsToDB(Database DB, Person Colleague, Publication publication, PublicationTypes pubTypes, string[] Languages, string colleaguePublicationsTable)
         {
             ArrayList Parameters;
 
@@ -391,7 +394,7 @@ namespace SCGen
             Parameters.Add(Database.Parameter(publication.PMID));
             Parameters.Add(Database.Parameter(AuthorPosition));
             Parameters.Add(Database.Parameter((int)PositionType));
-            DB.ExecuteNonQuery(@"INSERT INTO ColleaguePublications
+            DB.ExecuteNonQuery("INSERT INTO " + colleaguePublicationsTable + @"
                                                 (Setnb, PMID, AuthorPosition, PositionType)
                                          VALUES ( ? , ? , ? , ? )", Parameters);
             return true;
@@ -506,7 +509,7 @@ namespace SCGen
         /// <param name="DB">Database to check</param>
         /// <param name="FoundColleagues">Number of colleagues that have been found</param>
         /// <returns>True if the database is populated and ready for colleague finding</returns>
-        public static bool GetDBStatus(Database DB, out int ColleaguesFound, out int DiadsFound, out int ColleaguesHarvested, out int ColleaguePublications, out int StarsWithColleagues)
+        public static bool GetDBStatus(Database DB, out int ColleaguesFound, out int DiadsFound, out int ColleaguesHarvested, out int ColleaguePublications, out int StarsWithColleagues, string colleaguePublicationsTable)
         {
             ColleaguesFound = 0;
             DiadsFound = 0;
@@ -535,7 +538,7 @@ namespace SCGen
             {
                 Tables.Add(Row[0].ToString().ToLower());
             }
-            foreach (string Table in new string[] { "colleagues", "colleaguepublications" })
+            foreach (string Table in new string[] { "colleagues", colleaguePublicationsTable })
             {
                 if (Tables.Contains(Table) == false)
                 {
@@ -546,7 +549,7 @@ namespace SCGen
             DiadsFound = DB.GetIntValue("SELECT Count(*) FROM StarColleagues");
             ColleaguesFound = DB.GetIntValue("SELECT Count(DISTINCT Setnb) FROM StarColleagues");
             ColleaguesHarvested = DB.GetIntValue("SELECT Count(*) FROM Colleagues WHERE Harvested > 0");
-            ColleaguePublications = DB.GetIntValue("SELECT Count(*) FROM ColleaguePublications");
+            ColleaguePublications = DB.GetIntValue("SELECT Count(*) FROM " + colleaguePublicationsTable);
             StarsWithColleagues = DB.GetIntValue("SELECT Count(DISTINCT StarSetnb) FROM StarColleagues");
 
             return true;
