@@ -104,7 +104,7 @@ namespace SCGen.Unit_Tests
             // We've seeded Tobian.dat with colleagues: 
             // Paul A. Bunn is in PMID 8931843. He has two articles in OtherPeople.dat, including 
             // article 8931843. (Also, PMID 15451956)
-            ColleagueFinder finder = new ColleagueFinder(DB, roster, ncbi);
+            ColleagueFinder finder = new ColleagueFinder(DB, roster, ncbi, null);
             People people = new People(DB);
 
             Person[] found;
