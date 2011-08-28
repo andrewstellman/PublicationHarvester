@@ -77,7 +77,7 @@ namespace SCGen.Unit_Tests
             // Create the test database
             harvester = new Harvester(DB);
             harvester.CreateTables();
-            ColleagueFinder.CreateTables(DB);
+            ColleagueFinder.CreateTables(DB, "ColleaguePublications");
 
             // Populate it using the Mock NCBI object
             ncbi = new MockNCBI("Medline");
@@ -104,7 +104,7 @@ namespace SCGen.Unit_Tests
             // We've seeded Tobian.dat with colleagues: 
             // Paul A. Bunn is in PMID 8931843. He has two articles in OtherPeople.dat, including 
             // article 8931843. (Also, PMID 15451956)
-            ColleagueFinder finder = new ColleagueFinder(DB, roster, ncbi);
+            ColleagueFinder finder = new ColleagueFinder(DB, roster, ncbi, "ColleaguePublications");
             People people = new People(DB);
 
             Person[] found;
@@ -157,7 +157,7 @@ namespace SCGen.Unit_Tests
                         Assert.AreEqual(DB.GetIntValue("SELECT Count(*) FROM ColleaguePublications WHERE PMID = 15451956"), 1);
                         
                         // Remove false colleagues, make sure Sharon was deleted
-                        ColleagueFinder.RemoveFalseColleagues(DB, null);
+                        ColleagueFinder.RemoveFalseColleagues(DB, null, "ColleaguePublications");
                         result = DB.ExecuteQuery("SELECT StarSetnb, Setnb FROM StarColleagues ORDER BY Setnb DESC");
                         Assert.AreEqual(result.Rows.Count, 1);
                         row = result.Rows[0];

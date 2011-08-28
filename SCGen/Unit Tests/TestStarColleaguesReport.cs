@@ -45,7 +45,7 @@ namespace SCGen.Unit_Tests
         {
             // First recreate the database
             DB = new Database("Colleague Generator Unit Test");
-            ColleagueFinder.CreateTables(DB);
+            ColleagueFinder.CreateTables(DB, "ColleaguePublications");
 
             // Then use the test fixture setup in TestColleagues to populate it
             TestColleagues testColleagues = new TestColleagues();
@@ -64,7 +64,7 @@ namespace SCGen.Unit_Tests
             ncbi = new MockNCBI("Medline");
 
             // Find the colleagues and publications
-            ColleagueFinder finder = new ColleagueFinder(DB, roster, ncbi);
+            ColleagueFinder finder = new ColleagueFinder(DB, roster, ncbi, "ColleaguePublications");
             People people = new People(DB);
             foreach (Person person in people.PersonList)
             {
@@ -74,7 +74,7 @@ namespace SCGen.Unit_Tests
             }
 
             // Remove false colleagues
-            ColleagueFinder.RemoveFalseColleagues(DB, null);
+            ColleagueFinder.RemoveFalseColleagues(DB, null, "ColleaguePublications");
 
 
             // Create the extra articles for Bunn and Tobian.
@@ -222,7 +222,7 @@ namespace SCGen.Unit_Tests
             pub.PubType = "Journal Article";
             Publications.WriteToDB(pub, DB, PubTypes, Languages);
             Publications.WritePeoplePublicationsToDB(DB, Tobian, pub);
-            ColleagueFinder.WriteColleaguePublicationsToDB(DB, Bunn, pub, PubTypes, new string[] { "eng" });
+            ColleagueFinder.WriteColleaguePublicationsToDB(DB, Bunn, pub, PubTypes, new string[] { "eng" }, "ColleaguePublications");
 
             pub = new Publication();
             Authors = new String[] { "BUNN P", "TOBIAN L" };
@@ -235,7 +235,7 @@ namespace SCGen.Unit_Tests
             pub.PubType = "Journal Article";
             Publications.WriteToDB(pub, DB, PubTypes, Languages);
             Publications.WritePeoplePublicationsToDB(DB, Tobian, pub);
-            ColleagueFinder.WriteColleaguePublicationsToDB(DB, Bunn, pub, PubTypes, new string[] { "eng" });
+            ColleagueFinder.WriteColleaguePublicationsToDB(DB, Bunn, pub, PubTypes, new string[] { "eng" }, "ColleaguePublications");
 
             pub = new Publication();
             Authors = new String[] { "TOBIAN L", "BUNN P" };
@@ -248,7 +248,7 @@ namespace SCGen.Unit_Tests
             pub.PubType = "Journal Article";
             Publications.WriteToDB(pub, DB, PubTypes, Languages);
             Publications.WritePeoplePublicationsToDB(DB, Tobian, pub);
-            ColleagueFinder.WriteColleaguePublicationsToDB(DB, Bunn, pub, PubTypes, new string[] { "eng" });
+            ColleagueFinder.WriteColleaguePublicationsToDB(DB, Bunn, pub, PubTypes, new string[] { "eng" }, "ColleaguePublications");
 
             pub = new Publication();
             Authors = new String[] { "TOBIAN L", "BUNN P", "SCHMOE J" };
@@ -261,7 +261,7 @@ namespace SCGen.Unit_Tests
             pub.PubType = "Journal Article";
             Publications.WriteToDB(pub, DB, PubTypes, Languages);
             Publications.WritePeoplePublicationsToDB(DB, Tobian, pub);
-            ColleagueFinder.WriteColleaguePublicationsToDB(DB, Bunn, pub, PubTypes, new string[] { "eng" });
+            ColleagueFinder.WriteColleaguePublicationsToDB(DB, Bunn, pub, PubTypes, new string[] { "eng" }, "ColleaguePublications");
         }
 
     }
