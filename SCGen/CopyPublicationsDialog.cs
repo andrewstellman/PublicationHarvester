@@ -40,7 +40,7 @@ namespace SCGen
             try
             {
                 ParentFormObject.AddLogEntry("Copying publications from database '" + Database.Text + "'");
-                CopyPublications.DoCopy(DB, Database.Text, this.PublicationTypes, colleaguePublicationsTable.Text);
+                CopyPublications.DoCopy(DB, Database.Text, this.PublicationTypes);
                 ParentFormObject.AddLogEntry("Finished copying publications");
             }
             catch (Exception ex)
