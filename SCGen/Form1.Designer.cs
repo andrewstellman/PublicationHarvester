@@ -82,8 +82,8 @@ namespace SCGen
             this.label18 = new System.Windows.Forms.Label();
             this.ColleaguesFound = new System.Windows.Forms.TextBox();
             this.label19 = new System.Windows.Forms.Label();
-            this.colleaguePublicationsTable = new System.Windows.Forms.TextBox();
-            this.label20 = new System.Windows.Forms.Label();
+            this.useAlternateCheckbox = new System.Windows.Forms.CheckBox();
+            this.alternateTableName = new System.Windows.Forms.TextBox();
             this.statusStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -170,7 +170,7 @@ namespace SCGen
             this.toolStripStatusLabel2,
             this.toolStripProgressBar1,
             this.toolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 658);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 682);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(511, 22);
             this.statusStrip1.SizingGrip = false;
@@ -379,7 +379,7 @@ namespace SCGen
             // 
             // RetrieveColleaguePublications
             // 
-            this.RetrieveColleaguePublications.Location = new System.Drawing.Point(12, 330);
+            this.RetrieveColleaguePublications.Location = new System.Drawing.Point(10, 357);
             this.RetrieveColleaguePublications.Name = "RetrieveColleaguePublications";
             this.RetrieveColleaguePublications.Size = new System.Drawing.Size(252, 23);
             this.RetrieveColleaguePublications.TabIndex = 211;
@@ -409,7 +409,7 @@ namespace SCGen
             // 
             // DiadsFound
             // 
-            this.DiadsFound.Location = new System.Drawing.Point(448, 300);
+            this.DiadsFound.Location = new System.Drawing.Point(446, 327);
             this.DiadsFound.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.DiadsFound.Name = "DiadsFound";
             this.DiadsFound.ReadOnly = true;
@@ -420,7 +420,7 @@ namespace SCGen
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(308, 300);
+            this.label4.Location = new System.Drawing.Point(306, 327);
             this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(137, 13);
@@ -429,7 +429,7 @@ namespace SCGen
             // 
             // ColleaguePublications
             // 
-            this.ColleaguePublications.Location = new System.Drawing.Point(448, 365);
+            this.ColleaguePublications.Location = new System.Drawing.Point(446, 392);
             this.ColleaguePublications.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.ColleaguePublications.Name = "ColleaguePublications";
             this.ColleaguePublications.ReadOnly = true;
@@ -440,7 +440,7 @@ namespace SCGen
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(269, 367);
+            this.label5.Location = new System.Drawing.Point(267, 394);
             this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(177, 13);
@@ -449,7 +449,7 @@ namespace SCGen
             // 
             // ColleaguesHarvested
             // 
-            this.ColleaguesHarvested.Location = new System.Drawing.Point(448, 332);
+            this.ColleaguesHarvested.Location = new System.Drawing.Point(446, 359);
             this.ColleaguesHarvested.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.ColleaguesHarvested.Name = "ColleaguesHarvested";
             this.ColleaguesHarvested.ReadOnly = true;
@@ -460,7 +460,7 @@ namespace SCGen
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(334, 335);
+            this.label15.Location = new System.Drawing.Point(332, 362);
             this.label15.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(111, 13);
@@ -469,7 +469,7 @@ namespace SCGen
             // 
             // GenerateReports
             // 
-            this.GenerateReports.Location = new System.Drawing.Point(12, 395);
+            this.GenerateReports.Location = new System.Drawing.Point(10, 422);
             this.GenerateReports.Name = "GenerateReports";
             this.GenerateReports.Size = new System.Drawing.Size(252, 23);
             this.GenerateReports.TabIndex = 220;
@@ -479,7 +479,7 @@ namespace SCGen
             // 
             // LogFilename
             // 
-            this.LogFilename.Location = new System.Drawing.Point(14, 522);
+            this.LogFilename.Location = new System.Drawing.Point(12, 549);
             this.LogFilename.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.LogFilename.Name = "LogFilename";
             this.LogFilename.ReadOnly = true;
@@ -489,7 +489,7 @@ namespace SCGen
             // 
             // label12
             // 
-            this.label12.Location = new System.Drawing.Point(14, 509);
+            this.label12.Location = new System.Drawing.Point(12, 536);
             this.label12.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(162, 19);
@@ -499,7 +499,7 @@ namespace SCGen
             // OpenInNotepad
             // 
             this.OpenInNotepad.Enabled = false;
-            this.OpenInNotepad.Location = new System.Drawing.Point(398, 522);
+            this.OpenInNotepad.Location = new System.Drawing.Point(396, 549);
             this.OpenInNotepad.Name = "OpenInNotepad";
             this.OpenInNotepad.Size = new System.Drawing.Size(105, 20);
             this.OpenInNotepad.TabIndex = 224;
@@ -512,14 +512,14 @@ namespace SCGen
             // 
             this.Log.FormattingEnabled = true;
             this.Log.HorizontalScrollbar = true;
-            this.Log.Location = new System.Drawing.Point(14, 557);
+            this.Log.Location = new System.Drawing.Point(12, 584);
             this.Log.Name = "Log";
             this.Log.Size = new System.Drawing.Size(489, 95);
             this.Log.TabIndex = 226;
             // 
             // label13
             // 
-            this.label13.Location = new System.Drawing.Point(14, 543);
+            this.label13.Location = new System.Drawing.Point(12, 570);
             this.label13.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(162, 17);
@@ -528,7 +528,7 @@ namespace SCGen
             // 
             // RemoveFalseColleagues
             // 
-            this.RemoveFalseColleagues.Location = new System.Drawing.Point(12, 362);
+            this.RemoveFalseColleagues.Location = new System.Drawing.Point(10, 389);
             this.RemoveFalseColleagues.Name = "RemoveFalseColleagues";
             this.RemoveFalseColleagues.Size = new System.Drawing.Size(252, 23);
             this.RemoveFalseColleagues.TabIndex = 227;
@@ -538,7 +538,7 @@ namespace SCGen
             // 
             // CopyPublicationsFromAnotherDB
             // 
-            this.CopyPublicationsFromAnotherDB.Location = new System.Drawing.Point(12, 297);
+            this.CopyPublicationsFromAnotherDB.Location = new System.Drawing.Point(10, 324);
             this.CopyPublicationsFromAnotherDB.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.CopyPublicationsFromAnotherDB.Name = "CopyPublicationsFromAnotherDB";
             this.CopyPublicationsFromAnotherDB.Size = new System.Drawing.Size(252, 23);
@@ -569,7 +569,7 @@ namespace SCGen
             // 
             // LanguageList
             // 
-            this.LanguageList.Location = new System.Drawing.Point(15, 450);
+            this.LanguageList.Location = new System.Drawing.Point(13, 477);
             this.LanguageList.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.LanguageList.Name = "LanguageList";
             this.LanguageList.Size = new System.Drawing.Size(488, 20);
@@ -578,7 +578,7 @@ namespace SCGen
             // 
             // label17
             // 
-            this.label17.Location = new System.Drawing.Point(11, 436);
+            this.label17.Location = new System.Drawing.Point(9, 463);
             this.label17.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(514, 19);
@@ -588,16 +588,16 @@ namespace SCGen
             // 
             // AllowedPubTypeCategories
             // 
-            this.AllowedPubTypeCategories.Location = new System.Drawing.Point(15, 488);
+            this.AllowedPubTypeCategories.Location = new System.Drawing.Point(13, 515);
             this.AllowedPubTypeCategories.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.AllowedPubTypeCategories.Name = "AllowedPubTypeCategories";
-            this.AllowedPubTypeCategories.Size = new System.Drawing.Size(265, 20);
+            this.AllowedPubTypeCategories.Size = new System.Drawing.Size(488, 20);
             this.AllowedPubTypeCategories.TabIndex = 234;
             this.AllowedPubTypeCategories.Text = "1,2,3";
             // 
             // label18
             // 
-            this.label18.Location = new System.Drawing.Point(11, 474);
+            this.label18.Location = new System.Drawing.Point(9, 501);
             this.label18.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(514, 19);
@@ -606,7 +606,7 @@ namespace SCGen
             // 
             // ColleaguesFound
             // 
-            this.ColleaguesFound.Location = new System.Drawing.Point(448, 397);
+            this.ColleaguesFound.Location = new System.Drawing.Point(446, 424);
             this.ColleaguesFound.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.ColleaguesFound.Name = "ColleaguesFound";
             this.ColleaguesFound.ReadOnly = true;
@@ -617,38 +617,40 @@ namespace SCGen
             // label19
             // 
             this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(316, 400);
+            this.label19.Location = new System.Drawing.Point(314, 427);
             this.label19.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(129, 13);
             this.label19.TabIndex = 235;
             this.label19.Text = "Unique Colleagues Found";
             // 
-            // colleaguePublicationsTable
+            // useAlternateCheckbox
             // 
-            this.colleaguePublicationsTable.Location = new System.Drawing.Point(302, 488);
-            this.colleaguePublicationsTable.Name = "colleaguePublicationsTable";
-            this.colleaguePublicationsTable.Size = new System.Drawing.Size(202, 20);
-            this.colleaguePublicationsTable.TabIndex = 238;
-            this.colleaguePublicationsTable.Text = "ColleaguePublications";
+            this.useAlternateCheckbox.AutoSize = true;
+            this.useAlternateCheckbox.Location = new System.Drawing.Point(15, 294);
+            this.useAlternateCheckbox.Name = "useAlternateCheckbox";
+            this.useAlternateCheckbox.Size = new System.Drawing.Size(211, 17);
+            this.useAlternateCheckbox.TabIndex = 237;
+            this.useAlternateCheckbox.Text = "Use alternate PeoplePublications table:";
+            this.useAlternateCheckbox.UseVisualStyleBackColor = true;
+            this.useAlternateCheckbox.CheckedChanged += new System.EventHandler(this.useAlternateCheckbox_CheckedChanged);
             // 
-            // label20
+            // alternateTableName
             // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(300, 472);
-            this.label20.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(133, 13);
-            this.label20.TabIndex = 237;
-            this.label20.Text = "Collague publications table";
+            this.alternateTableName.Enabled = false;
+            this.alternateTableName.Location = new System.Drawing.Point(226, 292);
+            this.alternateTableName.Name = "alternateTableName";
+            this.alternateTableName.Size = new System.Drawing.Size(277, 20);
+            this.alternateTableName.TabIndex = 238;
+            this.alternateTableName.TextChanged += new System.EventHandler(this.alternateTableName_TextChanged);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(511, 680);
-            this.Controls.Add(this.colleaguePublicationsTable);
-            this.Controls.Add(this.label20);
+            this.ClientSize = new System.Drawing.Size(511, 704);
+            this.Controls.Add(this.alternateTableName);
+            this.Controls.Add(this.useAlternateCheckbox);
             this.Controls.Add(this.ColleaguesFound);
             this.Controls.Add(this.label19);
             this.Controls.Add(this.AllowedPubTypeCategories);
@@ -756,8 +758,8 @@ namespace SCGen
         internal System.Windows.Forms.Label label18;
         private System.Windows.Forms.TextBox ColleaguesFound;
         private System.Windows.Forms.Label label19;
-        private System.Windows.Forms.TextBox colleaguePublicationsTable;
-        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.CheckBox useAlternateCheckbox;
+        private System.Windows.Forms.TextBox alternateTableName;
     }
 }
 

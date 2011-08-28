@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License along with thi
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Stellman & Greene Consulting LLC")]
 [assembly: AssemblyProduct("SC/Gen - Stars Colleague Generator")]
-[assembly: AssemblyCopyright("Copyright © 2009")]
+[assembly: AssemblyCopyright("Copyright © 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -37,5 +37,5 @@ You should have received a copy of the GNU General Public License along with thi
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("1.0.23")]
-[assembly: AssemblyFileVersion("1.0.23")]
+[assembly: AssemblyVersion("1.0.24")]
+[assembly: AssemblyFileVersion("1.0.24")]
