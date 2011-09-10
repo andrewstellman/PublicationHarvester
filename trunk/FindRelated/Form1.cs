@@ -30,12 +30,14 @@ using System.Data.OleDb;
 using System.Diagnostics;
 using System.IO;
 using Microsoft.Win32;
+using Com.StellmanGreene.PubMed;
+using PubMed;
 
 namespace Com.StellmanGreene.FindRelated
 {
     public partial class Form1 : Form
     {
-        private static readonly char[] INCLUDE_CATEGORIES_SEPARATORS = new char[] { ';', ',', ' ', '|' };
+        private static readonly char[] INCLUDE_SEPARATORS = new char[] { ';', ',', ' ', '|' };
 
         /// <summary>
         /// Currently entered include categories
@@ -67,9 +69,10 @@ namespace Com.StellmanGreene.FindRelated
                 startButton.Enabled = true;
                 return;
             }
-            
+
             string relatedTableName = relatedTable.Text;
-            if (String.IsNullOrEmpty(relatedTableName)) {
+            if (String.IsNullOrEmpty(relatedTableName))
+            {
                 MessageBox.Show("Please specify a related publications table to create/replace");
                 startButton.Enabled = true;
                 return;
@@ -86,12 +89,19 @@ namespace Com.StellmanGreene.FindRelated
             PublicationFilter publicationFilter = null;
             try
             {
+
+                // Get currently entered include languages
+                IEnumerable<string> includeLanguagesValues = new List<string>();
+                includeLanguagesValues = new List<string>(includeLanguages.Text.Split(INCLUDE_SEPARATORS, StringSplitOptions.RemoveEmptyEntries));
+
+                // Create the filter
                 publicationFilter = new PublicationFilter(
                     sameJournal.Checked,
                     !enableUpperBound.Checked ? null : (int?)pubWindowUpperBound.Value,
                     !enableLowerBound.Checked ? null : (int?)pubWindowLowerBound.Value,
                     !enableMaximumLinkRanking.Checked ? null : (int?)maximumLinkRanking.Value,
-                    includeCategoriesValues);
+                    includeCategoriesValues,
+                    includeLanguagesValues);
 
                 Trace.WriteLine(DateTime.Now + " - " + publicationFilter);
 
@@ -112,13 +122,26 @@ namespace Com.StellmanGreene.FindRelated
                 { "relatedTableName", relatedTableName }, 
                 { "inputFileInfo", inputFileInfo },
                 { "publicationFilter", publicationFilter },
-            } );
+            });
             cancelButton.Enabled = true;
         }
 
-
         private void Form1_Load(object sender, EventArgs e)
         {
+            // Get saved settings
+            relatedTable.Text = Settings.GetValueString("FindRelated_RelatedTable", "relatedpublications");
+            inputFileTextBox.Text = Settings.GetValueString("FindRelated_InputFile", "findrelated_input.csv");
+            enableUpperBound.Checked = Settings.GetValueBool("FindRelated_EnableUpperBound", false);
+            pubWindowUpperBound.Value = Settings.GetValueDecimal("FindRelated_PubWindowUpperBound", 0M);
+            enableLowerBound.Checked = Settings.GetValueBool("FindRelated_EnableLowerBound", false);
+            pubWindowLowerBound.Value = Settings.GetValueDecimal("FindRelated_PubWindowLowerBound", 0M);
+            enableMaximumLinkRanking.Checked = Settings.GetValueBool("FindRelated_EnableMaximumLinkRanking", false);
+            maximumLinkRanking.Value = Settings.GetValueDecimal("FindRelated_MaximumLinkRanking", 1M);
+            includeCategories.Text = Settings.GetValueString("FindRelated_IncludeCategories", "");
+            includeLanguages.Text = Settings.GetValueString("FindRelated_IncludeLanguages", "");
+            sameJournal.Checked = Settings.GetValueBool("FindRelated_SameJournal", false);
+
+            // Set up the log
             logFilename.Text = Environment.GetEnvironmentVariable("TEMP") + @"\FindRelated_log.txt";
             TraceListener listBoxListener = new ListBoxTraceListener(log, toolStripStatusLabel1);
             Trace.Listeners.Add(new TextWriterTraceListener(logFilename.Text));
@@ -136,7 +159,7 @@ namespace Com.StellmanGreene.FindRelated
 
 
 
-#region ODBC Data Source Dropdown
+        #region ODBC Data Source Dropdown
         /// <summary>
         /// Repopulate the DSN list when the user clicks on the DSN listbox
         /// </summary>
@@ -204,7 +227,7 @@ namespace Com.StellmanGreene.FindRelated
             proc.StartInfo.FileName = "odbcad32.exe";
             proc.Start();
         }
-#endregion
+        #endregion
 
         /// <summary>
         /// Open the log in Notepad
@@ -223,8 +246,8 @@ namespace Com.StellmanGreene.FindRelated
             Trace.WriteLine(DateTime.Now + " - started run");
             Dictionary<string, object> args = e.Argument as Dictionary<string, object>;
             RelatedFinder relatedFinder = new RelatedFinder() { BackgroundWorker = backgroundWorker1 };
-            relatedFinder.Go(args["dsn"] as string, 
-                args["relatedTableName"] as string, 
+            relatedFinder.Go(args["dsn"] as string,
+                args["relatedTableName"] as string,
                 args["inputFileInfo"] as FileInfo,
                 args["publicationFilter"] as PublicationFilter);
         }
@@ -238,7 +261,20 @@ namespace Com.StellmanGreene.FindRelated
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Trace.WriteLine(DateTime.Now + " - form closed, cancelling...");
+            // Save settings
+            Settings.SetValue("FindRelated_RelatedTable", relatedTable.Text);
+            Settings.SetValue("FindRelated_InputFile", inputFileTextBox.Text);
+            Settings.SetValue("FindRelated_EnableUpperBound", enableUpperBound.Checked);
+            Settings.SetValue("FindRelated_PubWindowUpperBound", pubWindowUpperBound.Value);
+            Settings.SetValue("FindRelated_EnableLowerBound", enableLowerBound.Checked);
+            Settings.SetValue("FindRelated_PubWindowLowerBound", pubWindowLowerBound.Value);
+            Settings.SetValue("FindRelated_EnableMaximumLinkRanking", enableMaximumLinkRanking.Checked);
+            Settings.SetValue("FindRelated_MaximumLinkRanking", maximumLinkRanking.Value);
+            Settings.SetValue("FindRelated_IncludeCategories", includeCategories.Text);
+            Settings.SetValue("FindRelated_IncludeLanguages", includeLanguages.Text);
+            Settings.SetValue("FindRelated_SameJournal", sameJournal.Checked);
+
+            Trace.WriteLine(DateTime.Now + " - form closed (cancelling any currently running jobs)");
             backgroundWorker1.CancelAsync();
         }
 
@@ -260,7 +296,7 @@ namespace Com.StellmanGreene.FindRelated
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.FileName = inputFileTextBox.Text;
             openFileDialog.Filter = "Comma-delimited Text Files (*.csv)|*.csv|All files (*.*)|*.*";
-           openFileDialog.Title = "Select the input file";
+            openFileDialog.Title = "Select the input file";
             openFileDialog.CheckFileExists = true;
             openFileDialog.CheckPathExists = true;
             DialogResult result = openFileDialog.ShowDialog();
@@ -291,14 +327,14 @@ namespace Com.StellmanGreene.FindRelated
             includeCategoriesValues = new List<int>();
 
             includeCategories.SuspendLayout();
-            
+
             int selectionStart = includeCategories.SelectionStart;
             int selectionLength = includeCategories.SelectionLength;
 
             bool invalidValueFound = false;
             string invalidValue = String.Empty;
 
-            List<string> values = new List<string>(includeCategories.Text.Split(INCLUDE_CATEGORIES_SEPARATORS, StringSplitOptions.RemoveEmptyEntries));
+            List<string> values = new List<string>(includeCategories.Text.Split(INCLUDE_SEPARATORS, StringSplitOptions.RemoveEmptyEntries));
             foreach (string value in values)
             {
                 int i;
@@ -326,6 +362,24 @@ namespace Com.StellmanGreene.FindRelated
             }
 
             includeCategories.ResumeLayout();
+        }
+
+        private void generateReports_Click(object sender, EventArgs e)
+        {
+            string dsn = DSN.Text;
+            if (String.IsNullOrEmpty(dsn) || dsn.StartsWith("==") || dsn.EndsWith("DSNs"))
+            {
+                MessageBox.Show("Please select an ODBC data source from the dropdown");
+                return;
+            }
+            Database db = new Database(dsn);
+            ReportsDialog reportsDialog = new ReportsDialog(db);
+            reportsDialog.ShowDialog(this);
+        }
+
+        private void relatedTable_TextChanged(object sender, EventArgs e)
+        {
+            peoplePublicationsView.Text = relatedTable.Text + "_peoplepublications";
         }
 
     }

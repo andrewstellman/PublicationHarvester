@@ -57,6 +57,11 @@ namespace Com.StellmanGreene.FindRelated
         public IEnumerable<int> IncludeCategories { get; private set; }
 
         /// <summary>
+        /// Collection of languages to include (null value disables the filter)
+        /// </summary>
+        public IEnumerable<string> IncludeLanguages { get; private set; } 
+
+        /// <summary>
         /// Create a publication filter to test whether publications match criteria
         /// </summary>
         /// <param name="sameJournal">Only allow publications from the same journal (null or empty string disables the filter)</param>
@@ -64,8 +69,9 @@ namespace Com.StellmanGreene.FindRelated
         /// <param name="pubWindowLowerBound">Lower bound for the publication window (pubdate-t2) from 0 to +10 (null value disables the filter)</param>
         /// <param name="maximumLinkRanking">Only include link rankings up to this value (null value disables the filter)</param>
         /// <param name="includeCategories">Collection of publication categories to include (null value disables the filter)</param>
+        /// <param name="includeLanguages">Collection of publication languages to include (null value disables the filter)</param>
         public PublicationFilter(bool sameJournal, int? pubWindowUpperBound, int? pubWindowLowerBound, 
-            int? maximumLinkRanking, IEnumerable<int> includeCategories)
+            int? maximumLinkRanking, IEnumerable<int> includeCategories, IEnumerable<string> includeLanguages)
         {
             SameJournal = sameJournal;
 
@@ -82,6 +88,8 @@ namespace Com.StellmanGreene.FindRelated
             MaximumLinkRanking = maximumLinkRanking;
 
             IncludeCategories = includeCategories;
+
+            IncludeLanguages = includeLanguages;
         }
 
         /// <summary>
@@ -111,6 +119,12 @@ namespace Com.StellmanGreene.FindRelated
                 && (!IncludeCategories.Contains(publicationTypes.GetCategoryNumber(publication.PubType))))
                 return false;
 
+            if ((IncludeLanguages != null)
+                && (IncludeLanguages.Count() > 0)
+                && (!String.IsNullOrEmpty(publication.Language))
+                && (!IncludeLanguages.Contains(publication.Language)))
+                return false;
+
             return true;
         }
 
@@ -122,12 +136,15 @@ namespace Com.StellmanGreene.FindRelated
  Publication window lower bound: {1}
  Publication window upper bound: {2}
  Maximum link ranking: {3}
- Include pubtype categories: {4}",
+ Include pubtype categories: {4}
+ Include languages: {5}",
                             SameJournal,
                             PubWindowLowerBound == null ? "filter not set" : PubWindowLowerBound.ToString(),
                             PubWindowUpperBound == null ? "filter not set" : PubWindowLowerBound.ToString(),
-                            MaximumLinkRanking == null ? "filter not set" : PubWindowLowerBound.ToString(),
-                            ((IncludeCategories == null) || (IncludeCategories.Count() == 0)) ? "filter not set" : String.Join(", ", IncludeCategories));
+                            MaximumLinkRanking == null ? "filter not set" : MaximumLinkRanking.ToString(),
+                            ((IncludeCategories == null) || (IncludeCategories.Count() == 0)) ? "filter not set" : String.Join(", ", IncludeCategories),
+                            ((IncludeLanguages == null) || (IncludeLanguages.Count() == 0)) ? "filter not set" : String.Join(", ", IncludeLanguages)
+                            );
         }
     }
 }

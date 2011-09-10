@@ -116,7 +116,17 @@ namespace Com.StellmanGreene.FindRelated
 
                     // Read the author publication from the database -- skipping MeSH headings and grants because we don't use them
                     Publication authorPublication;
-                    bool retrievedPublication = Publications.GetPublication(db, authorPublicationPmid, out authorPublication, true);
+                    bool retrievedPublication;
+                    try
+                    {
+                        retrievedPublication = Publications.GetPublication(db, authorPublicationPmid, out authorPublication, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        Trace.WriteLine(DateTime.Now + " - " + ex.Message);
+                        retrievedPublication = false;
+                        authorPublication = new Publication();
+                    }
                     if (!retrievedPublication) {
                         Trace.WriteLine(DateTime.Now + " - unable to read publication " + authorPublicationPmid + " from the database");
                         continue;
@@ -180,10 +190,11 @@ namespace Com.StellmanGreene.FindRelated
                             if (relatedPublication.Authors == null)
                             {
                                 publicationsNullAuthors++;
+                                Trace.WriteLine(DateTime.Now + " - publication " + authorPublicationPmid + ": found related publication " + relatedPublication.PMID + " with no author list");
                             }
 
                             // Use the publication filter to include only publications that match the filter
-                            else if (publicationFilter.FilterPublication(relatedPublication, rank, authorPublication, pubTypes))
+                            if (publicationFilter.FilterPublication(relatedPublication, rank, authorPublication, pubTypes))
                             {
                                 try
                                 {
@@ -226,7 +237,7 @@ namespace Com.StellmanGreene.FindRelated
         
 
         /// <summary>
-        /// Create the related publications table
+        /// Create the related publications table and its PeoplePublications view
         /// </summary>
         /// <param name="tableName">Name of the talbe to create</param>
         private static void CreateRelatedTable(Database db, string tableName)
@@ -239,6 +250,14 @@ namespace Com.StellmanGreene.FindRelated
               Score int NOT NULL,
               PRIMARY KEY (PMID, RelatedPMID)
             ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+            ");
+
+            // Create the view (table name + "_peoplepublications")
+            db.ExecuteNonQuery(@"CREATE OR REPLACE VIEW relatedpublications_peoplepublications AS
+              SELECT p.Setnb, rp.RelatedPMID AS PMID, -1 AS AuthorPosition, 6 AS PositionType
+              FROM people p, peoplepublications pp, relatedpublications rp
+              WHERE p.Setnb = pp.Setnb
+              AND pp.PMID = rp.PMID;
             ");
         }
 
