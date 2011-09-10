@@ -206,7 +206,7 @@ namespace Com.StellmanGreene.PubMed
                 @"SELECT Journal, Year, Authors, Month, Day, Title, Volume, 
                                  Issue, Pages, PubType
                             FROM Publications
-                           WHERE PMID = ?", Parameters);
+                           WHERE PMID = ?", Parameters);    
             if (Results.Rows.Count == 0)
             {
                 throw new Exception("Article " + PMID.ToString() + " not found");
@@ -234,15 +234,16 @@ namespace Com.StellmanGreene.PubMed
                 ORDER BY Position", Parameters);
             if (Results.Rows.Count == 0)
             {
-                throw new Exception("No authors found for publication " + PMID.ToString());
+                publication.Authors = new string[] { };
             }
-            publication.Authors = new string[Results.Rows.Count];
-            for (int i = 0; i < Results.Rows.Count; i++)
+            else
             {
-                publication.Authors[i] = Results.Rows[i]["Author"].ToString();
+                publication.Authors = new string[Results.Rows.Count];
+                for (int i = 0; i < Results.Rows.Count; i++)
+                {
+                    publication.Authors[i] = Results.Rows[i]["Author"].ToString();
+                }
             }
-
-
 
             if (SkipMeSHHeadingsAndGrants == false)
             {
@@ -456,7 +457,7 @@ namespace Com.StellmanGreene.PubMed
             // Add the authors
             // First delete any authors that are there, in case the add was
             // interrupted partway through
-            for (int Position = 0; Position <= publication.Authors.GetUpperBound(0); Position++)
+            for (int Position = 0; (publication.Authors != null) && (Position <= publication.Authors.GetUpperBound(0)); Position++)
             {
                 int First = (Position == 0) ? 1 : 0;
                 int Last = (Position == publication.Authors.GetUpperBound(0)) ? 1 : 0;
@@ -530,7 +531,7 @@ namespace Com.StellmanGreene.PubMed
             Parameters.Add(Database.Parameter(publication.PMID));
             Parameters.Add(Database.Parameter(Database.Left(publication.Journal, 128)));
             Parameters.Add(Database.Parameter(publication.Year));
-            Parameters.Add(Database.Parameter(publication.Authors.Length));
+            Parameters.Add(Database.Parameter(publication.Authors == null ? 0 : publication.Authors.Length));
             Parameters.Add(Database.Parameter(Database.Left(publication.Month, 32)));
             Parameters.Add(Database.Parameter(Database.Left(publication.Day, 32)));
             Parameters.Add(Database.Parameter(Database.Left(publication.Title,244)));

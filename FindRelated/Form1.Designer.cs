@@ -48,23 +48,28 @@
             this.label3 = new System.Windows.Forms.Label();
             this.inputFileDialog = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.sameJournal = new System.Windows.Forms.CheckBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.enableUpperBound = new System.Windows.Forms.CheckBox();
-            this.pubWindowUpperBound = new System.Windows.Forms.NumericUpDown();
-            this.pubWindowLowerBound = new System.Windows.Forms.NumericUpDown();
-            this.enableLowerBound = new System.Windows.Forms.CheckBox();
+            this.includeLanguages = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.includeCategories = new System.Windows.Forms.TextBox();
             this.maximumLinkRanking = new System.Windows.Forms.NumericUpDown();
             this.enableMaximumLinkRanking = new System.Windows.Forms.CheckBox();
-            this.includeCategories = new System.Windows.Forms.TextBox();
+            this.pubWindowLowerBound = new System.Windows.Forms.NumericUpDown();
+            this.enableLowerBound = new System.Windows.Forms.CheckBox();
+            this.pubWindowUpperBound = new System.Windows.Forms.NumericUpDown();
+            this.enableUpperBound = new System.Windows.Forms.CheckBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.sameJournal = new System.Windows.Forms.CheckBox();
+            this.generateReports = new System.Windows.Forms.Button();
+            this.peoplePublicationsView = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
             this.statusStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pubWindowUpperBound)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pubWindowLowerBound)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.maximumLinkRanking)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pubWindowLowerBound)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pubWindowUpperBound)).BeginInit();
             this.SuspendLayout();
             // 
             // startButton
@@ -120,9 +125,9 @@
             // 
             this.relatedTable.Location = new System.Drawing.Point(14, 69);
             this.relatedTable.Name = "relatedTable";
-            this.relatedTable.Size = new System.Drawing.Size(263, 20);
+            this.relatedTable.Size = new System.Drawing.Size(177, 20);
             this.relatedTable.TabIndex = 15;
-            this.relatedTable.Text = "relatedpublications";
+            this.relatedTable.TextChanged += new System.EventHandler(this.relatedTable_TextChanged);
             // 
             // logFilename
             // 
@@ -220,7 +225,6 @@
             this.inputFileTextBox.Name = "inputFileTextBox";
             this.inputFileTextBox.Size = new System.Drawing.Size(409, 20);
             this.inputFileTextBox.TabIndex = 25;
-            this.inputFileTextBox.Text = "findrelated_input.csv";
             // 
             // label3
             // 
@@ -244,6 +248,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.includeLanguages);
+            this.groupBox1.Controls.Add(this.label10);
             this.groupBox1.Controls.Add(this.includeCategories);
             this.groupBox1.Controls.Add(this.maximumLinkRanking);
             this.groupBox1.Controls.Add(this.enableMaximumLinkRanking);
@@ -263,97 +269,29 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Filters";
             // 
-            // sameJournal
+            // includeLanguages
             // 
-            this.sameJournal.AutoSize = true;
-            this.sameJournal.Location = new System.Drawing.Point(9, 136);
-            this.sameJournal.Name = "sameJournal";
-            this.sameJournal.Size = new System.Drawing.Size(87, 17);
-            this.sameJournal.TabIndex = 75;
-            this.sameJournal.Text = "&Same journal";
-            this.sameJournal.UseVisualStyleBackColor = true;
+            this.includeLanguages.Location = new System.Drawing.Point(184, 133);
+            this.includeLanguages.Name = "includeLanguages";
+            this.includeLanguages.Size = new System.Drawing.Size(136, 20);
+            this.includeLanguages.TabIndex = 77;
             // 
-            // label6
+            // label10
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(6, 16);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(258, 13);
-            this.label6.TabIndex = 33;
-            this.label6.Text = "&Upper bound for the publication window (pubdate+t1)";
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(181, 117);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(176, 13);
+            this.label10.TabIndex = 76;
+            this.label10.Text = "Restrict lan&guages (eg. eng;fre;heb)";
             // 
-            // label7
+            // includeCategories
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(6, 55);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(255, 13);
-            this.label7.TabIndex = 40;
-            this.label7.Text = "&Lower bound for the publication window (pubdate-t2)";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(6, 94);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(111, 13);
-            this.label8.TabIndex = 60;
-            this.label8.Text = "&Maximum  link ranking";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(176, 94);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(151, 13);
-            this.label9.TabIndex = 69;
-            this.label9.Text = "In&clude categories (e.g. 1;2;5)";
-            // 
-            // enableUpperBound
-            // 
-            this.enableUpperBound.AutoSize = true;
-            this.enableUpperBound.Location = new System.Drawing.Point(9, 35);
-            this.enableUpperBound.Name = "enableUpperBound";
-            this.enableUpperBound.Size = new System.Drawing.Size(15, 14);
-            this.enableUpperBound.TabIndex = 36;
-            this.enableUpperBound.UseVisualStyleBackColor = true;
-            this.enableUpperBound.CheckedChanged += new System.EventHandler(this.enableUpperBound_CheckedChanged);
-            // 
-            // pubWindowUpperBound
-            // 
-            this.pubWindowUpperBound.Enabled = false;
-            this.pubWindowUpperBound.Location = new System.Drawing.Point(30, 32);
-            this.pubWindowUpperBound.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.pubWindowUpperBound.Name = "pubWindowUpperBound";
-            this.pubWindowUpperBound.Size = new System.Drawing.Size(55, 20);
-            this.pubWindowUpperBound.TabIndex = 38;
-            // 
-            // pubWindowLowerBound
-            // 
-            this.pubWindowLowerBound.Enabled = false;
-            this.pubWindowLowerBound.Location = new System.Drawing.Point(30, 71);
-            this.pubWindowLowerBound.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.pubWindowLowerBound.Name = "pubWindowLowerBound";
-            this.pubWindowLowerBound.Size = new System.Drawing.Size(55, 20);
-            this.pubWindowLowerBound.TabIndex = 58;
-            // 
-            // enableLowerBound
-            // 
-            this.enableLowerBound.AutoSize = true;
-            this.enableLowerBound.Location = new System.Drawing.Point(9, 74);
-            this.enableLowerBound.Name = "enableLowerBound";
-            this.enableLowerBound.Size = new System.Drawing.Size(15, 14);
-            this.enableLowerBound.TabIndex = 44;
-            this.enableLowerBound.UseVisualStyleBackColor = true;
-            this.enableLowerBound.CheckedChanged += new System.EventHandler(this.enableLowerBound_CheckedChanged);
+            this.includeCategories.Location = new System.Drawing.Point(184, 90);
+            this.includeCategories.Name = "includeCategories";
+            this.includeCategories.Size = new System.Drawing.Size(136, 20);
+            this.includeCategories.TabIndex = 72;
+            this.includeCategories.TextChanged += new System.EventHandler(this.includeCategories_TextChanged);
             // 
             // maximumLinkRanking
             // 
@@ -388,19 +326,135 @@
             this.enableMaximumLinkRanking.UseVisualStyleBackColor = true;
             this.enableMaximumLinkRanking.CheckedChanged += new System.EventHandler(this.enableMaximumLinkRanking_CheckedChanged);
             // 
-            // includeCategories
+            // pubWindowLowerBound
             // 
-            this.includeCategories.Location = new System.Drawing.Point(179, 110);
-            this.includeCategories.Name = "includeCategories";
-            this.includeCategories.Size = new System.Drawing.Size(136, 20);
-            this.includeCategories.TabIndex = 72;
-            this.includeCategories.TextChanged += new System.EventHandler(this.includeCategories_TextChanged);
+            this.pubWindowLowerBound.Enabled = false;
+            this.pubWindowLowerBound.Location = new System.Drawing.Point(30, 71);
+            this.pubWindowLowerBound.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.pubWindowLowerBound.Name = "pubWindowLowerBound";
+            this.pubWindowLowerBound.Size = new System.Drawing.Size(55, 20);
+            this.pubWindowLowerBound.TabIndex = 58;
+            // 
+            // enableLowerBound
+            // 
+            this.enableLowerBound.AutoSize = true;
+            this.enableLowerBound.Location = new System.Drawing.Point(9, 74);
+            this.enableLowerBound.Name = "enableLowerBound";
+            this.enableLowerBound.Size = new System.Drawing.Size(15, 14);
+            this.enableLowerBound.TabIndex = 44;
+            this.enableLowerBound.UseVisualStyleBackColor = true;
+            this.enableLowerBound.CheckedChanged += new System.EventHandler(this.enableLowerBound_CheckedChanged);
+            // 
+            // pubWindowUpperBound
+            // 
+            this.pubWindowUpperBound.Enabled = false;
+            this.pubWindowUpperBound.Location = new System.Drawing.Point(30, 32);
+            this.pubWindowUpperBound.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.pubWindowUpperBound.Name = "pubWindowUpperBound";
+            this.pubWindowUpperBound.Size = new System.Drawing.Size(55, 20);
+            this.pubWindowUpperBound.TabIndex = 38;
+            // 
+            // enableUpperBound
+            // 
+            this.enableUpperBound.AutoSize = true;
+            this.enableUpperBound.Location = new System.Drawing.Point(9, 35);
+            this.enableUpperBound.Name = "enableUpperBound";
+            this.enableUpperBound.Size = new System.Drawing.Size(15, 14);
+            this.enableUpperBound.TabIndex = 36;
+            this.enableUpperBound.UseVisualStyleBackColor = true;
+            this.enableUpperBound.CheckedChanged += new System.EventHandler(this.enableUpperBound_CheckedChanged);
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(181, 74);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(149, 13);
+            this.label9.TabIndex = 69;
+            this.label9.Text = "Restrict &categories (e.g. 1;2;5)";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(6, 94);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(111, 13);
+            this.label8.TabIndex = 60;
+            this.label8.Text = "&Maximum  link ranking";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(6, 55);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(255, 13);
+            this.label7.TabIndex = 40;
+            this.label7.Text = "&Lower bound for the publication window (pubdate-t2)";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(6, 16);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(258, 13);
+            this.label6.TabIndex = 33;
+            this.label6.Text = "&Upper bound for the publication window (pubdate+t1)";
+            // 
+            // sameJournal
+            // 
+            this.sameJournal.AutoSize = true;
+            this.sameJournal.Location = new System.Drawing.Point(9, 136);
+            this.sameJournal.Name = "sameJournal";
+            this.sameJournal.Size = new System.Drawing.Size(87, 17);
+            this.sameJournal.TabIndex = 75;
+            this.sameJournal.Text = "&Same journal";
+            this.sameJournal.UseVisualStyleBackColor = true;
+            // 
+            // generateReports
+            // 
+            this.generateReports.Location = new System.Drawing.Point(335, 301);
+            this.generateReports.Name = "generateReports";
+            this.generateReports.Size = new System.Drawing.Size(106, 23);
+            this.generateReports.TabIndex = 221;
+            this.generateReports.Text = "Generate Re&ports";
+            this.generateReports.UseVisualStyleBackColor = true;
+            this.generateReports.Click += new System.EventHandler(this.generateReports_Click);
+            // 
+            // peoplePublicationsView
+            // 
+            this.peoplePublicationsView.Location = new System.Drawing.Point(196, 69);
+            this.peoplePublicationsView.Margin = new System.Windows.Forms.Padding(2);
+            this.peoplePublicationsView.Name = "peoplePublicationsView";
+            this.peoplePublicationsView.ReadOnly = true;
+            this.peoplePublicationsView.Size = new System.Drawing.Size(253, 20);
+            this.peoplePublicationsView.TabIndex = 222;
+            this.peoplePublicationsView.TabStop = false;
+            // 
+            // label11
+            // 
+            this.label11.Location = new System.Drawing.Point(193, 56);
+            this.label11.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(234, 19);
+            this.label11.TabIndex = 223;
+            this.label11.Text = "PeoplePublications view to create/replace";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(449, 541);
+            this.Controls.Add(this.peoplePublicationsView);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.generateReports);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.inputFileDialog);
             this.Controls.Add(this.inputFileTextBox);
@@ -428,9 +482,9 @@
             this.statusStrip1.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pubWindowUpperBound)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pubWindowLowerBound)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.maximumLinkRanking)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pubWindowLowerBound)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pubWindowUpperBound)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -470,6 +524,11 @@
         private System.Windows.Forms.TextBox includeCategories;
         private System.Windows.Forms.NumericUpDown maximumLinkRanking;
         private System.Windows.Forms.CheckBox enableMaximumLinkRanking;
+        private System.Windows.Forms.TextBox includeLanguages;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Button generateReports;
+        private System.Windows.Forms.TextBox peoplePublicationsView;
+        internal System.Windows.Forms.Label label11;
     }
 }
 

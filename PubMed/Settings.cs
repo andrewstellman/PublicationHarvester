@@ -61,5 +61,23 @@ namespace PubMed
             object value = GetValue(key, defaultValue);
             return value != null ? value.ToString() : null;
         }
+
+        public static bool GetValueBool(string key, bool defaultValue)
+        {
+            string value = Settings.GetValueString(key, defaultValue.ToString());
+            bool result;
+            if (!bool.TryParse(value, out result))
+                result = defaultValue;
+            return result;
+        }
+
+        public static decimal GetValueDecimal(string key, decimal defaultValue)
+        {
+            string value = Settings.GetValueString(key, defaultValue.ToString());
+            decimal result;
+            if (!decimal.TryParse(value, out result))
+                result = defaultValue;
+            return result;
+        }
     }
 }
