@@ -48,10 +48,60 @@ namespace Com.StellmanGreene.FindRelated
 
         public void Go(string odbcDsn, string relatedTable, FileInfo inputFileInfo, PublicationFilter publicationFilter)
         {
-            DataTable input = null;
+            Database db = new Database(odbcDsn);
+
+            CreateRelatedTable(db, relatedTable);
+            PublicationTypes pubTypes = new PublicationTypes(db);
+
+            Dictionary<string, List<int>> peopleIds = new Dictionary<string, List<int>>();
+
+            int lineCount = -1;
+
+            // Read the input file into the peopleIds Dictionary
             try
             {
-                input = new Com.StellmanGreene.CSVReader.CSVReader(inputFileInfo).CreateDataTable(true);
+                using (StreamReader input = inputFileInfo.OpenText())
+                {
+                    while (!input.EndOfStream)
+                    {
+                        lineCount++;
+                        string line = input.ReadLine();
+                        string[] split = line.Split(',');
+
+                        // Check for the correct header
+                        if (lineCount == 0)
+                        {
+                            if ((split.Length != 2)
+                                || (split[0].Trim().ToLower() != "setnb")
+                                || (split[1].Trim().ToLower() != "pmid"))
+                            {
+                                Trace.WriteLine(DateTime.Now + " ERROR - Input file must have header row 'setnb,pmid'");
+                                return;
+                            }
+                            continue;
+                        }
+
+                        int pmid;
+                        if (split.Length != 2 || !int.TryParse(split[1], out pmid))
+                        {
+                            Trace.WriteLine(DateTime.Now + " WARNING - line " + lineCount + ": invalid format: " + (String.IsNullOrEmpty(line) ? "(empty)" : line));
+                            continue;
+                        }
+                        string setnb = split[0];
+                        if (setnb.StartsWith("\"") && setnb.EndsWith("\""))
+                            setnb = setnb.Substring(1, setnb.Length - 2);
+
+                        List<int> ids;
+                        if (!peopleIds.ContainsKey(setnb))
+                        {
+                            ids = new List<int>();
+                            peopleIds[setnb] = ids;
+                        }
+                        else
+                            ids = peopleIds[setnb];
+                        ids.Add(pmid);
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -60,26 +110,7 @@ namespace Com.StellmanGreene.FindRelated
                 return;
             }
 
-            Database db = new Database(odbcDsn);
-
-            CreateRelatedTable(db, relatedTable);
-            PublicationTypes pubTypes = new PublicationTypes(db);
-
-            Dictionary<string, List<int>> peopleIds = new Dictionary<string, List<int>>();
-            foreach (DataRow row in input.Rows)
-            {
-                string setnb = (string)row["Setnb"];
-                int pmid = (int)row["PMID"];
-                List<int> ids;
-                if (!peopleIds.ContainsKey(setnb))
-                {
-                    ids = new List<int>();
-                    peopleIds[setnb] = ids;
-                }
-                else
-                    ids = peopleIds[setnb];
-                ids.Add(pmid);
-            }
+            Trace.WriteLine(DateTime.Now + " Read " + lineCount + " rows from the input file");
 
             int setnbCount = 0;
             foreach (string setnb in peopleIds.Keys)
@@ -127,7 +158,8 @@ namespace Com.StellmanGreene.FindRelated
                         retrievedPublication = false;
                         authorPublication = new Publication();
                     }
-                    if (!retrievedPublication) {
+                    if (!retrievedPublication)
+                    {
                         Trace.WriteLine(DateTime.Now + " - unable to read publication " + authorPublicationPmid + " from the database");
                         continue;
                     }
