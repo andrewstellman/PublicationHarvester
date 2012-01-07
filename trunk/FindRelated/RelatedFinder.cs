@@ -188,7 +188,23 @@ namespace Com.StellmanGreene.FindRelated
                             searchQuery.AppendFormat("{0}{1}[uid]", searchQuery.Length == 0 ? String.Empty : " OR ", relatedPmid);
                         }
                         NCBI.UsePostRequest = true;
-                        string searchResults = ncbi.Search(searchQuery.ToString());
+
+                        // If ncbi.Search() throws an exception, retry -- web connection may be temporarily down
+                        bool searchSuccessful = false;
+                        string searchResults = null;
+                        while (!searchSuccessful)
+                        {
+                            try
+                            {
+                                searchResults = ncbi.Search(searchQuery.ToString());
+                                searchSuccessful = true;
+                            }
+                            catch (WebException ex)
+                            {
+                                Trace.WriteLine(DateTime.Now + " - web request error during NCBI search, retrying search. Error message: " + ex.Message);
+                                System.Threading.Thread.Sleep(2000);
+                            }
+                        }
 
                         int publicationsWritten = 0;
                         int publicationsExcluded = 0;
