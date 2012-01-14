@@ -199,7 +199,7 @@ namespace Com.StellmanGreene.FindRelated
                                 searchResults = ncbi.Search(searchQuery.ToString());
                                 searchSuccessful = true;
                             }
-                            catch (WebException ex)
+                            catch (Exception ex)
                             {
                                 Trace.WriteLine(DateTime.Now + " - web request error during NCBI search, retrying search. Error message: " + ex.Message);
                                 System.Threading.Thread.Sleep(2000);
