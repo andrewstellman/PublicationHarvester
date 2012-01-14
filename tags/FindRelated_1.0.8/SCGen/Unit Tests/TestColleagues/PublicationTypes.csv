@@ -1,0 +1,53 @@
+PublicationType,PubTypeCategoryID 
+Addresses,0
+Bibliography,0
+Biography,0
+Corrected and Republished Article,0
+Dictionary,0
+Directory,0
+Festsc,0
+hrift,0
+Government Publications,0
+Historical Article,0
+Interview,0
+Lectures,0
+Legal Cases,0
+Legislation,0
+News,0
+Newspaper Article,0
+Overall,0
+Patient Education Handout,0
+Periodical Index,0
+Published Erratum,0
+Retracted Publication,0
+Retraction of Publication,0
+Scientific Integrity Review,0
+Case Reports,1
+Clinical Conference,1
+Clinical Trial,1
+"Clinical Trial, Phase I",1
+"Clinical Trial, Phase II",1
+"Clinical Trial, Phase III",1
+"Clinical Trial, Phase IV",1
+Consensus Development Conference,1
+"Consensus Development Conference, NIH",1
+Controlled Clinical Trial,1
+Meta-Analysis,1
+Multicenter Study,1
+Practice Guideline,1
+Twin Study,1
+Randomized Controlled Trial,1
+Guideline,1
+Review,-2
+"Review, Multicase",-2
+Review of Reported Cases,-2
+"Review, Tutorial",-2
+Journal Article,3
+Classical Article,3
+Duplicate Publication,3
+Validation Studies,3
+Technical Report,3
+Evaluation Studies,3
+Editorial,4
+Letter,4
+Comment,4
