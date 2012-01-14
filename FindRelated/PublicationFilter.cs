@@ -114,15 +114,14 @@ namespace Com.StellmanGreene.FindRelated
             if (linkRanking > MaximumLinkRanking)
                 return false;
 
-            if ((IncludeCategories != null)
-                && (IncludeCategories.Count() > 0)
-                && (!IncludeCategories.Contains(publicationTypes.GetCategoryNumber(publication.PubType))))
+            if (((IncludeCategories != null) && (IncludeCategories.Count() > 0)) 
+                && ((String.IsNullOrEmpty(publication.PubType)
+                    || !IncludeCategories.Contains(publicationTypes.GetCategoryNumber(publication.PubType)))))
                 return false;
 
-            if ((IncludeLanguages != null)
-                && (IncludeLanguages.Count() > 0)
-                && (!String.IsNullOrEmpty(publication.Language))
-                && (!IncludeLanguages.Contains(publication.Language)))
+            if ((IncludeLanguages != null) && (IncludeLanguages.Count() > 0)
+                && (String.IsNullOrEmpty(publication.Language)
+                    || !IncludeLanguages.Contains(publication.Language)))
                 return false;
 
             return true;
