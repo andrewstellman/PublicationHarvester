@@ -48,6 +48,8 @@
             this.ideaPeerFilename = new System.Windows.Forms.TextBox();
             this.doIdeaPeer = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.mostRelevantFilename = new System.Windows.Forms.TextBox();
+            this.mostRelevant = new System.Windows.Forms.CheckBox();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -63,7 +65,7 @@
             this.toolStripStatusLabel1,
             this.toolStripProgressBar1,
             this.toolStripStatusLabel2});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 232);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 273);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 10, 0);
             this.statusStrip1.Size = new System.Drawing.Size(428, 23);
@@ -92,7 +94,7 @@
             // 
             // generateReports
             // 
-            this.generateReports.Location = new System.Drawing.Point(115, 205);
+            this.generateReports.Location = new System.Drawing.Point(115, 239);
             this.generateReports.Margin = new System.Windows.Forms.Padding(2);
             this.generateReports.Name = "generateReports";
             this.generateReports.Size = new System.Drawing.Size(186, 23);
@@ -104,7 +106,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(10, 151);
+            this.label2.Location = new System.Drawing.Point(9, 179);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(139, 13);
@@ -177,7 +179,7 @@
             // specifyFolder
             // 
             this.specifyFolder.AutoEllipsis = true;
-            this.specifyFolder.Location = new System.Drawing.Point(397, 181);
+            this.specifyFolder.Location = new System.Drawing.Point(396, 209);
             this.specifyFolder.Margin = new System.Windows.Forms.Padding(2);
             this.specifyFolder.Name = "specifyFolder";
             this.specifyFolder.Size = new System.Drawing.Size(20, 20);
@@ -188,7 +190,7 @@
             // 
             // folderLabel
             // 
-            this.folderLabel.Location = new System.Drawing.Point(12, 167);
+            this.folderLabel.Location = new System.Drawing.Point(11, 195);
             this.folderLabel.Margin = new System.Windows.Forms.Padding(2);
             this.folderLabel.Multiline = true;
             this.folderLabel.Name = "folderLabel";
@@ -242,11 +244,35 @@
             this.label3.TabIndex = 119;
             this.label3.Text = "(Idea peer report is only available after colleagues have been generated)";
             // 
+            // mostRelevantFilename
+            // 
+            this.mostRelevantFilename.Location = new System.Drawing.Point(115, 138);
+            this.mostRelevantFilename.Margin = new System.Windows.Forms.Padding(2);
+            this.mostRelevantFilename.Name = "mostRelevantFilename";
+            this.mostRelevantFilename.Size = new System.Drawing.Size(302, 20);
+            this.mostRelevantFilename.TabIndex = 121;
+            this.mostRelevantFilename.Text = "mostrelevant.csv";
+            // 
+            // mostRelevant
+            // 
+            this.mostRelevant.AutoSize = true;
+            this.mostRelevant.Checked = true;
+            this.mostRelevant.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.mostRelevant.Location = new System.Drawing.Point(11, 140);
+            this.mostRelevant.Margin = new System.Windows.Forms.Padding(2);
+            this.mostRelevant.Name = "mostRelevant";
+            this.mostRelevant.Size = new System.Drawing.Size(90, 17);
+            this.mostRelevant.TabIndex = 120;
+            this.mostRelevant.Text = "M&ost relevant";
+            this.mostRelevant.UseVisualStyleBackColor = true;
+            // 
             // ReportsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(428, 255);
+            this.ClientSize = new System.Drawing.Size(428, 296);
+            this.Controls.Add(this.mostRelevantFilename);
+            this.Controls.Add(this.mostRelevant);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.ideaPeerFilename);
             this.Controls.Add(this.doIdeaPeer);
@@ -297,5 +323,7 @@
         private System.Windows.Forms.TextBox ideaPeerFilename;
         private System.Windows.Forms.CheckBox doIdeaPeer;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox mostRelevantFilename;
+        private System.Windows.Forms.CheckBox mostRelevant;
     }
 }

@@ -51,7 +51,18 @@ ESCAPED BY '\\'
 LINES TERMINATED BY '\r\n'";
 
             // Execute the query, let MySQL do the export
-            int linesWritten = db.ExecuteNonQuery(reportSql);
+            int linesWritten;
+            try
+            {
+                linesWritten = db.ExecuteNonQuery(reportSql);
+            }
+            catch (Exception ex)
+            {
+                string error = "An error occurred while writing " + filename + Environment.NewLine + ex.Message;
+                Trace.WriteLine(DateTime.Now + " - " + error);
+                MessageBox.Show(error, "Unable to write report", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return -1;
+            }
 
             string outputFile = folder + filename;
             if (File.Exists(outputFile))
@@ -88,15 +99,16 @@ LINES TERMINATED BY '\r\n'";
         /// <summary>
         /// Generate the Linking report
         /// </summary>
+        /// <param name="relatedPublicationsTableName">Related publications table name</param>
         /// <param name="filename">Filename to generate</param>
-        public void Linking(string filename)
+        public void Linking(string relatedPublicationsTableName, string filename)
         {
             Trace.WriteLine(DateTime.Now + " writing Linking report");
 
             string sql = @"-- Linking Report
 SELECT PMID AS source_pmid, RelatedPMID AS related_pmid,
 Rank AS link_ranking, Score AS link_score
-FROM relatedpublications";
+FROM " + relatedPublicationsTableName;
 
             ExecuteReport(sql, filename, 
                 new string[] { "source_pmid", "related_pmid", "link_ranking", "link_score" });
@@ -105,14 +117,15 @@ FROM relatedpublications";
         /// <summary>
         /// Generate the RelatedPMID report
         /// </summary>
+        /// <param name="relatedPublicationsTableName">Related publications table name</param>
         /// <param name="filename">Filename to generate</param>
-        public void RelatedPMID(string filename)
+        public void RelatedPMID(string relatedPublicationsTableName, string filename)
         {
             Trace.WriteLine(DateTime.Now + " writing RelatedPMID report");
 
             string sql = @"-- Related PMID report
 SELECT rp.RelatedPMID AS related_pmid, p.*
-FROM relatedpublications rp, publications p
+FROM " + relatedPublicationsTableName + @" rp, publications p
 WHERE rp.RelatedPMID = p.PMID";
 
             ExecuteReport(sql, filename,
@@ -123,14 +136,15 @@ WHERE rp.RelatedPMID = p.PMID";
         /// <summary>
         /// Generate the RelatedMeSH report
         /// </summary>
+        /// <param name="relatedPublicationsTableName">Related publications table name</param>
         /// <param name="filename">Filename to generate</param>
-        public void RelatedMeSH(string filename)
+        public void RelatedMeSH(string relatedPublicationsTableName, string filename)
         {
             Trace.WriteLine(DateTime.Now + " writing RelatedMeSH report");
 
             string sql = @"-- Related MeSH report
 SELECT DISTINCT rp.RelatedPMID AS related_pmid, mh.Heading AS related_mesh
-FROM relatedpublications RP, publicationmeshheadings pmh, meshheadings mh
+FROM " + relatedPublicationsTableName + @" RP, publicationmeshheadings pmh, meshheadings mh
 WHERE RP.RelatedPMID = pmh.PMID
 AND pmh.MeSHHeadingID = mh.ID";
 
@@ -142,8 +156,9 @@ AND pmh.MeSHHeadingID = mh.ID";
         /// <summary>
         /// Generate the IdeaPeer report
         /// </summary>
+        /// <param name="relatedPublicationsTableName">Related publications table name</param>
         /// <param name="filename">Filename to generate</param>
-        public void IdeaPeer(string filename)
+        public void IdeaPeer(string relatedPublicationsTableName, string filename)
         {
             Trace.WriteLine(DateTime.Now + " writing IdeaPeer report");
 
@@ -152,13 +167,30 @@ SELECT sc.StarSetnb AS star_setnb, sc.setnb,
 rp.PMID AS source_pmid, rp.RelatedPMID AS related_pmid,
 cp.AuthorPosition as author_position, cp.PositionType as position_type
 FROM starcolleagues sc, peoplepublications pp,
-   relatedpublications rp LEFT JOIN colleaguepublications cp ON (cp.PMID = rp.RelatedPMID)
+   " + relatedPublicationsTableName + @" rp LEFT JOIN colleaguepublications cp ON (cp.PMID = rp.RelatedPMID)
 WHERE sc.StarSetnb = pp.Setnb
 AND pp.PMID = rp.PMID
 AND cp.Setnb = sc.Setnb";
 
             ExecuteReport(sql, filename,
                 new string[] { "start_setnb", "setnb", "source_pmid", "related_pmid",  "author_position", "position_type" });
+        }
+
+        /// <summary>
+        /// Generate the Most Relevant report
+        /// </summary>
+        /// <param name="relatedPublicationsTableName">Related publications table name</param>
+        /// <param name="filename">Filename to generate</param>
+        public void MostRelevant(string relatedPublicationsTableName, string filename)
+        {
+            Trace.WriteLine(DateTime.Now + " writing Most Relevant report");
+
+            string sql = @"-- Most Relevant report
+SELECT PMID as source_pmid, RelatedPMID as related_pmid, Score as score
+FROM " + relatedPublicationsTableName + "_mostrelevant";
+
+            ExecuteReport(sql, filename,
+                new string[] { "source_pmid", "related_pmid", "score" });
         }
     }
 }
