@@ -68,7 +68,7 @@ namespace Com.StellmanGreene.PubMed
               ErrorMessage varchar(512) default NULL,
               PRIMARY KEY  (Setnb),
               KEY Setnb (Setnb)
-            ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+            ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
             ");
 
             DB.ExecuteNonQuery("DROP TABLE IF EXISTS PeoplePublications");
@@ -80,7 +80,7 @@ namespace Com.StellmanGreene.PubMed
               PRIMARY KEY  (Setnb,PMID),
               KEY index_setnb (Setnb),
               KEY index_pmid (PMID)
-            ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+            ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
             ");
 
             DB.ExecuteNonQuery("DROP TABLE IF EXISTS Publications");
@@ -99,7 +99,7 @@ namespace Com.StellmanGreene.PubMed
               PubTypeCategoryID tinyint(4) NOT NULL,
               PRIMARY KEY  (PMID),
               KEY index_pmid (PMID)
-            ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+            ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
             ");
 
             DB.ExecuteNonQuery("DROP TABLE IF EXISTS PublicationAuthors");
@@ -111,7 +111,7 @@ namespace Com.StellmanGreene.PubMed
               Last tinyint(4) NOT NULL,
               PRIMARY KEY  (PMID,Position),
               KEY index_pmid (PMID)
-            ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+            ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
             ");
 
             DB.ExecuteNonQuery("DROP TABLE IF EXISTS MeSHHeadings");
@@ -120,7 +120,7 @@ namespace Com.StellmanGreene.PubMed
               Heading varchar(255) NOT NULL,
               PRIMARY KEY  (ID),
               KEY index_heading (Heading)
-            ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+            ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
             ");
 
             DB.ExecuteNonQuery("DROP TABLE IF EXISTS PublicationMeSHHeadings");
@@ -129,7 +129,7 @@ namespace Com.StellmanGreene.PubMed
               MeSHHEadingID int(11) NOT NULL,
               PRIMARY KEY  (PMID,MeSHHEadingID),
               KEY index_pmid (PMID)
-            ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+            ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
             ");
 
             DB.ExecuteNonQuery("DROP TABLE IF EXISTS PublicationGrants");
@@ -137,7 +137,7 @@ namespace Com.StellmanGreene.PubMed
               PMID int(11) NOT NULL,
               GrantID varchar(50) NOT NULL,
               PRIMARY KEY  (PMID,GrantID)
-            ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+            ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
             ");
 
             DB.ExecuteNonQuery("DROP TABLE IF EXISTS PubTypeCategories");
@@ -146,7 +146,7 @@ namespace Com.StellmanGreene.PubMed
               PubTypeCategoryID tinyint(4) NOT NULL,
                OverrideFirstCategory  tinyint(1) NULL default 0,
               PRIMARY KEY  (PublicationType)
-            ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+            ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
             ");
 
         }

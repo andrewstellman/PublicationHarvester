@@ -34,7 +34,7 @@ CREATE TABLE `CGUnitTestCopyPublications`.`meshheadings` (
   `Heading` varchar(255) NOT NULL,
   PRIMARY KEY  (`ID`),
   KEY `index_heading` (`Heading`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `meshheadings`
@@ -67,7 +67,7 @@ CREATE TABLE `CGUnitTestCopyPublications`.`people` (
   `ErrorMessage` varchar(512) default NULL,
   PRIMARY KEY  (`Setnb`),
   KEY `Setnb` (`Setnb`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `people`
@@ -95,7 +95,7 @@ CREATE TABLE `CGUnitTestCopyPublications`.`peoplepublications` (
   PRIMARY KEY  (`Setnb`,`PMID`),
   KEY `index_setnb` (`Setnb`),
   KEY `index_pmid` (`PMID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `peoplepublications`
@@ -121,7 +121,7 @@ CREATE TABLE `CGUnitTestCopyPublications`.`publicationauthors` (
   `Last` tinyint(4) NOT NULL,
   PRIMARY KEY  (`PMID`,`Position`),
   KEY `index_pmid` (`PMID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `publicationauthors`
@@ -143,7 +143,7 @@ CREATE TABLE `CGUnitTestCopyPublications`.`publicationgrants` (
   `PMID` int(11) NOT NULL,
   `GrantID` varchar(50) NOT NULL,
   PRIMARY KEY  (`PMID`,`GrantID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `publicationgrants`
@@ -165,7 +165,7 @@ CREATE TABLE `CGUnitTestCopyPublications`.`publicationmeshheadings` (
   `MeSHHEadingID` int(11) NOT NULL,
   PRIMARY KEY  (`PMID`,`MeSHHEadingID`),
   KEY `index_pmid` (`PMID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `publicationmeshheadings`
@@ -198,7 +198,7 @@ CREATE TABLE `CGUnitTestCopyPublications`.`publications` (
   `PubTypeCategoryID` tinyint(4) NOT NULL,
   PRIMARY KEY  (`PMID`),
   KEY `index_pmid` (`PMID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `publications`
@@ -221,7 +221,7 @@ CREATE TABLE `CGUnitTestCopyPublications`.`pubtypecategories` (
   `PubTypeCategoryID` tinyint(4) NOT NULL,
   `OverrideFirstCategory` tinyint(1) default '0',
   PRIMARY KEY  (`PublicationType`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `pubtypecategories`

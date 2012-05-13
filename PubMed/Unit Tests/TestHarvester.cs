@@ -451,10 +451,10 @@ namespace Com.StellmanGreene.PubMed.Unit_Tests
                                     break;
 
 
-
+                                    // NOTE: The title has a quote (laureates') that gets stripped off
                                 case 12462241:
                                     FoundPublications++;
-                                    Assert.IsTrue(pub.Title == "Nobel laureates' letter to President Bush.");
+                                    Assert.IsTrue(pub.Title == "Nobel laureates letter to President Bush."); 
                                     Assert.IsTrue(pub.Pages == "A02");
                                     Assert.IsTrue(pub.Year == 2001);
                                     Assert.IsTrue(pub.Month == "Feb");

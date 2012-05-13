@@ -29,7 +29,7 @@ CREATE TABLE `colleaguematches` (
   KEY `index_starsetnb` (`StarSetnb`),
   KEY `index_pmid` (`PMID`),
   KEY `index_matchname` (`MatchName`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `colleaguematches`
@@ -54,7 +54,7 @@ CREATE TABLE `colleaguepublications` (
   PRIMARY KEY  (`Setnb`,`PMID`),
   KEY `index_setnb` (`Setnb`),
   KEY `index_pmid` (`PMID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `colleaguepublications`
@@ -86,7 +86,7 @@ CREATE TABLE `colleagues` (
   `Error` bit(1) default NULL,
   `ErrorMessage` varchar(512) default NULL,
   PRIMARY KEY  (`Setnb`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `colleagues`
@@ -109,7 +109,7 @@ CREATE TABLE `meshheadings` (
   `Heading` varchar(255) NOT NULL,
   PRIMARY KEY  (`ID`),
   KEY `index_heading` (`Heading`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `meshheadings`
@@ -141,7 +141,7 @@ CREATE TABLE `people` (
   `ErrorMessage` varchar(512) default NULL,
   PRIMARY KEY  (`Setnb`),
   KEY `Setnb` (`Setnb`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `people`
@@ -167,7 +167,7 @@ CREATE TABLE `peoplepublications` (
   PRIMARY KEY  (`Setnb`,`PMID`),
   KEY `index_setnb` (`Setnb`),
   KEY `index_pmid` (`PMID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `peoplepublications`
@@ -193,7 +193,7 @@ CREATE TABLE `publicationauthors` (
   `Last` tinyint(4) NOT NULL,
   PRIMARY KEY  (`PMID`,`Position`),
   KEY `index_pmid` (`PMID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `publicationauthors`
@@ -215,7 +215,7 @@ CREATE TABLE `publicationgrants` (
   `PMID` int(11) NOT NULL,
   `GrantID` varchar(50) NOT NULL,
   PRIMARY KEY  (`PMID`,`GrantID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `publicationgrants`
@@ -237,7 +237,7 @@ CREATE TABLE `publicationmeshheadings` (
   `MeSHHEadingID` int(11) NOT NULL,
   PRIMARY KEY  (`PMID`,`MeSHHEadingID`),
   KEY `index_pmid` (`PMID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `publicationmeshheadings`
@@ -269,7 +269,7 @@ CREATE TABLE `publications` (
   `PubTypeCategoryID` tinyint(4) NOT NULL,
   PRIMARY KEY  (`PMID`),
   KEY `index_pmid` (`PMID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `publications`
@@ -292,7 +292,7 @@ CREATE TABLE `pubtypecategories` (
   `PubTypeCategoryID` tinyint(4) NOT NULL,
   `OverrideFirstCategory` tinyint(1) default '0',
   PRIMARY KEY  (`PublicationType`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `pubtypecategories`
@@ -315,7 +315,7 @@ CREATE TABLE `starcolleagues` (
   `Setnb` char(8) NOT NULL,
   PRIMARY KEY  (`StarSetnb`,`Setnb`),
   KEY `Setnb` (`Setnb`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `starcolleagues`
