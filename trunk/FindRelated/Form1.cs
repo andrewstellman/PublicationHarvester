@@ -373,7 +373,15 @@ namespace Com.StellmanGreene.FindRelated
                 return;
             }
             Database db = new Database(dsn);
-            ReportsDialog reportsDialog = new ReportsDialog(db);
+
+            string relatedPublicationsTableName = relatedTable.Text;
+            if (string.IsNullOrEmpty(relatedPublicationsTableName))
+            {
+                MessageBox.Show("Please enter a valid related publications table");
+                return;
+            }
+
+            ReportsDialog reportsDialog = new ReportsDialog(db, relatedPublicationsTableName);
             reportsDialog.ShowDialog(this);
         }
 

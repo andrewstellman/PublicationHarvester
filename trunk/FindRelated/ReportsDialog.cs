@@ -14,12 +14,14 @@ namespace Com.StellmanGreene.FindRelated
     public partial class ReportsDialog : Form
     {
         private readonly Database db;
+        private readonly string relatedPublicationsTableName;
 
-        public ReportsDialog(Database db)
+        public ReportsDialog(Database db, string relatedPublicationsTableName)
         {
             InitializeComponent();
 
             this.db = db;
+            this.relatedPublicationsTableName = relatedPublicationsTableName;
 
             DataTable matchingTable = db.ExecuteQuery("SHOW TABLES LIKE 'colleaguepublications'");
             if (matchingTable.Rows.Count == 0)
@@ -44,10 +46,11 @@ namespace Com.StellmanGreene.FindRelated
                 return;
             }
 
-            if (doLinking.Checked) relatedReports.Linking(linkingFilename.Text);
-            if (doRelatedPmid.Checked) relatedReports.RelatedPMID(relatedPmidFilename.Text);
-            if (doRelatedMesh.Checked) relatedReports.RelatedMeSH(relatedMeshFilename.Text);
-            if (doIdeaPeer.Checked) relatedReports.IdeaPeer(ideaPeerFilename.Text);
+            if (doLinking.Checked) relatedReports.Linking(relatedPublicationsTableName, linkingFilename.Text);
+            if (doRelatedPmid.Checked) relatedReports.RelatedPMID(relatedPublicationsTableName, relatedPmidFilename.Text);
+            if (doRelatedMesh.Checked) relatedReports.RelatedMeSH(relatedPublicationsTableName, relatedMeshFilename.Text);
+            if (doIdeaPeer.Checked) relatedReports.IdeaPeer(relatedPublicationsTableName, ideaPeerFilename.Text);
+            if (mostRelevant.Checked) relatedReports.MostRelevant(relatedPublicationsTableName, mostRelevantFilename.Text);
         }
 
         private void specifyFolder_Click(object sender, EventArgs e)

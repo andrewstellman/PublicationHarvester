@@ -50,7 +50,8 @@ namespace Com.StellmanGreene.FindRelated
         {
             Database db = new Database(odbcDsn);
 
-            CreateRelatedTable(db, relatedTable);
+            string mostRelevantTableName;
+            CreateRelatedTable(db, relatedTable, out mostRelevantTableName);
             PublicationTypes pubTypes = new PublicationTypes(db);
 
             Dictionary<string, List<int>> peopleIds = new Dictionary<string, List<int>>();
@@ -210,6 +211,10 @@ namespace Com.StellmanGreene.FindRelated
                         int publicationsExcluded = 0;
                         int publicationsNullAuthors = 0;
 
+                        // Track the most relevant publication (eg. the one with the highest score) so it can be added to relatedpublications_mostrelevant
+                        Publication? mostRelevantPublication = null;
+                        int mostRelevantPublicationScore = int.MinValue;
+
                         // Write each publication to the database
                         Publications publications = new Publications(searchResults, pubTypes);
                         foreach (Publication relatedPublication in publications.PublicationList)
@@ -272,6 +277,34 @@ namespace Com.StellmanGreene.FindRelated
                             {
                                 publicationsExcluded++;
                             }
+
+                            // We're keeping track of the score of the most relevant pub (even when it is filtered out).
+                            if (!mostRelevantPublication.HasValue || score > mostRelevantPublicationScore)
+                            {
+                                mostRelevantPublication = relatedPublication;
+                                mostRelevantPublicationScore = score;
+                            }
+                        }
+
+                        // Write the most relevant pmid/relatedPmid pair to the mostrelevant table (if one was found).
+                        if (mostRelevantPublication.HasValue)
+                        {
+                            try
+                            {
+                                db.ExecuteNonQuery(
+                                    "INSERT INTO " + mostRelevantTableName + " (PMID, RelatedPMID, Score) VALUES (?, ?, ?)",
+                                    new System.Collections.ArrayList() { 
+                                            Database.Parameter(authorPublicationPmid), 
+                                            Database.Parameter(mostRelevantPublication.Value.PMID),
+                                            Database.Parameter(mostRelevantPublicationScore),
+                                        });
+                            }
+                            catch (Exception ex)
+                            {
+                                Trace.WriteLine(DateTime.Now + " - " +
+                                    String.Format("Error writing {0}/{1} to {2}: {3}",
+                                    authorPublicationPmid, mostRelevantPublication.Value.PMID, mostRelevantTableName, ex.Message));
+                            }
                         }
 
                         Trace.WriteLine(DateTime.Now + " - " +
@@ -288,7 +321,8 @@ namespace Com.StellmanGreene.FindRelated
         /// Create the related publications table and its PeoplePublications view
         /// </summary>
         /// <param name="tableName">Name of the talbe to create</param>
-        private static void CreateRelatedTable(Database db, string tableName)
+        /// <param name="mostRelevantTableName">(output) Name of the _mostrelevant table created</param>
+        private static void CreateRelatedTable(Database db, string tableName, out string mostRelevantTableName)
         {
             db.ExecuteNonQuery("DROP TABLE IF EXISTS " + tableName);
             db.ExecuteNonQuery("CREATE TABLE " + tableName + @" (
@@ -301,11 +335,22 @@ namespace Com.StellmanGreene.FindRelated
             ");
 
             // Create the view (table name + "_peoplepublications")
-            db.ExecuteNonQuery(@"CREATE OR REPLACE VIEW relatedpublications_peoplepublications AS
+            db.ExecuteNonQuery("CREATE OR REPLACE VIEW " + tableName + @"_peoplepublications AS
               SELECT p.Setnb, rp.RelatedPMID AS PMID, -1 AS AuthorPosition, 6 AS PositionType
               FROM people p, peoplepublications pp, relatedpublications rp
               WHERE p.Setnb = pp.Setnb
               AND pp.PMID = rp.PMID;
+            ");
+
+            // Create the most relevant publications table (table name + "_mostrelevant")
+            mostRelevantTableName = tableName + "_mostrelevant";
+            db.ExecuteNonQuery("DROP TABLE IF EXISTS " + mostRelevantTableName);
+            db.ExecuteNonQuery("CREATE TABLE " + mostRelevantTableName + @" (
+              PMID int(11) NOT NULL,
+              RelatedPMID int(11) NOT NULL,
+              Score int NOT NULL,
+              PRIMARY KEY (PMID, RelatedPMID)
+            ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
             ");
         }
 
