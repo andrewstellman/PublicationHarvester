@@ -223,6 +223,8 @@ namespace Com.StellmanGreene.PubMed
             publication.Pages = Row["Pages"].Equals(DBNull.Value) ? null : Row["Pages"].ToString();
             publication.PubType = Row["PubType"].Equals(DBNull.Value) ? null : Row["PubType"].ToString();
 
+            // Strip single and double quotes from the title
+            publication.Title = publication.Title.Replace("\"", "").Replace("'", "");
 
             // Read the authors
             Parameters = new ArrayList();
@@ -527,6 +529,9 @@ namespace Com.StellmanGreene.PubMed
                 }
             }
 
+            // Strip the single and double quotes from the title before writing it
+            string title = publication.Title.Replace("\"", "").Replace("'", "");
+
             Parameters = new ArrayList();
             Parameters.Add(Database.Parameter(publication.PMID));
             Parameters.Add(Database.Parameter(Database.Left(publication.Journal, 128)));
@@ -534,7 +539,7 @@ namespace Com.StellmanGreene.PubMed
             Parameters.Add(Database.Parameter(publication.Authors == null ? 0 : publication.Authors.Length));
             Parameters.Add(Database.Parameter(Database.Left(publication.Month, 32)));
             Parameters.Add(Database.Parameter(Database.Left(publication.Day, 32)));
-            Parameters.Add(Database.Parameter(Database.Left(publication.Title,244)));
+            Parameters.Add(Database.Parameter(Database.Left(title,244)));
             Parameters.Add(Database.Parameter(Database.Left(publication.Volume, 32)));
             Parameters.Add(Database.Parameter(Database.Left(publication.Issue, 32)));
             Parameters.Add(Database.Parameter(Database.Left(publication.Pages, 50)));
