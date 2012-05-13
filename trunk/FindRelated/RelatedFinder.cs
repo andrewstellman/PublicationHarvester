@@ -331,7 +331,7 @@ namespace Com.StellmanGreene.FindRelated
               Rank int NOT NULL,
               Score int NOT NULL,
               PRIMARY KEY (PMID, RelatedPMID)
-            ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+            ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
             ");
 
             // Create the view (table name + "_peoplepublications")
@@ -350,7 +350,7 @@ namespace Com.StellmanGreene.FindRelated
               RelatedPMID int(11) NOT NULL,
               Score int NOT NULL,
               PRIMARY KEY (PMID, RelatedPMID)
-            ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+            ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
             ");
         }
 
