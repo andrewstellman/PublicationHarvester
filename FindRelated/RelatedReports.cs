@@ -173,7 +173,7 @@ AND pp.PMID = rp.PMID
 AND cp.Setnb = sc.Setnb";
 
             ExecuteReport(sql, filename,
-                new string[] { "start_setnb", "setnb", "source_pmid", "related_pmid",  "author_position", "position_type" });
+                new string[] { "star_setnb", "setnb", "source_pmid", "related_pmid",  "author_position", "position_type" });
         }
 
         /// <summary>
