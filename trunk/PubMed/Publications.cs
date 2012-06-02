@@ -530,7 +530,11 @@ namespace Com.StellmanGreene.PubMed
             }
 
             // Strip the single and double quotes from the title before writing it
-            string title = publication.Title.Replace("\"", "").Replace("'", "");
+            string title;
+            if (String.IsNullOrEmpty(publication.Title))
+                title = "";
+            else
+                title = publication.Title.Replace("\"", "").Replace("'", "");
 
             Parameters = new ArrayList();
             Parameters.Add(Database.Parameter(publication.PMID));

@@ -57,5 +57,5 @@ You should have received a copy of the GNU General Public License along with thi
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("1.0.33")]
-[assembly: AssemblyFileVersion("1.0.33")]
+[assembly: AssemblyVersion("1.0.34")]
+[assembly: AssemblyFileVersion("1.0.34")]

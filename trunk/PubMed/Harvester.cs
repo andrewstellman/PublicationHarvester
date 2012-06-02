@@ -417,7 +417,7 @@ namespace Com.StellmanGreene.PubMed
                 catch (Exception ex)
                 {
                     person.WriteErrorToDB(DB, ex.Message);
-                    throw new Exception("Error writing publication " + publication.PMID.ToString() + ": " + ex.Message, ex);
+                    MessageCallback("Error writing publication " + publication.PMID.ToString() + ": " + ex.Message, false);
                 }
                 StatusCallback(numberFound, mpr.PublicationList.Length, (int)AverageMilliseconds);
             }
