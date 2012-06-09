@@ -136,7 +136,7 @@ namespace PublicationHarvester
             toolStripStatusLabel2.Text = "v" + Application.ProductVersion;
 
             // Set the log file
-            LogFilename.Text = (AppDomain.CurrentDomain.BaseDirectory
+            LogFilename.Text = (Environment.GetEnvironmentVariable("TMP")
                 + ("PublicationHarvester log " + DateTime.Now.Month + "-" + DateTime.Now.Day + "-" + DateTime.Now.Year
                 + " " + DateTime.Now.Hour + DateTime.Now.Minute + ".log"));
             
