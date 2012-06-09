@@ -157,7 +157,7 @@ namespace SCGen.Unit_Tests
                         Assert.AreEqual(DB.GetIntValue("SELECT Count(*) FROM ColleaguePublications WHERE PMID = 15451956"), 1);
                         
                         // Remove false colleagues, make sure Sharon was deleted
-                        ColleagueFinder.RemoveFalseColleagues(DB, null);
+                        ColleagueFinder.RemoveFalseColleagues(DB, null, "PeoplePublications");
                         result = DB.ExecuteQuery("SELECT StarSetnb, Setnb FROM StarColleagues ORDER BY Setnb DESC");
                         Assert.AreEqual(result.Rows.Count, 1);
                         row = result.Rows[0];
