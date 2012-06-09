@@ -205,7 +205,7 @@ namespace SCGen
         /// publications with the star
         /// </summary>
         /// <param name="DB"></param>
-        public static void RemoveFalseColleagues(Database DB, Form1 ParentForm)
+        public static void RemoveFalseColleagues(Database DB, Form1 ParentForm, string PeoplePublicationsTable)
         {
             // First load all of the People in the database -- these are the stars
             People Stars = new People(DB);
@@ -224,7 +224,7 @@ namespace SCGen
                 Publications StarPublications;
                 try
                 {
-                    StarPublications = new Publications(DB, Star, true);
+                    StarPublications = new Publications(DB, Star, PeoplePublicationsTable, true);
                 }
                 catch (Exception ex)
                 {

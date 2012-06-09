@@ -74,7 +74,7 @@ namespace SCGen.Unit_Tests
             }
 
             // Remove false colleagues
-            ColleagueFinder.RemoveFalseColleagues(DB, null);
+            ColleagueFinder.RemoveFalseColleagues(DB, null, "PeoplePublications");
 
 
             // Create the extra articles for Bunn and Tobian.

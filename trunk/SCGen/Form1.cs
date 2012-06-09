@@ -593,7 +593,10 @@ namespace SCGen
 
             Database DB = new Database(DSN.Text);
             int Before = DB.GetIntValue("SELECT Count(*) FROM StarColleagues");
-            ColleagueFinder.RemoveFalseColleagues(DB, this);
+            if (useAlternateCheckbox.Checked)
+                ColleagueFinder.RemoveFalseColleagues(DB, this, alternateTableName.Text);
+            else
+                ColleagueFinder.RemoveFalseColleagues(DB, this, "PeoplePublications");
             int After = DB.GetIntValue("SELECT Count(*) FROM StarColleagues"); ;
             int Removed = Before - After;
             AddLogEntry("Removed " + Removed.ToString() + " false colleague" +
