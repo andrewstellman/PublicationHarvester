@@ -177,21 +177,21 @@ AND cp.Setnb = sc.Setnb";
         }
 
         /// <summary>
-        /// Generate the Most Relevant report
+        /// Generate the Extreme Relevance report
         /// </summary>
         /// <param name="relatedPublicationsTableName">Related publications table name</param>
         /// <param name="filename">Filename to generate</param>
-        public void MostRelevant(string relatedPublicationsTableName, string filename)
+        public void ExtremeRelevance(string relatedPublicationsTableName, string filename)
         {
-            Trace.WriteLine(DateTime.Now + " writing Most Relevant report");
+            Trace.WriteLine(DateTime.Now + " writing Extreme Relevance report");
 
-            string sql = @"-- Most Relevant report
-SELECT PMID as source_pmid, RelatedPMID as related_pmid, Score as score, 
-LeastRelevantPMID as least_relevant_pmid, LeastRelevantScore as least_relevant_score
-FROM " + relatedPublicationsTableName + "_mostrelevant";
+            string sql = @"-- Extreme Relevance report
+SELECT PMID as source_pmid, MostRelevantPMID as most_rlvnt_pmid, MostRelevantScore as most_rlvnt_score, 
+LeastRelevantPMID as least_rlvnt_pmid, LeastRelevantScore as least_rlvnt_score, LeastRelevantRank as least_rlvnt_rank
+FROM " + relatedPublicationsTableName + "_extremerelevance";
 
             ExecuteReport(sql, filename,
-                new string[] { "source_pmid", "related_pmid", "score", "least_relevant_pmid", "least_relevant_score" });
+                new string[] { "source_pmid", "most_rlvnt_pmid", "most_rlvnt_score", "least_rlvnt_pmid", "least_rlvnt_score", "least_rlvnt_rank" });
         }
     }
 }

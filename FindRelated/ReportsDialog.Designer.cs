@@ -115,28 +115,28 @@
             // 
             // linkingFilename
             // 
-            this.linkingFilename.Location = new System.Drawing.Point(115, 20);
+            this.linkingFilename.Location = new System.Drawing.Point(129, 20);
             this.linkingFilename.Margin = new System.Windows.Forms.Padding(2);
             this.linkingFilename.Name = "linkingFilename";
-            this.linkingFilename.Size = new System.Drawing.Size(302, 20);
+            this.linkingFilename.Size = new System.Drawing.Size(288, 20);
             this.linkingFilename.TabIndex = 106;
             this.linkingFilename.Text = "linking.csv";
             // 
             // relatedPmidFilename
             // 
-            this.relatedPmidFilename.Location = new System.Drawing.Point(115, 44);
+            this.relatedPmidFilename.Location = new System.Drawing.Point(129, 44);
             this.relatedPmidFilename.Margin = new System.Windows.Forms.Padding(2);
             this.relatedPmidFilename.Name = "relatedPmidFilename";
-            this.relatedPmidFilename.Size = new System.Drawing.Size(302, 20);
+            this.relatedPmidFilename.Size = new System.Drawing.Size(288, 20);
             this.relatedPmidFilename.TabIndex = 111;
             this.relatedPmidFilename.Text = "relatedpmid.csv";
             // 
             // relatedMeshFilename
             // 
-            this.relatedMeshFilename.Location = new System.Drawing.Point(115, 68);
+            this.relatedMeshFilename.Location = new System.Drawing.Point(129, 68);
             this.relatedMeshFilename.Margin = new System.Windows.Forms.Padding(2);
             this.relatedMeshFilename.Name = "relatedMeshFilename";
-            this.relatedMeshFilename.Size = new System.Drawing.Size(302, 20);
+            this.relatedMeshFilename.Size = new System.Drawing.Size(288, 20);
             this.relatedMeshFilename.TabIndex = 113;
             this.relatedMeshFilename.Text = "relatedmesh.csv";
             // 
@@ -214,10 +214,10 @@
             // 
             // ideaPeerFilename
             // 
-            this.ideaPeerFilename.Location = new System.Drawing.Point(115, 92);
+            this.ideaPeerFilename.Location = new System.Drawing.Point(129, 92);
             this.ideaPeerFilename.Margin = new System.Windows.Forms.Padding(2);
             this.ideaPeerFilename.Name = "ideaPeerFilename";
-            this.ideaPeerFilename.Size = new System.Drawing.Size(302, 20);
+            this.ideaPeerFilename.Size = new System.Drawing.Size(288, 20);
             this.ideaPeerFilename.TabIndex = 118;
             this.ideaPeerFilename.Text = "ideapeer.csv";
             // 
@@ -246,12 +246,12 @@
             // 
             // mostRelevantFilename
             // 
-            this.mostRelevantFilename.Location = new System.Drawing.Point(115, 138);
+            this.mostRelevantFilename.Location = new System.Drawing.Point(129, 138);
             this.mostRelevantFilename.Margin = new System.Windows.Forms.Padding(2);
             this.mostRelevantFilename.Name = "mostRelevantFilename";
-            this.mostRelevantFilename.Size = new System.Drawing.Size(302, 20);
+            this.mostRelevantFilename.Size = new System.Drawing.Size(288, 20);
             this.mostRelevantFilename.TabIndex = 121;
-            this.mostRelevantFilename.Text = "mostrelevant.csv";
+            this.mostRelevantFilename.Text = "extremerelevance.csv";
             // 
             // mostRelevant
             // 
@@ -261,9 +261,9 @@
             this.mostRelevant.Location = new System.Drawing.Point(11, 140);
             this.mostRelevant.Margin = new System.Windows.Forms.Padding(2);
             this.mostRelevant.Name = "mostRelevant";
-            this.mostRelevant.Size = new System.Drawing.Size(90, 17);
+            this.mostRelevant.Size = new System.Drawing.Size(114, 17);
             this.mostRelevant.TabIndex = 120;
-            this.mostRelevant.Text = "M&ost relevant";
+            this.mostRelevant.Text = "E&xtreme relevance";
             this.mostRelevant.UseVisualStyleBackColor = true;
             // 
             // ReportsDialog
