@@ -50,7 +50,7 @@ namespace Com.StellmanGreene.FindRelated
             if (doRelatedPmid.Checked) relatedReports.RelatedPMID(relatedPublicationsTableName, relatedPmidFilename.Text);
             if (doRelatedMesh.Checked) relatedReports.RelatedMeSH(relatedPublicationsTableName, relatedMeshFilename.Text);
             if (doIdeaPeer.Checked) relatedReports.IdeaPeer(relatedPublicationsTableName, ideaPeerFilename.Text);
-            if (mostRelevant.Checked) relatedReports.MostRelevant(relatedPublicationsTableName, mostRelevantFilename.Text);
+            if (mostRelevant.Checked) relatedReports.ExtremeRelevance(relatedPublicationsTableName, mostRelevantFilename.Text);
         }
 
         private void specifyFolder_Click(object sender, EventArgs e)

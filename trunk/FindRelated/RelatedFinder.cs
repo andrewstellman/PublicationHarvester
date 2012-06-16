@@ -50,8 +50,8 @@ namespace Com.StellmanGreene.FindRelated
         {
             Database db = new Database(odbcDsn);
 
-            string mostRelevantTableName;
-            CreateRelatedTable(db, relatedTable, out mostRelevantTableName);
+            string extremeRelevanceTableName;
+            CreateRelatedTable(db, relatedTable, out extremeRelevanceTableName);
             PublicationTypes pubTypes = new PublicationTypes(db);
 
             Dictionary<string, List<int>> peopleIds = new Dictionary<string, List<int>>();
@@ -211,13 +211,14 @@ namespace Com.StellmanGreene.FindRelated
                         int publicationsExcluded = 0;
                         int publicationsNullAuthors = 0;
 
-                        // Track the most relevant publication (eg. the one with the highest score) so it can be added to relatedpublications_mostrelevant
+                        // Track the most relevant publication (eg. the one with the highest score) so it can be added to relatedpublications_extremerelevance
                         Publication? mostRelevantPublication = null;
                         int mostRelevantPublicationScore = int.MinValue;
 
                         // Track the least relevant publication (eg. the one with the highest score) for relatedpublications_leastrelevant and relatedpubliactions_leastrelevantscore
                         Publication? leastRelevantPublication = null;
                         int leastRelevantPublicationScore = int.MaxValue;
+                        int leastRelevantPublicationRank = 0;
 
                         // Write each publication to the database
                         Publications publications = new Publications(searchResults, pubTypes);
@@ -294,29 +295,31 @@ namespace Com.StellmanGreene.FindRelated
                             {
                                 leastRelevantPublication = relatedPublication;
                                 leastRelevantPublicationScore = score;
+                                leastRelevantPublicationRank = rank;
                             }
                         }
 
-                        // Write the most relevant pmid/relatedPmid pair to the mostrelevant table (if one was found).
+                        // Write the most and least relevant pmid/relatedPmid pairs to the _extremerelevance table (if found).
                         if (mostRelevantPublication.HasValue && leastRelevantPublication.HasValue)
                         {
                             try
                             {
                                 db.ExecuteNonQuery(
-                                    "INSERT INTO " + mostRelevantTableName + " (PMID, RelatedPMID, Score, LeastRelevantPMID, LeastRelevantScore) VALUES (?, ?, ?, ?, ?)",
+                                    "INSERT INTO " + extremeRelevanceTableName + " (PMID, MostRelevantPMID, MostRelevantScore, LeastRelevantPMID, LeastRelevantScore, LeastRelevantRank) VALUES (?, ?, ?, ?, ?, ?)",
                                     new System.Collections.ArrayList() { 
                                             Database.Parameter(authorPublicationPmid), 
                                             Database.Parameter(mostRelevantPublication.Value.PMID),
                                             Database.Parameter(mostRelevantPublicationScore),
                                             Database.Parameter(leastRelevantPublication.Value.PMID),
-                                            Database.Parameter(leastRelevantPublicationScore)
+                                            Database.Parameter(leastRelevantPublicationScore),
+                                            Database.Parameter(leastRelevantPublicationRank)
                                         });
                             }
                             catch (Exception ex)
                             {
                                 Trace.WriteLine(DateTime.Now + " - " +
-                                    String.Format("Error writing {0}/{1} to {2}: {3}",
-                                    authorPublicationPmid, mostRelevantPublication.Value.PMID, mostRelevantTableName, ex.Message));
+                                    String.Format("Error writing {0}/{1}/{2} to {3}: {4}",
+                                    authorPublicationPmid, mostRelevantPublication.Value.PMID, leastRelevantPublication.Value.PMID, extremeRelevanceTableName, ex.Message));
                             }
                         }
 
@@ -334,8 +337,8 @@ namespace Com.StellmanGreene.FindRelated
         /// Create the related publications table and its PeoplePublications view
         /// </summary>
         /// <param name="tableName">Name of the talbe to create</param>
-        /// <param name="mostRelevantTableName">(output) Name of the _mostrelevant table created</param>
-        private static void CreateRelatedTable(Database db, string tableName, out string mostRelevantTableName)
+        /// <param name="extremeRelevanceTableName">(output) Name of the _extremerelevance table created</param>
+        private static void CreateRelatedTable(Database db, string tableName, out string extremeRelevanceTableName)
         {
             db.ExecuteNonQuery("DROP TABLE IF EXISTS " + tableName);
             db.ExecuteNonQuery("CREATE TABLE " + tableName + @" (
@@ -355,16 +358,17 @@ namespace Com.StellmanGreene.FindRelated
               AND pp.PMID = rp.PMID;
             ");
 
-            // Create the most/least relevant publications table (table name + "_mostrelevant")
-            mostRelevantTableName = tableName + "_mostrelevant";
-            db.ExecuteNonQuery("DROP TABLE IF EXISTS " + mostRelevantTableName);
-            db.ExecuteNonQuery("CREATE TABLE " + mostRelevantTableName + @" (
+            // Create the most/least relevant publications table (table name + "_extremerelevance")
+            extremeRelevanceTableName = tableName + "_extremerelevance";
+            db.ExecuteNonQuery("DROP TABLE IF EXISTS " + extremeRelevanceTableName);
+            db.ExecuteNonQuery("CREATE TABLE " + extremeRelevanceTableName + @" (
               PMID int(11) NOT NULL,
-              RelatedPMID int(11) NOT NULL,
-              Score int NOT NULL,
+              MostRelevantPMID int(11) NOT NULL,
+              MostRelevantScore int NOT NULL,
               LeastRelevantPMID int(11) NOT NULL,
               LeastRelevantScore int NOT NULL,
-              PRIMARY KEY (PMID, RelatedPMID)
+              LeastRelevantRank int NOT NULL,
+              PRIMARY KEY (PMID, MostRelevantPMID)
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
             ");
         }
