@@ -215,6 +215,10 @@ namespace Com.StellmanGreene.FindRelated
                         Publication? mostRelevantPublication = null;
                         int mostRelevantPublicationScore = int.MinValue;
 
+                        // Track the least relevant publication (eg. the one with the highest score) for relatedpublications_leastrelevant and relatedpubliactions_leastrelevantscore
+                        Publication? leastRelevantPublication = null;
+                        int leastRelevantPublicationScore = int.MaxValue;
+
                         // Write each publication to the database
                         Publications publications = new Publications(searchResults, pubTypes);
                         foreach (Publication relatedPublication in publications.PublicationList)
@@ -284,19 +288,28 @@ namespace Com.StellmanGreene.FindRelated
                                 mostRelevantPublication = relatedPublication;
                                 mostRelevantPublicationScore = score;
                             }
+
+                            // We're keeping track of the score of the least relevant pub too.
+                            if (!leastRelevantPublication.HasValue || score < leastRelevantPublicationScore)
+                            {
+                                leastRelevantPublication = relatedPublication;
+                                leastRelevantPublicationScore = score;
+                            }
                         }
 
                         // Write the most relevant pmid/relatedPmid pair to the mostrelevant table (if one was found).
-                        if (mostRelevantPublication.HasValue)
+                        if (mostRelevantPublication.HasValue && leastRelevantPublication.HasValue)
                         {
                             try
                             {
                                 db.ExecuteNonQuery(
-                                    "INSERT INTO " + mostRelevantTableName + " (PMID, RelatedPMID, Score) VALUES (?, ?, ?)",
+                                    "INSERT INTO " + mostRelevantTableName + " (PMID, RelatedPMID, Score, LeastRelevantPMID, LeastRelevantScore) VALUES (?, ?, ?, ?, ?)",
                                     new System.Collections.ArrayList() { 
                                             Database.Parameter(authorPublicationPmid), 
                                             Database.Parameter(mostRelevantPublication.Value.PMID),
                                             Database.Parameter(mostRelevantPublicationScore),
+                                            Database.Parameter(leastRelevantPublication.Value.PMID),
+                                            Database.Parameter(leastRelevantPublicationScore)
                                         });
                             }
                             catch (Exception ex)
@@ -342,13 +355,15 @@ namespace Com.StellmanGreene.FindRelated
               AND pp.PMID = rp.PMID;
             ");
 
-            // Create the most relevant publications table (table name + "_mostrelevant")
+            // Create the most/least relevant publications table (table name + "_mostrelevant")
             mostRelevantTableName = tableName + "_mostrelevant";
             db.ExecuteNonQuery("DROP TABLE IF EXISTS " + mostRelevantTableName);
             db.ExecuteNonQuery("CREATE TABLE " + mostRelevantTableName + @" (
               PMID int(11) NOT NULL,
               RelatedPMID int(11) NOT NULL,
               Score int NOT NULL,
+              LeastRelevantPMID int(11) NOT NULL,
+              LeastRelevantScore int NOT NULL,
               PRIMARY KEY (PMID, RelatedPMID)
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
             ");
