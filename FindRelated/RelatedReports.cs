@@ -186,11 +186,12 @@ AND cp.Setnb = sc.Setnb";
             Trace.WriteLine(DateTime.Now + " writing Most Relevant report");
 
             string sql = @"-- Most Relevant report
-SELECT PMID as source_pmid, RelatedPMID as related_pmid, Score as score
+SELECT PMID as source_pmid, RelatedPMID as related_pmid, Score as score, 
+LeastRelevantPMID as least_relevant_pmid, LeastRelevantScore as least_relevant_score
 FROM " + relatedPublicationsTableName + "_mostrelevant";
 
             ExecuteReport(sql, filename,
-                new string[] { "source_pmid", "related_pmid", "score" });
+                new string[] { "source_pmid", "related_pmid", "score", "least_relevant_pmid", "least_relevant_score" });
         }
     }
 }
