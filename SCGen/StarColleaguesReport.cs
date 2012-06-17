@@ -40,6 +40,16 @@ namespace SCGen
                 return;
             }
 
+            // Go through the publications and collect the counts. 
+            Hashtable CountsPerYear = new Hashtable();
+            Hashtable WeightsPerYear = new Hashtable();
+
+            // Create hashtables for the four global counts for each row
+            Hashtable Nbcoauth1 = new Hashtable();
+            Hashtable Wghtd_Nbcoauth1 = new Hashtable();
+            Hashtable Nbcoauth2 = new Hashtable();
+            Hashtable Wghtd_Nbcoauth2 = new Hashtable();
+
             // For each star/colleague pair, produce the report rows.
             // Note that report rows are only produced for years where there
             // are collaborations.
@@ -79,7 +89,7 @@ namespace SCGen
                     ArrayList Parameters = new ArrayList();
                     Parameters.Add(Database.Parameter(StarSetnb));
                     Parameters.Add(Database.Parameter(Setnb));
-                    DataTable PubData =
+                    using (DataTable PubData =
                         DB.ExecuteQuery(
                         @"SELECT p.Year, p.PMID, pp.PositionType AS StarPositionType, 
                                  cp.PositionType AS ColleaguePositionType, p.Journal
@@ -88,47 +98,47 @@ namespace SCGen
                              AND cp.Setnb = ?
                              AND p.PMID = pp.PMID
                              AND p.PMID = cp.PMID
-                           ORDER BY p.Year ASC", Parameters);
-
-                    if (PubData.Rows.Count == 0)
+                           ORDER BY p.Year ASC", Parameters))
                     {
-                        if (ParentForm != null)
-                            ParentForm.AddLogEntry("No publications found for colleague " + Setnb + ", star " + StarSetnb);
-                    }
-                    else
-                    {
-                        // Get the first and last years of collaboration
-                        int FirstCollabYear = Convert.ToInt32(PubData.Rows[0]["Year"]);
-                        int LastCollabYear = Convert.ToInt32(PubData.Rows[PubData.Rows.Count - 1]["Year"]);
-
-                        // Go through the publications and collect the counts. 
-                        Hashtable CountsPerYear = new Hashtable();
-                        Hashtable WeightsPerYear = new Hashtable();
-
-                        // Create hashtables for the four global counts for each row
-                        Hashtable Nbcoauth1 = new Hashtable();
-                        Hashtable Wghtd_Nbcoauth1 = new Hashtable();
-                        Hashtable Nbcoauth2 = new Hashtable();
-                        Hashtable Wghtd_Nbcoauth2 = new Hashtable();
-
-                        for (int RowNum = 0; RowNum < PubData.Rows.Count; RowNum++)
+                        if (PubData.Rows.Count == 0)
                         {
-                            // Get the information about the publication from the dataset
-                            DataRow PubRow = PubData.Rows[RowNum];
-                            UpdateCounts(reports, PubRow, CountsPerYear, WeightsPerYear,
-                                Nbcoauth1, Wghtd_Nbcoauth1, Nbcoauth2, Wghtd_Nbcoauth2);
+                            if (ParentForm != null)
+                                ParentForm.AddLogEntry("No publications found for colleague " + Setnb + ", star " + StarSetnb);
                         }
+                        else
+                        {
+                            // Get the first and last years of collaboration
+                            int FirstCollabYear = Convert.ToInt32(PubData.Rows[0]["Year"]);
+                            int LastCollabYear = Convert.ToInt32(PubData.Rows[PubData.Rows.Count - 1]["Year"]);
 
-                        // Write the rows to the report
-                        int RowsWritten = WriteReportrows(Setnb, StarSetnb, FirstCollabYear, LastCollabYear,
-                            Nbcoauth1, Wghtd_Nbcoauth1, Nbcoauth2, Wghtd_Nbcoauth2,
-                            writer, CountsPerYear, WeightsPerYear);
+                            // Go through the publications and collect the counts. 
+                            CountsPerYear.Clear();
+                            WeightsPerYear.Clear();
 
-                        //ParentForm.AddLogEntry("Wrote " + RowsWritten.ToString() + " rows for colleague " + Setnb + ", star " + StarSetnb + " (" + Row.ToString() + " of " + Pairs.ToString() + ")");
-                        if (ParentForm != null)
-                            ParentForm.SetProgressBar(0, Pairs, Row);
+                            // Create hashtables for the four global counts for each row
+                            Nbcoauth1.Clear();
+                            Wghtd_Nbcoauth1.Clear();
+                            Nbcoauth2.Clear();
+                            Wghtd_Nbcoauth2.Clear();
+                            
+                            for (int RowNum = 0; RowNum < PubData.Rows.Count; RowNum++)
+                            {
+                                // Get the information about the publication from the dataset
+                                DataRow PubRow = PubData.Rows[RowNum];
+                                UpdateCounts(reports, PubRow, CountsPerYear, WeightsPerYear,
+                                    Nbcoauth1, Wghtd_Nbcoauth1, Nbcoauth2, Wghtd_Nbcoauth2);
+                            }
+
+                            // Write the rows to the report
+                            int RowsWritten = WriteReportrows(Setnb, StarSetnb, FirstCollabYear, LastCollabYear,
+                                Nbcoauth1, Wghtd_Nbcoauth1, Nbcoauth2, Wghtd_Nbcoauth2,
+                                writer, CountsPerYear, WeightsPerYear);
+
+                            //ParentForm.AddLogEntry("Wrote " + RowsWritten.ToString() + " rows for colleague " + Setnb + ", star " + StarSetnb + " (" + Row.ToString() + " of " + Pairs.ToString() + ")");
+                            if (ParentForm != null)
+                                ParentForm.SetProgressBar(0, Pairs, Row);
+                        }
                     }
-
 
                 }
             }
