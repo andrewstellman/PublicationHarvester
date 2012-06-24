@@ -51,81 +51,22 @@ namespace Com.StellmanGreene.FindRelated
             Database db = new Database(odbcDsn);
 
             string extremeRelevanceTableName;
-            CreateRelatedTable(db, relatedTable, out extremeRelevanceTableName);
+            string queueTableName;
+            CreateRelatedTable(db, relatedTable, out extremeRelevanceTableName, out queueTableName);
             PublicationTypes pubTypes = new PublicationTypes(db);
 
-            Dictionary<string, List<int>> peopleIds = new Dictionary<string, List<int>>();
-
-            int lineCount = -1;
-
-            // Read the input file into the peopleIds Dictionary
-            try
-            {
-                using (StreamReader input = inputFileInfo.OpenText())
-                {
-                    while (!input.EndOfStream)
-                    {
-                        lineCount++;
-                        string line = input.ReadLine();
-                        string[] split = line.Split(',');
-
-                        // Check for the correct header
-                        if (lineCount == 0)
-                        {
-                            if ((split.Length != 2)
-                                || (split[0].Trim().ToLower() != "setnb")
-                                || (split[1].Trim().ToLower() != "pmid"))
-                            {
-                                Trace.WriteLine(DateTime.Now + " ERROR - Input file must have header row 'setnb,pmid'");
-                                return;
-                            }
-                            continue;
-                        }
-
-                        int pmid;
-                        if (split.Length != 2 || !int.TryParse(split[1], out pmid))
-                        {
-                            Trace.WriteLine(DateTime.Now + " WARNING - line " + lineCount + ": invalid format: " + (String.IsNullOrEmpty(line) ? "(empty)" : line));
-                            continue;
-                        }
-                        string setnb = split[0];
-                        if (setnb.StartsWith("\"") && setnb.EndsWith("\""))
-                            setnb = setnb.Substring(1, setnb.Length - 2);
-
-                        List<int> ids;
-                        if (!peopleIds.ContainsKey(setnb))
-                        {
-                            ids = new List<int>();
-                            peopleIds[setnb] = ids;
-                        }
-                        else
-                            ids = peopleIds[setnb];
-                        ids.Add(pmid);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteLine(DateTime.Now + " - error occurred reading input file " + inputFileInfo);
-                Trace.WriteLine(ex.Message);
-                return;
-            }
-
-            Trace.WriteLine(DateTime.Now + " Read " + lineCount + " rows from the input file");
+            InputQueue inputQueue = new InputQueue(inputFileInfo);
 
             int setnbCount = 0;
-            foreach (string setnb in peopleIds.Keys)
+            while (inputQueue.Next())
             {
-                BackgroundWorker.ReportProgress((100 * setnbCount) / peopleIds.Keys.Count);
-                Trace.WriteLine(DateTime.Now + " - querying for related articles for setnb " + setnb + " (" + ++setnbCount + " of " + peopleIds.Keys.Count + ")");
-
-                // Start with the list of PMIDs for a person
-                List<int> authorPmids = peopleIds[setnb];
+                BackgroundWorker.ReportProgress((100 * setnbCount) / inputQueue.Count);
+                Trace.WriteLine(DateTime.Now + " - querying for related articles for setnb " + inputQueue.CurrentSetnb + " (" + ++setnbCount + " of " + inputQueue.Count + ")");
 
                 // Do the linked publication search for the author's PMIDs and process the results.
                 // This returns a Dictionary that maps author publications (from the PeoplePublications table)
                 // to linked publications, so each key is one of the author publications read from the DB originally.
-                string xml = ExecuteRelatedSearch(authorPmids);
+                string xml = ExecuteRelatedSearch(inputQueue.CurrentPmids);
                 Dictionary<int, Dictionary<int, RankAndScore>> relatedRanks;
                 Dictionary<int, List<int>> relatedSearchResults = GetIdsFromXml(xml, out relatedRanks);
 
@@ -134,179 +75,198 @@ namespace Com.StellmanGreene.FindRelated
                     total += relatedSearchResults[key].Count;
                 Trace.WriteLine(DateTime.Now + " - found " + total + " related to " + relatedSearchResults.Keys.Count + " publications");
 
-                int count = 0;
+                bool cancelled = ProcessSearchResults(relatedTable, publicationFilter, db, extremeRelevanceTableName, pubTypes, relatedRanks, relatedSearchResults);
+                if (cancelled)
+                    break;
+            }
+            BackgroundWorker.ReportProgress(100);
+        }
 
-                // For each of the author's publications in the results, do a PubMed search for the linked publications
-                // (constructed from the results) and add each of them to the database.
-                foreach (int authorPublicationPmid in relatedSearchResults.Keys)
+        /// <summary>
+        /// For each of the author's publications in the results, do a PubMed search for the linked publications
+        /// (constructed from the results) and add each of them to the database.
+        /// </summary>
+        /// <param name="relatedTable"></param>
+        /// <param name="publicationFilter"></param>
+        /// <param name="db"></param>
+        /// <param name="extremeRelevanceTableName"></param>
+        /// <param name="pubTypes"></param>
+        /// <param name="relatedRanks"></param>
+        /// <param name="relatedSearchResults"></param>
+        /// <returns>True if completed, false if cancelled</returns>
+        private bool ProcessSearchResults(string relatedTable, PublicationFilter publicationFilter, Database db, string extremeRelevanceTableName, PublicationTypes pubTypes, Dictionary<int, Dictionary<int, RankAndScore>> relatedRanks, Dictionary<int, List<int>> relatedSearchResults)
+        {
+            int count = 0;
+
+            foreach (int authorPublicationPmid in relatedSearchResults.Keys)
+            {
+                if (BackgroundWorker != null && BackgroundWorker.CancellationPending)
                 {
-                    if (BackgroundWorker != null && BackgroundWorker.CancellationPending)
-                    {
-                        Trace.WriteLine(DateTime.Now + " - cancelled");
-                        return;
-                    }
+                    Trace.WriteLine(DateTime.Now + " - cancelled");
+                    return false;
+                }
 
-                    // Read the author publication from the database -- skipping MeSH headings and grants because we don't use them
-                    Publication authorPublication;
-                    bool retrievedPublication;
-                    try
-                    {
-                        retrievedPublication = Publications.GetPublication(db, authorPublicationPmid, out authorPublication, true);
-                    }
-                    catch (Exception ex)
-                    {
-                        Trace.WriteLine(DateTime.Now + " - " + ex.Message);
-                        retrievedPublication = false;
-                        authorPublication = new Publication();
-                    }
-                    if (!retrievedPublication)
-                    {
-                        Trace.WriteLine(DateTime.Now + " - unable to read publication " + authorPublicationPmid + " from the database");
-                        continue;
-                    }
+                // Read the author publication from the database -- skipping MeSH headings and grants because we don't use them
+                Publication authorPublication;
+                bool retrievedPublication;
+                try
+                {
+                    retrievedPublication = Publications.GetPublication(db, authorPublicationPmid, out authorPublication, true);
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine(DateTime.Now + " - " + ex.Message);
+                    retrievedPublication = false;
+                    authorPublication = new Publication();
+                }
+                if (!retrievedPublication)
+                {
+                    Trace.WriteLine(DateTime.Now + " - unable to read publication " + authorPublicationPmid + " from the database");
+                    continue;
+                }
 
-                    // Only write this article's related publications to the database if they haven't already been added.
-                    // (Multiple authors might link to the same publication, and each will add the same links.)
-                    int relatedCount = db.GetIntValue("SELECT Count(*) FROM " + relatedTable + " WHERE PMID = (?)",
-                        new System.Collections.ArrayList() { Database.Parameter(authorPublicationPmid) });
-                    if (relatedCount == 0)
+                // Only write this article's related publications to the database if they haven't already been added.
+                // (Multiple authors might link to the same publication, and each will add the same links.)
+                int relatedCount = db.GetIntValue("SELECT Count(*) FROM " + relatedTable + " WHERE PMID = (?)",
+                    new System.Collections.ArrayList() { Database.Parameter(authorPublicationPmid) });
+                if (relatedCount == 0)
+                {
+                    // Get the list of related PMIDs and their ranks from the search results
+                    List<int> relatedPmids = relatedSearchResults[authorPublicationPmid];
+                    Dictionary<int, RankAndScore> relatedRank;
+                    if (relatedRanks.ContainsKey(authorPublicationPmid))
+                        relatedRank = relatedRanks[authorPublicationPmid];
+                    else
+                        relatedRank = new Dictionary<int, RankAndScore>();
+
+                    Trace.WriteLine(DateTime.Now + " - [" + ++count + "/" + relatedSearchResults.Keys.Count + "] adding " + relatedPmids.Count + " related articles found for " + authorPublicationPmid);
+
+                    // Search PubMed for all of the related publications and add them to the database
+                    StringBuilder searchQuery = new StringBuilder();
+                    foreach (int relatedPmid in relatedPmids)
                     {
-                        // Get the list of related PMIDs and their ranks from the search results
-                        List<int> relatedPmids = relatedSearchResults[authorPublicationPmid];
-                        Dictionary<int, RankAndScore> relatedRank;
-                        if (relatedRanks.ContainsKey(authorPublicationPmid))
-                            relatedRank = relatedRanks[authorPublicationPmid];
-                        else
-                            relatedRank = new Dictionary<int, RankAndScore>();
+                        // Build the search query to issue the PubMed search for related IDs
+                        searchQuery.AppendFormat("{0}{1}[uid]", searchQuery.Length == 0 ? String.Empty : " OR ", relatedPmid);
+                    }
+                    NCBI.UsePostRequest = true;
 
-                        Trace.WriteLine(DateTime.Now + " - [" + ++count + "/" + relatedSearchResults.Keys.Count + "] adding " + relatedPmids.Count + " related articles found for " + authorPublicationPmid);
-
-                        // Search PubMed for all of the related publications and add them to the database
-                        StringBuilder searchQuery = new StringBuilder();
-                        foreach (int relatedPmid in relatedPmids)
+                    // If ncbi.Search() throws an exception, retry -- web connection may be temporarily down
+                    bool searchSuccessful = false;
+                    string searchResults = null;
+                    while (!searchSuccessful)
+                    {
+                        try
                         {
-                            // Build the search query to issue the PubMed search for related IDs
-                            searchQuery.AppendFormat("{0}{1}[uid]", searchQuery.Length == 0 ? String.Empty : " OR ", relatedPmid);
+                            searchResults = ncbi.Search(searchQuery.ToString());
+                            searchSuccessful = true;
                         }
-                        NCBI.UsePostRequest = true;
+                        catch (Exception ex)
+                        {
+                            Trace.WriteLine(DateTime.Now + " - web request error during NCBI search, retrying search. Error message: " + ex.Message);
+                            System.Threading.Thread.Sleep(2000);
+                        }
+                    }
 
-                        // If ncbi.Search() throws an exception, retry -- web connection may be temporarily down
-                        bool searchSuccessful = false;
-                        string searchResults = null;
-                        while (!searchSuccessful)
+                    int publicationsWritten = 0;
+                    int publicationsExcluded = 0;
+                    int publicationsNullAuthors = 0;
+
+                    // Track the most relevant publication (eg. the one with the highest score) so it can be added to relatedpublications_extremerelevance
+                    Publication? mostRelevantPublication = null;
+                    int mostRelevantPublicationScore = int.MinValue;
+
+                    // Track the least relevant publication (eg. the one with the highest score) for relatedpublications_leastrelevant and relatedpubliactions_leastrelevantscore
+                    Publication? leastRelevantPublication = null;
+                    int leastRelevantPublicationScore = int.MaxValue;
+                    int leastRelevantPublicationRank = 0;
+
+                    // Write each publication to the database
+                    Publications publications = new Publications(searchResults, pubTypes);
+                    foreach (Publication relatedPublication in publications.PublicationList)
+                    {
+                        if (BackgroundWorker != null && BackgroundWorker.CancellationPending)
+                        {
+                            Trace.WriteLine(DateTime.Now + " - cancelled");
+                            return false;
+                        }
+
+                        int rank;
+                        int score;
+                        if (relatedRank.ContainsKey(relatedPublication.PMID))
+                        {
+                            rank = relatedRank[relatedPublication.PMID].Rank;
+                            score = relatedRank[relatedPublication.PMID].Score;
+                        }
+                        else
+                        {
+                            rank = -1;
+                            score = -1;
+                            Trace.WriteLine(DateTime.Now + " - publication " + authorPublicationPmid + " could not find rank for related " + relatedPublication.PMID);
+                        }
+
+                        // A small number of publications come back with a null set of authors, which the database schema doesn't support 
+                        if (relatedPublication.Authors == null)
+                        {
+                            publicationsNullAuthors++;
+                            Trace.WriteLine(DateTime.Now + " - publication " + authorPublicationPmid + ": found related publication " + relatedPublication.PMID + " with no author list");
+                        }
+
+                        // Use the publication filter to include only publications that match the filter
+                        if (publicationFilter.FilterPublication(relatedPublication, rank, authorPublication, pubTypes))
                         {
                             try
                             {
-                                searchResults = ncbi.Search(searchQuery.ToString());
-                                searchSuccessful = true;
-                            }
-                            catch (Exception ex)
-                            {
-                                Trace.WriteLine(DateTime.Now + " - web request error during NCBI search, retrying search. Error message: " + ex.Message);
-                                System.Threading.Thread.Sleep(2000);
-                            }
-                        }
+                                // Add the publication to the publications table
+                                // (this will only add it if it's not already there)
+                                Publications.WriteToDB(relatedPublication, db, pubTypes, null);
 
-                        int publicationsWritten = 0;
-                        int publicationsExcluded = 0;
-                        int publicationsNullAuthors = 0;
-
-                        // Track the most relevant publication (eg. the one with the highest score) so it can be added to relatedpublications_extremerelevance
-                        Publication? mostRelevantPublication = null;
-                        int mostRelevantPublicationScore = int.MinValue;
-
-                        // Track the least relevant publication (eg. the one with the highest score) for relatedpublications_leastrelevant and relatedpubliactions_leastrelevantscore
-                        Publication? leastRelevantPublication = null;
-                        int leastRelevantPublicationScore = int.MaxValue;
-                        int leastRelevantPublicationRank = 0;
-
-                        // Write each publication to the database
-                        Publications publications = new Publications(searchResults, pubTypes);
-                        foreach (Publication relatedPublication in publications.PublicationList)
-                        {
-                            if (BackgroundWorker != null && BackgroundWorker.CancellationPending)
-                            {
-                                Trace.WriteLine(DateTime.Now + " - cancelled");
-                                return;
-                            }
-
-                            int rank;
-                            int score;
-                            if (relatedRank.ContainsKey(relatedPublication.PMID))
-                            {
-                                rank = relatedRank[relatedPublication.PMID].Rank;
-                                score = relatedRank[relatedPublication.PMID].Score;
-                            }
-                            else
-                            {
-                                rank = -1;
-                                score = -1;
-                                Trace.WriteLine(DateTime.Now + " - publication " + authorPublicationPmid + " could not find rank for related " + relatedPublication.PMID);
-                            }
-
-                            // A small number of publications come back with a null set of authors, which the database schema doesn't support 
-                            if (relatedPublication.Authors == null)
-                            {
-                                publicationsNullAuthors++;
-                                Trace.WriteLine(DateTime.Now + " - publication " + authorPublicationPmid + ": found related publication " + relatedPublication.PMID + " with no author list");
-                            }
-
-                            // Use the publication filter to include only publications that match the filter
-                            if (publicationFilter.FilterPublication(relatedPublication, rank, authorPublication, pubTypes))
-                            {
-                                try
-                                {
-                                    // Add the publication to the publications table
-                                    // (this will only add it if it's not already there)
-                                    Publications.WriteToDB(relatedPublication, db, pubTypes, null);
-
-                                    // Write the pmid/relatedPmid pair to the related publications table.
-                                    db.ExecuteNonQuery(
-                                        "INSERT INTO " + relatedTable + " (PMID, RelatedPMID, Rank, Score) VALUES (?, ?, ?, ?)",
-                                        new System.Collections.ArrayList() { 
+                                // Write the pmid/relatedPmid pair to the related publications table.
+                                db.ExecuteNonQuery(
+                                    "INSERT INTO " + relatedTable + " (PMID, RelatedPMID, Rank, Score) VALUES (?, ?, ?, ?)",
+                                    new System.Collections.ArrayList() { 
                                             Database.Parameter(authorPublicationPmid), 
                                             Database.Parameter(relatedPublication.PMID),
                                             Database.Parameter(rank),
                                             Database.Parameter(score),
                                         });
 
-                                    publicationsWritten++;
-                                }
-                                catch (Exception ex)
-                                {
-                                    Trace.WriteLine("Unable to add related article " + relatedPublication.PMID + ", error message follows");
-                                    Trace.WriteLine(ex.Message);
-                                }
+                                publicationsWritten++;
                             }
-                            else
+                            catch (Exception ex)
                             {
-                                publicationsExcluded++;
-                            }
-
-                            // We're keeping track of the score of the most relevant pub (even when it is filtered out).
-                            if (!mostRelevantPublication.HasValue || score > mostRelevantPublicationScore)
-                            {
-                                mostRelevantPublication = relatedPublication;
-                                mostRelevantPublicationScore = score;
-                            }
-
-                            // We're keeping track of the score of the least relevant pub too.
-                            if (!leastRelevantPublication.HasValue || score < leastRelevantPublicationScore)
-                            {
-                                leastRelevantPublication = relatedPublication;
-                                leastRelevantPublicationScore = score;
-                                leastRelevantPublicationRank = rank;
+                                Trace.WriteLine("Unable to add related article " + relatedPublication.PMID + ", error message follows");
+                                Trace.WriteLine(ex.Message);
                             }
                         }
-
-                        // Write the most and least relevant pmid/relatedPmid pairs to the _extremerelevance table (if found).
-                        if (mostRelevantPublication.HasValue && leastRelevantPublication.HasValue)
+                        else
                         {
-                            try
-                            {
-                                db.ExecuteNonQuery(
-                                    "INSERT INTO " + extremeRelevanceTableName + " (PMID, MostRelevantPMID, MostRelevantScore, LeastRelevantPMID, LeastRelevantScore, LeastRelevantRank) VALUES (?, ?, ?, ?, ?, ?)",
-                                    new System.Collections.ArrayList() { 
+                            publicationsExcluded++;
+                        }
+
+                        // We're keeping track of the score of the most relevant pub (even when it is filtered out).
+                        if (!mostRelevantPublication.HasValue || score > mostRelevantPublicationScore)
+                        {
+                            mostRelevantPublication = relatedPublication;
+                            mostRelevantPublicationScore = score;
+                        }
+
+                        // We're keeping track of the score of the least relevant pub too.
+                        if (!leastRelevantPublication.HasValue || score < leastRelevantPublicationScore)
+                        {
+                            leastRelevantPublication = relatedPublication;
+                            leastRelevantPublicationScore = score;
+                            leastRelevantPublicationRank = rank;
+                        }
+                    }
+
+                    // Write the most and least relevant pmid/relatedPmid pairs to the _extremerelevance table (if found).
+                    if (mostRelevantPublication.HasValue && leastRelevantPublication.HasValue)
+                    {
+                        try
+                        {
+                            db.ExecuteNonQuery(
+                                "INSERT INTO " + extremeRelevanceTableName + " (PMID, MostRelevantPMID, MostRelevantScore, LeastRelevantPMID, LeastRelevantScore, LeastRelevantRank) VALUES (?, ?, ?, ?, ?, ?)",
+                                new System.Collections.ArrayList() { 
                                             Database.Parameter(authorPublicationPmid), 
                                             Database.Parameter(mostRelevantPublication.Value.PMID),
                                             Database.Parameter(mostRelevantPublicationScore),
@@ -314,22 +274,22 @@ namespace Com.StellmanGreene.FindRelated
                                             Database.Parameter(leastRelevantPublicationScore),
                                             Database.Parameter(leastRelevantPublicationRank)
                                         });
-                            }
-                            catch (Exception ex)
-                            {
-                                Trace.WriteLine(DateTime.Now + " - " +
-                                    String.Format("Error writing {0}/{1}/{2} to {3}: {4}",
-                                    authorPublicationPmid, mostRelevantPublication.Value.PMID, leastRelevantPublication.Value.PMID, extremeRelevanceTableName, ex.Message));
-                            }
                         }
-
-                        Trace.WriteLine(DateTime.Now + " - " +
-                            String.Format("Wrote {0}, excluded {1}{2}", publicationsWritten, publicationsExcluded,
-                            publicationsNullAuthors == 0 ? String.Empty : ", " + publicationsNullAuthors + " had no author list"));
+                        catch (Exception ex)
+                        {
+                            Trace.WriteLine(DateTime.Now + " - " +
+                                String.Format("Error writing {0}/{1}/{2} to {3}: {4}",
+                                authorPublicationPmid, mostRelevantPublication.Value.PMID, leastRelevantPublication.Value.PMID, extremeRelevanceTableName, ex.Message));
+                        }
                     }
+
+                    Trace.WriteLine(DateTime.Now + " - " +
+                        String.Format("Wrote {0}, excluded {1}{2}", publicationsWritten, publicationsExcluded,
+                        publicationsNullAuthors == 0 ? String.Empty : ", " + publicationsNullAuthors + " had no author list"));
                 }
-            }
-            BackgroundWorker.ReportProgress(100);
+            } 
+
+            return true;
         }
         
 
@@ -338,7 +298,8 @@ namespace Com.StellmanGreene.FindRelated
         /// </summary>
         /// <param name="tableName">Name of the talbe to create</param>
         /// <param name="extremeRelevanceTableName">(output) Name of the _extremerelevance table created</param>
-        private static void CreateRelatedTable(Database db, string tableName, out string extremeRelevanceTableName)
+        /// <param name="queueTableName">(output) Name of the _queue table created</param>
+        private static void CreateRelatedTable(Database db, string tableName, out string extremeRelevanceTableName, out string queueTableName)
         {
             db.ExecuteNonQuery("DROP TABLE IF EXISTS " + tableName);
             db.ExecuteNonQuery("CREATE TABLE " + tableName + @" (
@@ -371,6 +332,19 @@ namespace Com.StellmanGreene.FindRelated
               PRIMARY KEY (PMID, MostRelevantPMID)
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
             ");
+
+            // Create the queue
+            queueTableName = tableName + "_queue";
+            db.ExecuteNonQuery("DROP TABLE IF EXISTS " + queueTableName);
+            db.ExecuteNonQuery("CREATE TABLE " + queueTableName + @" (
+              Setnb char(8) NOT NULL,
+              PMID int(11) NOT NULL,
+              Processed bit(1) default NULL,
+              Error bit(1) default NULL,
+              PRIMARY KEY (Setnb, PMID)
+            ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+            ");
+
         }
 
 

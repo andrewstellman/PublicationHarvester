@@ -55,6 +55,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="InputQueue.cs" />
     <Compile Include="RelatedFinder.cs" />
     <Compile Include="ListBoxTraceListener.cs" />
     <Compile Include="RelatedReports.cs" />
