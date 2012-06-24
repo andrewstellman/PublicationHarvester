@@ -12,8 +12,9 @@ namespace Com.StellmanGreene.FindRelated
         /* TODO:
          * Make Next() work
          * Make the properties work
+         * Read/write queue from the database
          * Add error reporting
-         * Add queue clear/restart
+         * Add queue interrupt/clear/restart
          * Add UI
          */ 
 
@@ -21,9 +22,19 @@ namespace Com.StellmanGreene.FindRelated
 
         public IEnumerable<int> CurrentPmids { get; private set; }
 
-        public int Count { get; private set; }
+        public int Count 
+        {
+            get
+            {
+                if (_setnbs == null)
+                    return 0;
+                return _setnbs.Count;
+            }
+        }
 
+        private readonly List<string> _setnbs = new List<string>();
         private readonly Dictionary<string, List<int>> _peopleIds = new Dictionary<string, List<int>>();
+        private int _currentIndex = -1;
 
         public InputQueue(FileInfo inputFile)
         {
@@ -69,9 +80,12 @@ namespace Com.StellmanGreene.FindRelated
                         {
                             ids = new List<int>();
                             _peopleIds[setnb] = ids;
+                            _setnbs.Add(setnb);
                         }
                         else
+                        {
                             ids = _peopleIds[setnb];
+                        }
                         ids.Add(pmid);
                     }
                 }
@@ -86,9 +100,32 @@ namespace Com.StellmanGreene.FindRelated
             Trace.WriteLine(DateTime.Now + " Read " + lineCount + " rows from the input file");
         }
 
+        /// <summary>
+        /// Get the next items from the queue
+        /// </summary>
+        /// <returns>True if a queue item is available, false otherwise</returns>
         public bool Next()
         {
-            return false;
+            _currentIndex++;
+
+            if (_setnbs == null || _peopleIds == null)
+                return false;
+
+            if (_currentIndex >= _setnbs.Count)
+                return false;
+            
+            CurrentSetnb = _setnbs[_currentIndex];
+            if (String.IsNullOrEmpty(CurrentSetnb))
+                return false;
+
+            if (!_peopleIds.ContainsKey(CurrentSetnb))
+                return false;
+
+            CurrentPmids = _peopleIds[CurrentSetnb];
+            if (CurrentPmids == null)
+                return false;
+
+            return true;
         }
     }
 }
