@@ -75,8 +75,8 @@ namespace Com.StellmanGreene.FindRelated
                     total += relatedSearchResults[key].Count;
                 Trace.WriteLine(DateTime.Now + " - found " + total + " related to " + relatedSearchResults.Keys.Count + " publications");
 
-                bool cancelled = ProcessSearchResults(relatedTable, publicationFilter, db, extremeRelevanceTableName, pubTypes, relatedRanks, relatedSearchResults);
-                if (cancelled)
+                bool completed = ProcessSearchResults(relatedTable, publicationFilter, db, extremeRelevanceTableName, pubTypes, relatedRanks, relatedSearchResults);
+                if (!completed) // ProcessSearchResults() returns false if the user cancelled the operation
                     break;
             }
             BackgroundWorker.ReportProgress(100);
