@@ -52,14 +52,24 @@ namespace Com.StellmanGreene.FindRelated
         private void startButton_Click(object sender, EventArgs e)
         {
             startButton.Enabled = false;
+            resumeButton.Enabled = false;
 
             string dsn = DSN.Text;
+
+            if (string.IsNullOrEmpty(inputFileTextBox.Text))
+            {
+                MessageBox.Show("Please specify a valid input file");
+                startButton.Enabled = true;
+                resumeButton.Enabled = true;
+                return;
+            }
 
             FileInfo inputFileInfo = new FileInfo(inputFileTextBox.Text);
             if (!inputFileInfo.Exists)
             {
                 MessageBox.Show("Please specify a valid input file");
                 startButton.Enabled = true;
+                resumeButton.Enabled = true;
                 return;
             }
 
@@ -67,6 +77,7 @@ namespace Com.StellmanGreene.FindRelated
             {
                 MessageBox.Show("Please select an ODBC data source from the dropdown");
                 startButton.Enabled = true;
+                resumeButton.Enabled = true;
                 return;
             }
 
@@ -75,6 +86,7 @@ namespace Com.StellmanGreene.FindRelated
             {
                 MessageBox.Show("Please specify a related publications table to create/replace");
                 startButton.Enabled = true;
+                resumeButton.Enabled = true;
                 return;
             }
 
@@ -83,36 +95,21 @@ namespace Com.StellmanGreene.FindRelated
             if (dialogResult == DialogResult.Cancel)
             {
                 startButton.Enabled = true;
+                resumeButton.Enabled = true;
                 return;
             }
 
             PublicationFilter publicationFilter = null;
             try
             {
-
-                // Get currently entered include languages
-                IEnumerable<string> includeLanguagesValues = new List<string>();
-                includeLanguagesValues = new List<string>(includeLanguages.Text.Split(INCLUDE_SEPARATORS, StringSplitOptions.RemoveEmptyEntries));
-
-                // Create the filter
-                publicationFilter = new PublicationFilter(
-                    sameJournal.Checked,
-                    !enableUpperBound.Checked ? null : (int?)pubWindowUpperBound.Value,
-                    !enableLowerBound.Checked ? null : (int?)pubWindowLowerBound.Value,
-                    !enableMaximumLinkRanking.Checked ? null : (int?)maximumLinkRanking.Value,
-                    includeCategoriesValues,
-                    includeLanguagesValues);
-
-                Trace.WriteLine(DateTime.Now + " - " + publicationFilter);
-
-                if (publicationFilter == null)
-                    throw new NullReferenceException("Error creating publication filter");
+                publicationFilter = GetPublicationFilter();
             }
             catch (Exception ex)
             {
                 Trace.WriteLine("Exception caught creating filters:");
                 Trace.WriteLine(ex.Message);
                 startButton.Enabled = true;
+                resumeButton.Enabled = true;
                 return;
             }
 
@@ -122,8 +119,35 @@ namespace Com.StellmanGreene.FindRelated
                 { "relatedTableName", relatedTableName }, 
                 { "inputFileInfo", inputFileInfo },
                 { "publicationFilter", publicationFilter },
+                { "resume", false },
             });
             cancelButton.Enabled = true;
+        }
+
+        /// <summary>
+        /// Get a new publication filter based on the form values
+        /// </summary>
+        /// <returns>New publication filter</returns>
+        private PublicationFilter GetPublicationFilter()
+        {
+            // Get currently entered include languages
+            IEnumerable<string> includeLanguagesValues = new List<string>();
+            includeLanguagesValues = new List<string>(includeLanguages.Text.Split(INCLUDE_SEPARATORS, StringSplitOptions.RemoveEmptyEntries));
+
+            // Create the filter
+            PublicationFilter publicationFilter = new PublicationFilter(
+                sameJournal.Checked,
+                !enableUpperBound.Checked ? null : (int?)pubWindowUpperBound.Value,
+                !enableLowerBound.Checked ? null : (int?)pubWindowLowerBound.Value,
+                !enableMaximumLinkRanking.Checked ? null : (int?)maximumLinkRanking.Value,
+                includeCategoriesValues,
+                includeLanguagesValues);
+
+            Trace.WriteLine(DateTime.Now + " - " + publicationFilter);
+
+            if (publicationFilter == null)
+                throw new NullReferenceException("Error creating publication filter");
+            return publicationFilter;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -249,12 +273,14 @@ namespace Com.StellmanGreene.FindRelated
             relatedFinder.Go(args["dsn"] as string,
                 args["relatedTableName"] as string,
                 args["inputFileInfo"] as FileInfo,
-                args["publicationFilter"] as PublicationFilter);
+                args["publicationFilter"] as PublicationFilter,
+                (bool)args["resume"]);
         }
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             startButton.Enabled = true;
+            resumeButton.Enabled = true;
             cancelButton.Enabled = false;
             Trace.WriteLine(DateTime.Now + " - finished run");
         }
@@ -388,6 +414,94 @@ namespace Com.StellmanGreene.FindRelated
         private void relatedTable_TextChanged(object sender, EventArgs e)
         {
             peoplePublicationsView.Text = relatedTable.Text + "_peoplepublications";
+            PrintQueueMessage();
+        }
+
+        private void resumeButton_Click(object sender, EventArgs e)
+        {
+            startButton.Enabled = false;
+            resumeButton.Enabled = false;
+
+            string dsn = DSN.Text;
+
+            if (String.IsNullOrEmpty(dsn) || dsn.StartsWith("==") || dsn.EndsWith("DSNs"))
+            {
+                MessageBox.Show("Please select an ODBC data source from the dropdown");
+                startButton.Enabled = true;
+                resumeButton.Enabled = true;
+                return;
+            }
+
+            string relatedTableName = relatedTable.Text;
+            if (String.IsNullOrEmpty(relatedTableName))
+            {
+                MessageBox.Show("Please specify a related publications table to resume from");
+                startButton.Enabled = true;
+                resumeButton.Enabled = true;
+                return;
+            }
+
+            PublicationFilter publicationFilter = null;
+            try
+            {
+                publicationFilter = GetPublicationFilter();
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine("Exception caught creating filters:");
+                Trace.WriteLine(ex.Message);
+                startButton.Enabled = true;
+                resumeButton.Enabled = true;
+                return;
+            }
+
+            // Start the run
+            backgroundWorker1.RunWorkerAsync(new Dictionary<string, object>() { 
+                { "dsn", dsn }, 
+                { "relatedTableName", relatedTableName }, 
+                { "inputFileInfo", null},
+                { "publicationFilter", publicationFilter },
+                { "resume", true },
+            });
+            cancelButton.Enabled = true;
+        }
+
+        private void DSN_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            PrintQueueMessage();
+        }
+
+        private void PrintQueueMessage()
+        {
+            string dsn = DSN.Text;
+            if (!(String.IsNullOrEmpty(dsn) || dsn.StartsWith("==") || dsn.EndsWith("DSNs") || string.IsNullOrEmpty(relatedTable.Text)))
+            {
+                try
+                {
+                    Database db = new Database(dsn);
+
+                    string sql = "SHOW TABLES LIKE \"" + relatedTable.Text + "_queue\"";
+                    DataTable table = db.ExecuteQuery(sql);
+                    if (table.Rows.Count == 0)
+                        return;
+
+                    int queueSize = db.GetIntValue("SELECT Count(*) FROM " + relatedTable.Text + "_queue WHERE Processed = 0 OR Error = 1");
+                    string message = DateTime.Now + " " + queueSize + " unprocessed pairs in '" + dsn + "'";
+                    int errors = db.GetIntValue("SELECT Count(*) FROM " + relatedTable.Text + "_queue WHERE Error = 1");
+                    if (errors > 0)
+                        message += " (including " + errors + " errors)";
+                    Trace.WriteLine(message);
+                }
+                catch
+                {
+                    Trace.WriteLine(DateTime.Now + " Unable to read data about unprocessed Setnbs/PMIDs from database '" + dsn + "'");
+                }
+            }
+        }
+
+        private void DSN_Leave(object sender, EventArgs e)
+        {
+            PrintQueueMessage();
         }
 
     }
