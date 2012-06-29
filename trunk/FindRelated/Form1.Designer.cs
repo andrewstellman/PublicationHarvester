@@ -65,6 +65,7 @@
             this.generateReports = new System.Windows.Forms.Button();
             this.peoplePublicationsView = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
+            this.resumeButton = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.maximumLinkRanking)).BeginInit();
@@ -90,7 +91,9 @@
             this.DSN.Name = "DSN";
             this.DSN.Size = new System.Drawing.Size(411, 21);
             this.DSN.TabIndex = 5;
+            this.DSN.SelectedIndexChanged += new System.EventHandler(this.DSN_SelectedIndexChanged);
             this.DSN.Click += new System.EventHandler(this.DSN_Click);
+            this.DSN.Leave += new System.EventHandler(this.DSN_Leave);
             // 
             // ODBCPanel
             // 
@@ -188,7 +191,7 @@
             // cancelButton
             // 
             this.cancelButton.Enabled = false;
-            this.cancelButton.Location = new System.Drawing.Point(93, 301);
+            this.cancelButton.Location = new System.Drawing.Point(174, 301);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
             this.cancelButton.TabIndex = 90;
@@ -447,11 +450,22 @@
             this.label11.TabIndex = 223;
             this.label11.Text = "PeoplePublications view to create/replace";
             // 
+            // resumeButton
+            // 
+            this.resumeButton.Location = new System.Drawing.Point(93, 301);
+            this.resumeButton.Name = "resumeButton";
+            this.resumeButton.Size = new System.Drawing.Size(75, 23);
+            this.resumeButton.TabIndex = 224;
+            this.resumeButton.Text = "Resume";
+            this.resumeButton.UseVisualStyleBackColor = true;
+            this.resumeButton.Click += new System.EventHandler(this.resumeButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(449, 541);
+            this.Controls.Add(this.resumeButton);
             this.Controls.Add(this.peoplePublicationsView);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.generateReports);
@@ -529,6 +543,7 @@
         private System.Windows.Forms.Button generateReports;
         private System.Windows.Forms.TextBox peoplePublicationsView;
         internal System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Button resumeButton;
     }
 }
 

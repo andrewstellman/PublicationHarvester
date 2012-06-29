@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Diagnostics;
+using System.Data;
+using Com.StellmanGreene.PubMed;
 
 namespace Com.StellmanGreene.FindRelated
 {
@@ -22,6 +24,10 @@ namespace Com.StellmanGreene.FindRelated
 
         public IEnumerable<int> CurrentPmids { get; private set; }
 
+        private readonly Database _db;
+
+        private readonly string _queueTableName;
+
         public int Count 
         {
             get
@@ -36,9 +42,51 @@ namespace Com.StellmanGreene.FindRelated
         private readonly Dictionary<string, List<int>> _peopleIds = new Dictionary<string, List<int>>();
         private int _currentIndex = -1;
 
-        public InputQueue(FileInfo inputFile)
+        /// <summary>
+        /// Read a new input queue from a file and write it to the database
+        /// </summary>
+        public InputQueue(FileInfo inputFile, Database db, string queueTableName)
         {
+            _db = db;
+            _queueTableName = queueTableName;
 
+            ReadInputFile(inputFile);
+            WriteQueueTable();
+        }
+
+        /// <summary>
+        /// Read the existing input queue from the database to resume
+        /// </summary>
+        /// <param name="db"></param>
+        /// <param name="queueTableName"></param>
+        public InputQueue(Database db, string queueTableName)
+        {
+            _db = db;
+            _queueTableName = queueTableName;
+
+            ResumeInputQueue();
+        }
+
+        /// <summary>
+        /// Resume an existing inpt queue
+        /// </summary>
+        private void ResumeInputQueue()
+        {
+            DataTable queue = _db.ExecuteQuery("SELECT Setnb, PMID FROM " + _queueTableName + " WHERE Processed = 0 OR Error = 1");
+            foreach (DataRow row in queue.Rows)
+            {
+                if (row["Setnb"] != null && row["PMID"] != null)
+                {
+                    AddPairToQueue(row["Setnb"].ToString(), (int)row["PMID"]);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Read the input file into the fields
+        /// </summary>
+        private void ReadInputFile(FileInfo inputFile)
+        {
             int lineCount = -1;
 
             // Read the input file into the peopleIds Dictionary
@@ -75,18 +123,7 @@ namespace Com.StellmanGreene.FindRelated
                         if (setnb.StartsWith("\"") && setnb.EndsWith("\""))
                             setnb = setnb.Substring(1, setnb.Length - 2);
 
-                        List<int> ids;
-                        if (!_peopleIds.ContainsKey(setnb))
-                        {
-                            ids = new List<int>();
-                            _peopleIds[setnb] = ids;
-                            _setnbs.Add(setnb);
-                        }
-                        else
-                        {
-                            ids = _peopleIds[setnb];
-                        }
-                        ids.Add(pmid);
+                        AddPairToQueue(setnb, pmid);
                     }
                 }
             }
@@ -98,6 +135,63 @@ namespace Com.StellmanGreene.FindRelated
             }
 
             Trace.WriteLine(DateTime.Now + " Read " + lineCount + " rows from the input file");
+        }
+
+        /// <summary>
+        /// Add a Setnb/PMID pair to the queue
+        /// </summary>
+        private void AddPairToQueue(string setnb, int pmid)
+        {
+            List<int> ids;
+            if (!_peopleIds.ContainsKey(setnb))
+            {
+                ids = new List<int>();
+                _peopleIds[setnb] = ids;
+                _setnbs.Add(setnb);
+            }
+            else
+            {
+                ids = _peopleIds[setnb];
+            }
+            ids.Add(pmid);
+        }
+
+        /// <summary>
+        /// Write the queue data out to the table
+        /// </summary>
+        private void WriteQueueTable()
+        {
+            int count = 0;
+            try
+            {
+
+                _db.ExecuteNonQuery("TRUNCATE TABLE " + _queueTableName);
+
+                foreach (string setnb in _setnbs)
+                {
+                    if (_peopleIds.ContainsKey(setnb))
+                    {
+                        IEnumerable<int> pmids = _peopleIds[setnb];
+                        if (pmids == null) break;
+                        foreach (int pmid in pmids)
+                        {
+                            _db.ExecuteNonQuery(
+                                "INSERT INTO " + _queueTableName + " (Setnb, PMID) VALUES (?, ?)",
+                                new System.Collections.ArrayList() { 
+                                            Database.Parameter(setnb), 
+                                            Database.Parameter(pmid),
+                                        });
+                            count++;
+                        }
+                    }
+                }
+
+                Trace.WriteLine(DateTime.Now + " Wrote " + count + " rows to queue table " + _queueTableName);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(DateTime.Now + " Database error after writing " + count + " rows to queue table " + _queueTableName + ": " + ex.Message);
+            }
         }
 
         /// <summary>
@@ -126,6 +220,47 @@ namespace Com.StellmanGreene.FindRelated
                 return false;
 
             return true;
+        }
+
+        /// <summary>
+        /// Mark a current setnb/pmid pair as processed in the queue table
+        /// </summary>
+        public void MarkProcessed(int pmid)
+        {
+            try
+            {
+                _db.ExecuteNonQuery(
+                    "UPDATE " + _queueTableName + " SET Processed = 1, Error = 0 WHERE Setnb = ? AND PMID = ?",
+                    new System.Collections.ArrayList() { 
+                    Database.Parameter(CurrentSetnb), 
+                    Database.Parameter(pmid),
+                });
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(DateTime.Now + " Database error marking " + CurrentSetnb + "/" + pmid +" as processed in " + _queueTableName + ": " + ex.Message);
+                MarkError(pmid);
+            }
+        }
+
+        /// <summary>
+        /// Mark a current setnb/pmid pair as error in the queue table
+        /// </summary>
+        public void MarkError(int pmid)
+        {
+            try
+            {
+                _db.ExecuteNonQuery(
+                    "UPDATE " + _queueTableName + " SET Processed = 0, Error = 1 WHERE Setnb = ? AND PMID = ?",
+                    new System.Collections.ArrayList() { 
+                    Database.Parameter(CurrentSetnb), 
+                    Database.Parameter(pmid),
+                });
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(DateTime.Now + " Database error marking " + CurrentSetnb + "/" + pmid +" as error in " + _queueTableName + ": " + ex.Message);
+            }
         }
     }
 }

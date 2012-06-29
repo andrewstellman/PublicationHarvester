@@ -46,16 +46,23 @@ namespace Com.StellmanGreene.FindRelated
 
         public System.ComponentModel.BackgroundWorker BackgroundWorker { get; set; }
 
-        public void Go(string odbcDsn, string relatedTable, FileInfo inputFileInfo, PublicationFilter publicationFilter)
+        public void Go(string odbcDsn, string relatedTable, FileInfo inputFileInfo, PublicationFilter publicationFilter, bool resume)
         {
             Database db = new Database(odbcDsn);
 
-            string extremeRelevanceTableName;
-            string queueTableName;
-            CreateRelatedTable(db, relatedTable, out extremeRelevanceTableName, out queueTableName);
-            PublicationTypes pubTypes = new PublicationTypes(db);
+            string extremeRelevanceTableName = relatedTable + "_extremerelevance";
+            string queueTableName = relatedTable + "_queue";
 
-            InputQueue inputQueue = new InputQueue(inputFileInfo);
+            InputQueue inputQueue;
+            if (!resume)
+            {
+                CreateRelatedTable(db, relatedTable, extremeRelevanceTableName, queueTableName);
+                inputQueue = new InputQueue(inputFileInfo, db, queueTableName);
+            }
+            else
+            {
+                inputQueue = new InputQueue(db, queueTableName);
+            }
 
             int setnbCount = 0;
             while (inputQueue.Next())
@@ -75,7 +82,7 @@ namespace Com.StellmanGreene.FindRelated
                     total += relatedSearchResults[key].Count;
                 Trace.WriteLine(DateTime.Now + " - found " + total + " related to " + relatedSearchResults.Keys.Count + " publications");
 
-                bool completed = ProcessSearchResults(relatedTable, publicationFilter, db, extremeRelevanceTableName, pubTypes, relatedRanks, relatedSearchResults);
+                bool completed = ProcessSearchResults(relatedTable, publicationFilter, db, extremeRelevanceTableName, relatedRanks, relatedSearchResults, inputQueue);
                 if (!completed) // ProcessSearchResults() returns false if the user cancelled the operation
                     break;
             }
@@ -94,12 +101,18 @@ namespace Com.StellmanGreene.FindRelated
         /// <param name="relatedRanks"></param>
         /// <param name="relatedSearchResults"></param>
         /// <returns>True if completed, false if cancelled</returns>
-        private bool ProcessSearchResults(string relatedTable, PublicationFilter publicationFilter, Database db, string extremeRelevanceTableName, PublicationTypes pubTypes, Dictionary<int, Dictionary<int, RankAndScore>> relatedRanks, Dictionary<int, List<int>> relatedSearchResults)
+        private bool ProcessSearchResults(string relatedTable, PublicationFilter publicationFilter, Database db, string extremeRelevanceTableName, 
+            Dictionary<int, Dictionary<int, RankAndScore>> relatedRanks, Dictionary<int, List<int>> relatedSearchResults,
+            InputQueue inputQueue)
         {
             int count = 0;
 
+            PublicationTypes pubTypes = new PublicationTypes(db);
+
             foreach (int authorPublicationPmid in relatedSearchResults.Keys)
             {
+                bool error = false;
+
                 if (BackgroundWorker != null && BackgroundWorker.CancellationPending)
                 {
                     Trace.WriteLine(DateTime.Now + " - cancelled");
@@ -122,6 +135,9 @@ namespace Com.StellmanGreene.FindRelated
                 if (!retrievedPublication)
                 {
                     Trace.WriteLine(DateTime.Now + " - unable to read publication " + authorPublicationPmid + " from the database");
+
+                    inputQueue.MarkError(authorPublicationPmid);
+
                     continue;
                 }
 
@@ -129,7 +145,11 @@ namespace Com.StellmanGreene.FindRelated
                 // (Multiple authors might link to the same publication, and each will add the same links.)
                 int relatedCount = db.GetIntValue("SELECT Count(*) FROM " + relatedTable + " WHERE PMID = (?)",
                     new System.Collections.ArrayList() { Database.Parameter(authorPublicationPmid) });
-                if (relatedCount == 0)
+                if (relatedCount != 0)
+                {
+                    Trace.WriteLine(DateTime.Now + " - [" + ++count + "/" + relatedSearchResults.Keys.Count + "] database already contains related articles for " + authorPublicationPmid);
+                } 
+                else
                 {
                     // Get the list of related PMIDs and their ranks from the search results
                     List<int> relatedPmids = relatedSearchResults[authorPublicationPmid];
@@ -141,31 +161,7 @@ namespace Com.StellmanGreene.FindRelated
 
                     Trace.WriteLine(DateTime.Now + " - [" + ++count + "/" + relatedSearchResults.Keys.Count + "] adding " + relatedPmids.Count + " related articles found for " + authorPublicationPmid);
 
-                    // Search PubMed for all of the related publications and add them to the database
-                    StringBuilder searchQuery = new StringBuilder();
-                    foreach (int relatedPmid in relatedPmids)
-                    {
-                        // Build the search query to issue the PubMed search for related IDs
-                        searchQuery.AppendFormat("{0}{1}[uid]", searchQuery.Length == 0 ? String.Empty : " OR ", relatedPmid);
-                    }
-                    NCBI.UsePostRequest = true;
-
-                    // If ncbi.Search() throws an exception, retry -- web connection may be temporarily down
-                    bool searchSuccessful = false;
-                    string searchResults = null;
-                    while (!searchSuccessful)
-                    {
-                        try
-                        {
-                            searchResults = ncbi.Search(searchQuery.ToString());
-                            searchSuccessful = true;
-                        }
-                        catch (Exception ex)
-                        {
-                            Trace.WriteLine(DateTime.Now + " - web request error during NCBI search, retrying search. Error message: " + ex.Message);
-                            System.Threading.Thread.Sleep(2000);
-                        }
-                    }
+                    string searchResults = SearchPubMedForRelatedPublications(relatedPmids);
 
                     int publicationsWritten = 0;
                     int publicationsExcluded = 0;
@@ -221,9 +217,10 @@ namespace Com.StellmanGreene.FindRelated
                                 Publications.WriteToDB(relatedPublication, db, pubTypes, null);
 
                                 // Write the pmid/relatedPmid pair to the related publications table.
+
                                 db.ExecuteNonQuery(
-                                    "INSERT INTO " + relatedTable + " (PMID, RelatedPMID, Rank, Score) VALUES (?, ?, ?, ?)",
-                                    new System.Collections.ArrayList() { 
+                                     "INSERT INTO " + relatedTable + " (PMID, RelatedPMID, Rank, Score) VALUES (?, ?, ?, ?)",
+                                     new System.Collections.ArrayList() { 
                                             Database.Parameter(authorPublicationPmid), 
                                             Database.Parameter(relatedPublication.PMID),
                                             Database.Parameter(rank),
@@ -236,6 +233,8 @@ namespace Com.StellmanGreene.FindRelated
                             {
                                 Trace.WriteLine("Unable to add related article " + relatedPublication.PMID + ", error message follows");
                                 Trace.WriteLine(ex.Message);
+
+                                error = true;
                             }
                         }
                         else
@@ -280,6 +279,8 @@ namespace Com.StellmanGreene.FindRelated
                             Trace.WriteLine(DateTime.Now + " - " +
                                 String.Format("Error writing {0}/{1}/{2} to {3}: {4}",
                                 authorPublicationPmid, mostRelevantPublication.Value.PMID, leastRelevantPublication.Value.PMID, extremeRelevanceTableName, ex.Message));
+
+                            error = true;
                         }
                     }
 
@@ -287,9 +288,48 @@ namespace Com.StellmanGreene.FindRelated
                         String.Format("Wrote {0}, excluded {1}{2}", publicationsWritten, publicationsExcluded,
                         publicationsNullAuthors == 0 ? String.Empty : ", " + publicationsNullAuthors + " had no author list"));
                 }
+
+                if (!error)
+                    inputQueue.MarkProcessed(authorPublicationPmid);
+                else
+                    inputQueue.MarkError(authorPublicationPmid);
             } 
 
             return true;
+        }
+
+        /// <summary>
+        /// Search PubMed for all of the related publications and add them to the database, keep trying until search is successful
+        /// </summary>
+        /// <param name="relatedPmids">Related publications</param>
+        /// <returns>NCBI search results</returns>
+        private string SearchPubMedForRelatedPublications(List<int> relatedPmids)
+        {
+            StringBuilder searchQuery = new StringBuilder();
+            foreach (int relatedPmid in relatedPmids)
+            {
+                // Build the search query to issue the PubMed search for related IDs
+                searchQuery.AppendFormat("{0}{1}[uid]", searchQuery.Length == 0 ? String.Empty : " OR ", relatedPmid);
+            }
+            NCBI.UsePostRequest = true;
+
+            // If ncbi.Search() throws an exception, retry -- web connection may be temporarily down
+            bool searchSuccessful = false;
+            string searchResults = null;
+            while (!searchSuccessful)
+            {
+                try
+                {
+                    searchResults = ncbi.Search(searchQuery.ToString());
+                    searchSuccessful = true;
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine(DateTime.Now + " - web request error during NCBI search, retrying search. Error message: " + ex.Message);
+                    System.Threading.Thread.Sleep(2000);
+                }
+            }
+            return searchResults;
         }
         
 
@@ -297,9 +337,9 @@ namespace Com.StellmanGreene.FindRelated
         /// Create the related publications table and its PeoplePublications view
         /// </summary>
         /// <param name="tableName">Name of the talbe to create</param>
-        /// <param name="extremeRelevanceTableName">(output) Name of the _extremerelevance table created</param>
-        /// <param name="queueTableName">(output) Name of the _queue table created</param>
-        private static void CreateRelatedTable(Database db, string tableName, out string extremeRelevanceTableName, out string queueTableName)
+        /// <param name="extremeRelevanceTableName">Name of the _extremerelevance table created</param>
+        /// <param name="queueTableName">Name of the _queue table created</param>
+        private static void CreateRelatedTable(Database db, string tableName, string extremeRelevanceTableName, string queueTableName)
         {
             db.ExecuteNonQuery("DROP TABLE IF EXISTS " + tableName);
             db.ExecuteNonQuery("CREATE TABLE " + tableName + @" (
@@ -320,7 +360,6 @@ namespace Com.StellmanGreene.FindRelated
             ");
 
             // Create the most/least relevant publications table (table name + "_extremerelevance")
-            extremeRelevanceTableName = tableName + "_extremerelevance";
             db.ExecuteNonQuery("DROP TABLE IF EXISTS " + extremeRelevanceTableName);
             db.ExecuteNonQuery("CREATE TABLE " + extremeRelevanceTableName + @" (
               PMID int(11) NOT NULL,
@@ -334,7 +373,6 @@ namespace Com.StellmanGreene.FindRelated
             ");
 
             // Create the queue
-            queueTableName = tableName + "_queue";
             db.ExecuteNonQuery("DROP TABLE IF EXISTS " + queueTableName);
             db.ExecuteNonQuery("CREATE TABLE " + queueTableName + @" (
               Setnb char(8) NOT NULL,
