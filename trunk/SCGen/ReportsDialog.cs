@@ -167,20 +167,6 @@ namespace SCGen
                 }
             }
 
-            if (DoStarColleaguePositions.Checked)
-            {
-                try
-                {
-                    NumReports++;
-                    AddLogEntry("Creating StarColleaguePositions report: " + StarColleaguePositions.Text);
-                    CreateStarColleaguePositionsReport();
-                }
-                catch (Exception ex)
-                {
-                    AddLogEntry("An error occurred while writing the Star Colleague Positions report: " + ex.Message);
-                }
-            }
-
 
             toolStripStatusLabel1.Text = "Done";
             toolStripProgressBar1.Minimum = 1;
@@ -195,34 +181,6 @@ namespace SCGen
             CheckForExistingFiles();
         }
 
-
-        /// <summary>
-        /// Write the Star Colleague Positions report
-        /// </summary>
-        private void CreateStarColleaguePositionsReport()
-        {
-            string peoplePublications = "PeoplePublications";
-            if (useAlternateCheckbox.Checked)
-                peoplePublications = alternateTableName.Text;
-
-            string sql = @"
-SELECT pp.Setnb AS star_setnb, cp.Setnb AS colleague_setnb, pp.PMID as pmid, pp.AuthorPosition AS star_pos, cp.AuthorPosition AS colleague_pos
-FROM " + peoplePublications + @" pp, ColleaguePublications cp, StarColleagues sc
-WHERE pp.Setnb = sc.StarSetnb
-AND cp.Setnb = sc.Setnb
-AND pp.PMID = cp.PMID";
-
-            DataTable results = DB.ExecuteQuery(sql);
-            using (StreamWriter writer = new StreamWriter(StarColleaguePositions.Text))
-            {
-                writer.WriteLine("star_setnb,colleague_setnb,pmid,star_pos,colleague_pos");
-                foreach (DataRow row in results.Rows)
-                {
-                    writer.WriteLine("{0},{1},{2},{3},{4}",
-                        row["star_setnb"], row["colleague_setnb"], row["pmid"], row["star_pos"] ?? "", row["colleague_pos"] ?? "");
-                }
-            }
-        }
 
         /// <summary>
         /// Write the Star Colleagues report
