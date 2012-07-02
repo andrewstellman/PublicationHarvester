@@ -63,10 +63,6 @@ namespace SCGen
             this.StarColleaguesRadioButtons = new System.Windows.Forms.Panel();
             this.ContinueStarColleagues = new System.Windows.Forms.RadioButton();
             this.OverwriteStarColleagues = new System.Windows.Forms.RadioButton();
-            this.StarColleaguePositions = new System.Windows.Forms.TextBox();
-            this.DoStarColleaguePositions = new System.Windows.Forms.CheckBox();
-            this.alternateTableName = new System.Windows.Forms.TextBox();
-            this.useAlternateCheckbox = new System.Windows.Forms.CheckBox();
             this.PublicationsRadioButtons.SuspendLayout();
             this.PeopleRadioButtons.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -79,7 +75,7 @@ namespace SCGen
             this.DoColleagues.Checked = true;
             this.DoColleagues.CheckState = System.Windows.Forms.CheckState.Checked;
             this.DoColleagues.Location = new System.Drawing.Point(11, 24);
-            this.DoColleagues.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.DoColleagues.Margin = new System.Windows.Forms.Padding(2);
             this.DoColleagues.Name = "DoColleagues";
             this.DoColleagues.Size = new System.Drawing.Size(78, 17);
             this.DoColleagues.TabIndex = 10;
@@ -102,7 +98,7 @@ namespace SCGen
             this.DoPublications.Checked = true;
             this.DoPublications.CheckState = System.Windows.Forms.CheckState.Checked;
             this.DoPublications.Location = new System.Drawing.Point(11, 78);
-            this.DoPublications.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.DoPublications.Margin = new System.Windows.Forms.Padding(2);
             this.DoPublications.Name = "DoPublications";
             this.DoPublications.Size = new System.Drawing.Size(83, 17);
             this.DoPublications.TabIndex = 30;
@@ -115,7 +111,7 @@ namespace SCGen
             this.DoStarColleagues.Checked = true;
             this.DoStarColleagues.CheckState = System.Windows.Forms.CheckState.Checked;
             this.DoStarColleagues.Location = new System.Drawing.Point(11, 131);
-            this.DoStarColleagues.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.DoStarColleagues.Margin = new System.Windows.Forms.Padding(2);
             this.DoStarColleagues.Name = "DoStarColleagues";
             this.DoStarColleagues.Size = new System.Drawing.Size(100, 17);
             this.DoStarColleagues.TabIndex = 50;
@@ -125,7 +121,7 @@ namespace SCGen
             // StarColleagues
             // 
             this.StarColleagues.Location = new System.Drawing.Point(115, 129);
-            this.StarColleagues.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.StarColleagues.Margin = new System.Windows.Forms.Padding(2);
             this.StarColleagues.Name = "StarColleagues";
             this.StarColleagues.Size = new System.Drawing.Size(296, 20);
             this.StarColleagues.TabIndex = 55;
@@ -134,7 +130,7 @@ namespace SCGen
             // Publications
             // 
             this.Publications.Location = new System.Drawing.Point(115, 76);
-            this.Publications.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Publications.Margin = new System.Windows.Forms.Padding(2);
             this.Publications.Name = "Publications";
             this.Publications.Size = new System.Drawing.Size(296, 20);
             this.Publications.TabIndex = 35;
@@ -143,7 +139,7 @@ namespace SCGen
             // Colleagues
             // 
             this.Colleagues.Location = new System.Drawing.Point(115, 22);
-            this.Colleagues.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Colleagues.Margin = new System.Windows.Forms.Padding(2);
             this.Colleagues.Name = "Colleagues";
             this.Colleagues.Size = new System.Drawing.Size(296, 20);
             this.Colleagues.TabIndex = 15;
@@ -152,7 +148,7 @@ namespace SCGen
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(8, 270);
+            this.label2.Location = new System.Drawing.Point(8, 213);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(139, 13);
@@ -161,8 +157,8 @@ namespace SCGen
             // 
             // Folder
             // 
-            this.Folder.Location = new System.Drawing.Point(10, 286);
-            this.Folder.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Folder.Location = new System.Drawing.Point(10, 229);
+            this.Folder.Margin = new System.Windows.Forms.Padding(2);
             this.Folder.Multiline = true;
             this.Folder.Name = "Folder";
             this.Folder.ReadOnly = true;
@@ -175,8 +171,8 @@ namespace SCGen
             // SpecifyFolder
             // 
             this.SpecifyFolder.AutoEllipsis = true;
-            this.SpecifyFolder.Location = new System.Drawing.Point(526, 302);
-            this.SpecifyFolder.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.SpecifyFolder.Location = new System.Drawing.Point(526, 245);
+            this.SpecifyFolder.Margin = new System.Windows.Forms.Padding(2);
             this.SpecifyFolder.Name = "SpecifyFolder";
             this.SpecifyFolder.Size = new System.Drawing.Size(16, 18);
             this.SpecifyFolder.TabIndex = 75;
@@ -190,7 +186,7 @@ namespace SCGen
             this.PublicationsRadioButtons.Controls.Add(this.OverwritePublications);
             this.PublicationsRadioButtons.Enabled = false;
             this.PublicationsRadioButtons.Location = new System.Drawing.Point(11, 98);
-            this.PublicationsRadioButtons.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.PublicationsRadioButtons.Margin = new System.Windows.Forms.Padding(2);
             this.PublicationsRadioButtons.Name = "PublicationsRadioButtons";
             this.PublicationsRadioButtons.Size = new System.Drawing.Size(398, 27);
             this.PublicationsRadioButtons.TabIndex = 16;
@@ -199,7 +195,7 @@ namespace SCGen
             // 
             this.ContinuePublications.AutoSize = true;
             this.ContinuePublications.Location = new System.Drawing.Point(243, 2);
-            this.ContinuePublications.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ContinuePublications.Margin = new System.Windows.Forms.Padding(2);
             this.ContinuePublications.Name = "ContinuePublications";
             this.ContinuePublications.Size = new System.Drawing.Size(155, 17);
             this.ContinuePublications.TabIndex = 45;
@@ -211,7 +207,7 @@ namespace SCGen
             this.OverwritePublications.AutoSize = true;
             this.OverwritePublications.Checked = true;
             this.OverwritePublications.Location = new System.Drawing.Point(24, 2);
-            this.OverwritePublications.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.OverwritePublications.Margin = new System.Windows.Forms.Padding(2);
             this.OverwritePublications.Name = "OverwritePublications";
             this.OverwritePublications.Size = new System.Drawing.Size(194, 17);
             this.OverwritePublications.TabIndex = 40;
@@ -225,7 +221,7 @@ namespace SCGen
             this.PeopleRadioButtons.Controls.Add(this.OverwritePeople);
             this.PeopleRadioButtons.Enabled = false;
             this.PeopleRadioButtons.Location = new System.Drawing.Point(11, 45);
-            this.PeopleRadioButtons.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.PeopleRadioButtons.Margin = new System.Windows.Forms.Padding(2);
             this.PeopleRadioButtons.Name = "PeopleRadioButtons";
             this.PeopleRadioButtons.Size = new System.Drawing.Size(398, 27);
             this.PeopleRadioButtons.TabIndex = 17;
@@ -234,7 +230,7 @@ namespace SCGen
             // 
             this.ContinuePeople.AutoSize = true;
             this.ContinuePeople.Location = new System.Drawing.Point(243, 2);
-            this.ContinuePeople.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ContinuePeople.Margin = new System.Windows.Forms.Padding(2);
             this.ContinuePeople.Name = "ContinuePeople";
             this.ContinuePeople.Size = new System.Drawing.Size(155, 17);
             this.ContinuePeople.TabIndex = 25;
@@ -246,7 +242,7 @@ namespace SCGen
             this.OverwritePeople.AutoSize = true;
             this.OverwritePeople.Checked = true;
             this.OverwritePeople.Location = new System.Drawing.Point(24, 2);
-            this.OverwritePeople.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.OverwritePeople.Margin = new System.Windows.Forms.Padding(2);
             this.OverwritePeople.Name = "OverwritePeople";
             this.OverwritePeople.Size = new System.Drawing.Size(173, 17);
             this.OverwritePeople.TabIndex = 20;
@@ -256,8 +252,8 @@ namespace SCGen
             // 
             // GenerateReports
             // 
-            this.GenerateReports.Location = new System.Drawing.Point(182, 368);
-            this.GenerateReports.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.GenerateReports.Location = new System.Drawing.Point(182, 311);
+            this.GenerateReports.Margin = new System.Windows.Forms.Padding(2);
             this.GenerateReports.Name = "GenerateReports";
             this.GenerateReports.Size = new System.Drawing.Size(186, 23);
             this.GenerateReports.TabIndex = 1;
@@ -271,7 +267,7 @@ namespace SCGen
             this.toolStripStatusLabel1,
             this.toolStripProgressBar1,
             this.toolStripStatusLabel2});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 395);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 343);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 10, 0);
             this.statusStrip1.Size = new System.Drawing.Size(552, 23);
@@ -303,8 +299,8 @@ namespace SCGen
             // JournalWeightsFileDialog
             // 
             this.JournalWeightsFileDialog.AutoEllipsis = true;
-            this.JournalWeightsFileDialog.Location = new System.Drawing.Point(526, 346);
-            this.JournalWeightsFileDialog.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.JournalWeightsFileDialog.Location = new System.Drawing.Point(526, 289);
+            this.JournalWeightsFileDialog.Margin = new System.Windows.Forms.Padding(2);
             this.JournalWeightsFileDialog.Name = "JournalWeightsFileDialog";
             this.JournalWeightsFileDialog.Size = new System.Drawing.Size(16, 19);
             this.JournalWeightsFileDialog.TabIndex = 95;
@@ -313,8 +309,8 @@ namespace SCGen
             // 
             // JournalWeights
             // 
-            this.JournalWeights.Location = new System.Drawing.Point(10, 346);
-            this.JournalWeights.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.JournalWeights.Location = new System.Drawing.Point(10, 289);
+            this.JournalWeights.Margin = new System.Windows.Forms.Padding(2);
             this.JournalWeights.Name = "JournalWeights";
             this.JournalWeights.Size = new System.Drawing.Size(512, 20);
             this.JournalWeights.TabIndex = 90;
@@ -322,7 +318,7 @@ namespace SCGen
             // 
             // label3
             // 
-            this.label3.Location = new System.Drawing.Point(10, 332);
+            this.label3.Location = new System.Drawing.Point(10, 275);
             this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(162, 19);
@@ -337,7 +333,7 @@ namespace SCGen
             // 
             this.peopleReportSections.FormattingEnabled = true;
             this.peopleReportSections.Location = new System.Drawing.Point(416, 24);
-            this.peopleReportSections.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.peopleReportSections.Margin = new System.Windows.Forms.Padding(2);
             this.peopleReportSections.Name = "peopleReportSections";
             this.peopleReportSections.Size = new System.Drawing.Size(116, 121);
             this.peopleReportSections.TabIndex = 96;
@@ -356,7 +352,7 @@ namespace SCGen
             // AddButton
             // 
             this.AddButton.Location = new System.Drawing.Point(416, 167);
-            this.AddButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.AddButton.Margin = new System.Windows.Forms.Padding(2);
             this.AddButton.Name = "AddButton";
             this.AddButton.Size = new System.Drawing.Size(56, 19);
             this.AddButton.TabIndex = 98;
@@ -368,7 +364,7 @@ namespace SCGen
             // 
             this.RemoveButton.Enabled = false;
             this.RemoveButton.Location = new System.Drawing.Point(476, 167);
-            this.RemoveButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.RemoveButton.Margin = new System.Windows.Forms.Padding(2);
             this.RemoveButton.Name = "RemoveButton";
             this.RemoveButton.Size = new System.Drawing.Size(56, 19);
             this.RemoveButton.TabIndex = 99;
@@ -389,7 +385,7 @@ namespace SCGen
             // SectionToAdd
             // 
             this.SectionToAdd.Location = new System.Drawing.Point(490, 144);
-            this.SectionToAdd.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.SectionToAdd.Margin = new System.Windows.Forms.Padding(2);
             this.SectionToAdd.Name = "SectionToAdd";
             this.SectionToAdd.Size = new System.Drawing.Size(42, 20);
             this.SectionToAdd.TabIndex = 101;
@@ -400,7 +396,7 @@ namespace SCGen
             this.StarColleaguesRadioButtons.Controls.Add(this.OverwriteStarColleagues);
             this.StarColleaguesRadioButtons.Enabled = false;
             this.StarColleaguesRadioButtons.Location = new System.Drawing.Point(11, 152);
-            this.StarColleaguesRadioButtons.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.StarColleaguesRadioButtons.Margin = new System.Windows.Forms.Padding(2);
             this.StarColleaguesRadioButtons.Name = "StarColleaguesRadioButtons";
             this.StarColleaguesRadioButtons.Size = new System.Drawing.Size(398, 27);
             this.StarColleaguesRadioButtons.TabIndex = 102;
@@ -409,7 +405,7 @@ namespace SCGen
             // 
             this.ContinueStarColleagues.AutoSize = true;
             this.ContinueStarColleagues.Location = new System.Drawing.Point(243, 2);
-            this.ContinueStarColleagues.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ContinueStarColleagues.Margin = new System.Windows.Forms.Padding(2);
             this.ContinueStarColleagues.Name = "ContinueStarColleagues";
             this.ContinueStarColleagues.Size = new System.Drawing.Size(155, 17);
             this.ContinueStarColleagues.TabIndex = 45;
@@ -421,7 +417,7 @@ namespace SCGen
             this.OverwriteStarColleagues.AutoSize = true;
             this.OverwriteStarColleagues.Checked = true;
             this.OverwriteStarColleagues.Location = new System.Drawing.Point(24, 2);
-            this.OverwriteStarColleagues.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.OverwriteStarColleagues.Margin = new System.Windows.Forms.Padding(2);
             this.OverwriteStarColleagues.Name = "OverwriteStarColleagues";
             this.OverwriteStarColleagues.Size = new System.Drawing.Size(209, 17);
             this.OverwriteStarColleagues.TabIndex = 40;
@@ -429,55 +425,11 @@ namespace SCGen
             this.OverwriteStarColleagues.Text = "O&vewrite existing star colleagues report";
             this.OverwriteStarColleagues.UseVisualStyleBackColor = true;
             // 
-            // StarColleaguePositions
-            // 
-            this.StarColleaguePositions.Location = new System.Drawing.Point(154, 197);
-            this.StarColleaguePositions.Margin = new System.Windows.Forms.Padding(2);
-            this.StarColleaguePositions.Name = "StarColleaguePositions";
-            this.StarColleaguePositions.Size = new System.Drawing.Size(368, 20);
-            this.StarColleaguePositions.TabIndex = 104;
-            this.StarColleaguePositions.Text = "starcolleaguepositions.csv";
-            // 
-            // DoStarColleaguePositions
-            // 
-            this.DoStarColleaguePositions.AutoSize = true;
-            this.DoStarColleaguePositions.Checked = true;
-            this.DoStarColleaguePositions.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.DoStarColleaguePositions.Location = new System.Drawing.Point(10, 197);
-            this.DoStarColleaguePositions.Margin = new System.Windows.Forms.Padding(2);
-            this.DoStarColleaguePositions.Name = "DoStarColleaguePositions";
-            this.DoStarColleaguePositions.Size = new System.Drawing.Size(140, 17);
-            this.DoStarColleaguePositions.TabIndex = 103;
-            this.DoStarColleaguePositions.Text = "St&ar Colleague Positions";
-            this.DoStarColleaguePositions.UseVisualStyleBackColor = true;
-            // 
-            // alternateTableName
-            // 
-            this.alternateTableName.Enabled = false;
-            this.alternateTableName.Location = new System.Drawing.Point(245, 222);
-            this.alternateTableName.Name = "alternateTableName";
-            this.alternateTableName.Size = new System.Drawing.Size(277, 20);
-            this.alternateTableName.TabIndex = 240;
-            // 
-            // useAlternateCheckbox
-            // 
-            this.useAlternateCheckbox.AutoSize = true;
-            this.useAlternateCheckbox.Location = new System.Drawing.Point(34, 224);
-            this.useAlternateCheckbox.Name = "useAlternateCheckbox";
-            this.useAlternateCheckbox.Size = new System.Drawing.Size(211, 17);
-            this.useAlternateCheckbox.TabIndex = 239;
-            this.useAlternateCheckbox.Text = "Use alternate PeoplePublications table:";
-            this.useAlternateCheckbox.UseVisualStyleBackColor = true;
-            // 
             // ReportsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(552, 418);
-            this.Controls.Add(this.alternateTableName);
-            this.Controls.Add(this.useAlternateCheckbox);
-            this.Controls.Add(this.StarColleaguePositions);
-            this.Controls.Add(this.DoStarColleaguePositions);
+            this.ClientSize = new System.Drawing.Size(552, 366);
             this.Controls.Add(this.StarColleaguesRadioButtons);
             this.Controls.Add(this.SectionToAdd);
             this.Controls.Add(this.label5);
@@ -503,7 +455,7 @@ namespace SCGen
             this.Controls.Add(this.label1);
             this.Controls.Add(this.DoColleagues);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ReportsDialog";
@@ -563,9 +515,5 @@ namespace SCGen
         private System.Windows.Forms.Panel StarColleaguesRadioButtons;
         private System.Windows.Forms.RadioButton ContinueStarColleagues;
         private System.Windows.Forms.RadioButton OverwriteStarColleagues;
-        private System.Windows.Forms.TextBox StarColleaguePositions;
-        private System.Windows.Forms.CheckBox DoStarColleaguePositions;
-        private System.Windows.Forms.TextBox alternateTableName;
-        private System.Windows.Forms.CheckBox useAlternateCheckbox;
     }
 }
