@@ -63,6 +63,8 @@ namespace SCGen
             this.StarColleaguesRadioButtons = new System.Windows.Forms.Panel();
             this.ContinueStarColleagues = new System.Windows.Forms.RadioButton();
             this.OverwriteStarColleagues = new System.Windows.Forms.RadioButton();
+            this.StarColleaguePositions = new System.Windows.Forms.TextBox();
+            this.DoStarColleaguePositions = new System.Windows.Forms.CheckBox();
             this.PublicationsRadioButtons.SuspendLayout();
             this.PeopleRadioButtons.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -148,7 +150,7 @@ namespace SCGen
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(8, 213);
+            this.label2.Location = new System.Drawing.Point(8, 241);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(139, 13);
@@ -157,7 +159,7 @@ namespace SCGen
             // 
             // Folder
             // 
-            this.Folder.Location = new System.Drawing.Point(10, 229);
+            this.Folder.Location = new System.Drawing.Point(10, 257);
             this.Folder.Margin = new System.Windows.Forms.Padding(2);
             this.Folder.Multiline = true;
             this.Folder.Name = "Folder";
@@ -171,7 +173,7 @@ namespace SCGen
             // SpecifyFolder
             // 
             this.SpecifyFolder.AutoEllipsis = true;
-            this.SpecifyFolder.Location = new System.Drawing.Point(526, 245);
+            this.SpecifyFolder.Location = new System.Drawing.Point(526, 273);
             this.SpecifyFolder.Margin = new System.Windows.Forms.Padding(2);
             this.SpecifyFolder.Name = "SpecifyFolder";
             this.SpecifyFolder.Size = new System.Drawing.Size(16, 18);
@@ -252,7 +254,7 @@ namespace SCGen
             // 
             // GenerateReports
             // 
-            this.GenerateReports.Location = new System.Drawing.Point(182, 311);
+            this.GenerateReports.Location = new System.Drawing.Point(182, 339);
             this.GenerateReports.Margin = new System.Windows.Forms.Padding(2);
             this.GenerateReports.Name = "GenerateReports";
             this.GenerateReports.Size = new System.Drawing.Size(186, 23);
@@ -267,7 +269,7 @@ namespace SCGen
             this.toolStripStatusLabel1,
             this.toolStripProgressBar1,
             this.toolStripStatusLabel2});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 343);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 369);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 10, 0);
             this.statusStrip1.Size = new System.Drawing.Size(552, 23);
@@ -299,7 +301,7 @@ namespace SCGen
             // JournalWeightsFileDialog
             // 
             this.JournalWeightsFileDialog.AutoEllipsis = true;
-            this.JournalWeightsFileDialog.Location = new System.Drawing.Point(526, 289);
+            this.JournalWeightsFileDialog.Location = new System.Drawing.Point(526, 317);
             this.JournalWeightsFileDialog.Margin = new System.Windows.Forms.Padding(2);
             this.JournalWeightsFileDialog.Name = "JournalWeightsFileDialog";
             this.JournalWeightsFileDialog.Size = new System.Drawing.Size(16, 19);
@@ -309,7 +311,7 @@ namespace SCGen
             // 
             // JournalWeights
             // 
-            this.JournalWeights.Location = new System.Drawing.Point(10, 289);
+            this.JournalWeights.Location = new System.Drawing.Point(10, 317);
             this.JournalWeights.Margin = new System.Windows.Forms.Padding(2);
             this.JournalWeights.Name = "JournalWeights";
             this.JournalWeights.Size = new System.Drawing.Size(512, 20);
@@ -318,7 +320,7 @@ namespace SCGen
             // 
             // label3
             // 
-            this.label3.Location = new System.Drawing.Point(10, 275);
+            this.label3.Location = new System.Drawing.Point(10, 303);
             this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(162, 19);
@@ -425,11 +427,35 @@ namespace SCGen
             this.OverwriteStarColleagues.Text = "O&vewrite existing star colleagues report";
             this.OverwriteStarColleagues.UseVisualStyleBackColor = true;
             // 
+            // StarColleaguePositions
+            // 
+            this.StarColleaguePositions.Location = new System.Drawing.Point(154, 197);
+            this.StarColleaguePositions.Margin = new System.Windows.Forms.Padding(2);
+            this.StarColleaguePositions.Name = "StarColleaguePositions";
+            this.StarColleaguePositions.Size = new System.Drawing.Size(368, 20);
+            this.StarColleaguePositions.TabIndex = 104;
+            this.StarColleaguePositions.Text = "starcolleaguepositions.csv";
+            // 
+            // DoStarColleaguePositions
+            // 
+            this.DoStarColleaguePositions.AutoSize = true;
+            this.DoStarColleaguePositions.Checked = true;
+            this.DoStarColleaguePositions.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.DoStarColleaguePositions.Location = new System.Drawing.Point(10, 197);
+            this.DoStarColleaguePositions.Margin = new System.Windows.Forms.Padding(2);
+            this.DoStarColleaguePositions.Name = "DoStarColleaguePositions";
+            this.DoStarColleaguePositions.Size = new System.Drawing.Size(140, 17);
+            this.DoStarColleaguePositions.TabIndex = 103;
+            this.DoStarColleaguePositions.Text = "St&ar Colleague Positions";
+            this.DoStarColleaguePositions.UseVisualStyleBackColor = true;
+            // 
             // ReportsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(552, 366);
+            this.ClientSize = new System.Drawing.Size(552, 392);
+            this.Controls.Add(this.StarColleaguePositions);
+            this.Controls.Add(this.DoStarColleaguePositions);
             this.Controls.Add(this.StarColleaguesRadioButtons);
             this.Controls.Add(this.SectionToAdd);
             this.Controls.Add(this.label5);
@@ -515,5 +541,7 @@ namespace SCGen
         private System.Windows.Forms.Panel StarColleaguesRadioButtons;
         private System.Windows.Forms.RadioButton ContinueStarColleagues;
         private System.Windows.Forms.RadioButton OverwriteStarColleagues;
+        private System.Windows.Forms.TextBox StarColleaguePositions;
+        private System.Windows.Forms.CheckBox DoStarColleaguePositions;
     }
 }
