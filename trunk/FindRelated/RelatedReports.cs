@@ -124,12 +124,13 @@ FROM " + relatedPublicationsTableName;
             Trace.WriteLine(DateTime.Now + " writing RelatedPMID report");
 
             string sql = @"-- Related PMID report
-SELECT rp.RelatedPMID AS related_pmid, p.*
+SELECT DISTINCT rp.RelatedPMID AS related_pmid, 
+p.journal, p.authors, p.year, p.month, p.day, p.title, p.volume, p.issue, p.pages, p.pubtype, p.pubtypecategoryid
 FROM " + relatedPublicationsTableName + @" rp, publications p
 WHERE rp.RelatedPMID = p.PMID";
 
             ExecuteReport(sql, filename,
-                new string[] { "related_pmid", "pmid", "journal", "year", "authors", "month", "day", 
+                new string[] { "related_pmid", "journal", "authors", "year", "month", "day", 
                     "title", "volume", "issue", "pages", "pubtype", "pubtypecategoryid" });
         }
 
