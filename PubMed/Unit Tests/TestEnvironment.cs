@@ -85,7 +85,7 @@ namespace Com.StellmanGreene.PubMed.Unit_Tests
         {
             Database DB = new Database("Publication Harvester Unit Test");
             DataTable Results = DB.ExecuteQuery("SHOW VARIABLES WHERE Variable_name = 'version'");
-            Assert.IsTrue(Results.Rows[0]["value"].ToString().StartsWith("5.1"), "The unit tests require an ODBC DSN called 'Publication Harvester Unit Test' that points to a MySQL 5.1 database");
+            Assert.IsTrue(Results.Rows[0]["value"].ToString().StartsWith("5.5"), "The unit tests require an ODBC DSN called 'Publication Harvester Unit Test' that points to a MySQL 5.5 database");
         }
     }
 }

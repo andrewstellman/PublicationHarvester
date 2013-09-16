@@ -24,7 +24,6 @@ using System.Collections;
 using System.Text;
 using System.Data;
 using System.Data.Odbc;
-using System.Data.OleDb;
 using Com.StellmanGreene.CSVReader;
 
 namespace Com.StellmanGreene.PubMed
@@ -89,110 +88,23 @@ namespace Com.StellmanGreene.PubMed
         /// <summary>
         /// Read a list of people froman Excel file
         /// </summary>
-        /// <param name="Folder">Folder where the People file is located</param>
-        /// <param name="Filename">Name of the People file</param>
-        public People(string Folder, string Filename)
+        /// <param name="folder">Folder where the People file is located</param>
+        /// <param name="filename">Name of the People file</param>
+        public People(string folder, string filename)
         {
-            string[] Columns = { "setnb", "first", "middle", "last", "name1", "name2", "name3", "name4", "medline_search1" };
-            DataTable Results;
-            if (Filename.ToLower().EndsWith(".csv"))
+            // string[] columns = { "setnb", "first", "middle", "last", "name1", "name2", "name3", "name4", "medline_search1" };
+            DataTable results;
+            if (filename.ToLower().EndsWith(".csv"))
             {
-                Results = ReadCSVFile(Folder, Filename, Columns);
+                results = CSVReader.CSVReader.ReadCSVFile(folder + "\\" + filename, true);
             }
             else
             {
-                Results = ReadExcelFile(Folder, Filename, Columns);
+                results = NpoiHelper.ReadExcelFileToDataTable(folder, filename);
             }
-            CreatePersonsFromDataTable(Results);
+            CreatePersonsFromDataTable(results);
         }
 
-
-        /// <summary>
-        /// Read the contents of a CSV file into a DataTable
-        /// </summary>
-        /// <param name="Folder">Folder that contains the CSV file</param>
-        /// <param name="Filename">Filename of the CSV file</param>
-        /// <param name="Columns">Columns to read</param>
-        /// <returns>A DataTable object that contains the contents of the file</returns>
-        public static DataTable ReadCSVFile(string Folder, string Filename, string[] Columns)
-        {
-            // Get the publication types from the input file
-
-//            We're replacing the ODBC CSV code with our own CSVReader
-//
-//            string ConnectionString =
-//                "Driver={Microsoft Text Driver (*.txt; *.csv)};Dbq="
-//                + Folder + ";";
-//            OdbcConnection Connection = new OdbcConnection(ConnectionString);
-//
-//            // Turn the column names into a SQL statement
-//            string ColumnSQL = "[" + String.Join("], [", Columns) + "]";
-//
-//            // Read the data from the file and return it
-//            OdbcDataAdapter DataAdapter = new OdbcDataAdapter(
-//                "SELECT " + ColumnSQL + "FROM [" + Filename + "]",
-//                Connection
-//            );
-//            DataTable Results = new DataTable();
-//            DataAdapter.Fill(Results);
-
-            DataTable Results = CSVReader.CSVReader.ReadCSVFile(Folder + "\\" + Filename, true);
-            return Results;
-        }
-
-        /// <summary>
-        /// Read the contents of the first worksheet of an Excel file into a DataTable
-        /// </summary>
-        /// <param name="Folder">Folder that contains the Excel file</param>
-        /// <param name="Filename">Filename of the Excel file</param>
-        /// <param name="Columns">Columns to read</param>
-        /// <returns>A DataTable object that contains the contents of the file</returns>
-        public static DataTable ReadExcelFile(string Folder, string Filename, string[] Columns)
-        {
-            // Open the Excel file and read the name of the first worksheet from it
-            string ConnectionString =
-                "Provider=Microsoft.Jet.OLEDB.4.0;Data Source="
-                + Folder + "\\" + Filename
-                + ";Extended Properties=\"Excel 8.0;HDR=yes;IMEX=1\"";
-            OleDbConnection Connection = new OleDbConnection(ConnectionString);
-            Connection.Open();
-            DataTable ExcelTableSchema = Connection.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
-            string Worksheet = "";
-            for (int Row = 0;
-                (Worksheet.Length == 0) && (Row <= ExcelTableSchema.Rows.Count - 1)
-                ; Row++)
-            {
-                string ThisWorksheet;
-                ThisWorksheet = ExcelTableSchema.Rows[Row]["TABLE_NAME"].ToString();
-                if ((ThisWorksheet.Length >= 2)
-                    && (ThisWorksheet.StartsWith("'"))
-                    && (ThisWorksheet.EndsWith("'")))
-                {
-                    ThisWorksheet =
-                        ThisWorksheet.Substring(1, ThisWorksheet.Length - 2);
-                }
-                if ((ThisWorksheet.Length >= 1) && (ThisWorksheet.EndsWith("$")))
-                {
-                    Worksheet = ThisWorksheet;
-                }
-            }
-            if (Worksheet.Length == 0)
-                throw new Exception("Unable to find a worksheet in the spreadsheet '" + Filename + "'");
-
-            // Turn the column names into a SQL statement
-            string ColumnSQL = "[" + String.Join("], [", Columns) + "]";
-
-            // Read the data from the worksheet
-            OleDbDataAdapter DataAdapter = new OleDbDataAdapter(
-                "SELECT " + ColumnSQL + "FROM [" + Worksheet + "]",
-                Connection
-            );
-            DataTable Results = new DataTable();
-
-            // Add each PersonToWrite to PersonList
-            DataAdapter.Fill(Results);
-            return Results;
-        }
 
         /// <summary>
         /// Take a DataTable object that contains the results from a SQL query

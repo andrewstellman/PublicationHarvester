@@ -341,8 +341,8 @@ namespace Com.StellmanGreene.PubMed.Unit_Tests
                 "4pubcount_pos2", "wghtd_4pubcount_pos2"
             };
 
-            DataTable HandGeneratedData = People.ReadExcelFile(AppDomain.CurrentDomain.BaseDirectory +
-                "\\Unit Tests\\TestReports", "TestEntireReport_Data.xls", Columns);
+            DataTable HandGeneratedData = NpoiHelper.ReadExcelFileToDataTable(AppDomain.CurrentDomain.BaseDirectory +
+                "\\Unit Tests\\TestReports", "TestEntireReport_Data.xls");
 
             Assert.AreEqual(HandGeneratedData.Rows.Count, 85);
 
