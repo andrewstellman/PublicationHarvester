@@ -671,7 +671,7 @@ namespace PublicationHarvester
         private void PeopleFileDialog_Click(object sender, EventArgs e)
         {
             openFileDialog1.FileName = PeopleFile.Text;
-            openFileDialog1.Filter = "Microsoft Excel Files (*.xls)|*.xls|Comma-delimited Text Files (*.csv)|*.csv|All files (*.*)|*.*";
+            openFileDialog1.Filter = "Microsoft Excel Files (*.xls;*.xlsx)|*.xls;*.xlsx|Comma-delimited Text Files (*.csv)|*.csv|All files (*.*)|*.*";
             openFileDialog1.Title = "Select the People file";
             openFileDialog1.CheckFileExists = true;
             openFileDialog1.CheckPathExists = true;
@@ -831,7 +831,7 @@ namespace PublicationHarvester
             try
             {
                 openFileDialog1.FileName = PeopleFile.Text;
-                openFileDialog1.Filter = "Microsoft Excel Files (*.xls)|*.xls|Comma-delimited Text Files (*.csv)|*.csv|All files (*.*)|*.*";
+                openFileDialog1.Filter = "Microsoft Excel Files (*.xls;*.xlsx)|*.xls;*.xlsx|Comma-delimited Text Files (*.csv)|*.csv|All files (*.*)|*.*";
                 openFileDialog1.Title = "Select the People file to use for adding/updating";
                 openFileDialog1.CheckFileExists = true;
                 openFileDialog1.CheckPathExists = true;
@@ -859,7 +859,7 @@ namespace PublicationHarvester
             try
             {
                 openFileDialog1.FileName = PeopleFile.Text;
-                openFileDialog1.Filter = "Microsoft Excel Files (*.xls)|*.xls|Comma-delimited Text Files (*.csv)|*.csv|All files (*.*)|*.*";
+                openFileDialog1.Filter = "Microsoft Excel Files (*.xls;*.xlsx)|*.xls;*.xlsx|Comma-delimited Text Files (*.csv)|*.csv|All files (*.*)|*.*";
                 openFileDialog1.Title = "Select the People file to use for adding/updating";
                 openFileDialog1.CheckFileExists = true;
                 openFileDialog1.CheckPathExists = true;

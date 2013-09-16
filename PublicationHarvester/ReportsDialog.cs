@@ -238,7 +238,7 @@ namespace PublicationHarvester
         private void JournalWeightsFileDialog_Click(object sender, EventArgs e)
         {
             openFileDialog1.FileName = JournalWeights.Text;
-            openFileDialog1.Filter = "Microsoft Excel Files (*.xls)|*.xls|All files (*.*)|*.*";
+            openFileDialog1.Filter = "Microsoft Excel Files (*.xls;*.xlsx)|*.xls;*.xlsx|All files (*.*)|*.*";
             openFileDialog1.Title = "Select the Journal Weights file";
             openFileDialog1.CheckFileExists = true;
             openFileDialog1.CheckPathExists = true;
