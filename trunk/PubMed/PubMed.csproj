@@ -37,6 +37,22 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>NpoiBinaries\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI">
+      <HintPath>NpoiBinaries\NPOI.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OOXML">
+      <HintPath>NpoiBinaries\NPOI.OOXML.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXml4Net">
+      <HintPath>NpoiBinaries\NPOI.OpenXml4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXmlFormats">
+      <HintPath>NpoiBinaries\NPOI.OpenXmlFormats.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
@@ -52,6 +68,7 @@
     <Compile Include="Database.cs" />
     <Compile Include="Harvester.cs" />
     <Compile Include="NCBI.cs" />
+    <Compile Include="NpoiHelper.cs" />
     <Compile Include="People.cs" />
     <Compile Include="PeopleMaintenance.cs" />
     <Compile Include="Person.cs" />

@@ -64,10 +64,9 @@ namespace Com.StellmanGreene.PubMed
             PeopleReportSections = DefaultPeopleReportSections();
 
             string[] Columns = { "JOURNAL TITLE", "JIF" };
-            DataTable Results = People.ReadExcelFile(
+            DataTable Results = NpoiHelper.ReadExcelFileToDataTable(
                 Path.GetDirectoryName(JournalWeightsFilename), 
-                Path.GetFileName(JournalWeightsFilename),
-                Columns);
+                Path.GetFileName(JournalWeightsFilename));
 
             // Populate the Weights hash table (which was declared to be case-insensitive)
             Weights = new Hashtable(StringComparer.CurrentCultureIgnoreCase);

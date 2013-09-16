@@ -377,9 +377,19 @@ namespace Com.StellmanGreene.PubMed
                             }
                         }
 
+                    // If the PMID is 0, we don't have a way to process the publication
+                    // and it was probably a Medline search result error.
+                    if (publication.PMID == 0)
+                    {
+                        string errorMessage = "Found an invalid publication";
+                        if (!string.IsNullOrEmpty(publication.Title))
+                            errorMessage += " (Title = '" + publication.Title + "')";
+                        person.WriteErrorToDB(DB, errorMessage);
+                        MessageCallback(errorMessage, false);
+                    }
+
                     // If for some reason the author doesn't exist in the publication, send a message back
-                    // This should never happen
-                    if (AuthorPosition == 0)
+                    else if (AuthorPosition == 0)
                         MessageCallback("Publication " + publication.PMID + " does not contain author " + person.Setnb, false);
                     else
                     {
