@@ -1,5 +1,0 @@
-setnb,first,middle,last,name1,name2,name3,name4,medline_search1
-A6009400,Jan,,Van Eys,van eys j,vaneys j,eys jv,,"(""van eys j""[au] OR ""vaneys j""[au] OR ""eys jv""[au])"
-A5401532,Louis,,Tobian,tobian l,tobian l jr,tobian lj,,"(""tobian l""[au] OR ""tobian l jr""[au] OR ""tobian lj""[au])"
-A5501586,Keith,B,Reemtsma,reemtsma k,reemtsma kb,test data,more test data,"((""reemtsma k""[au] OR ""reemtsma kb""[au]) AND 1956:2000[dp])"
-A5702471,Roger,,Guillemin,guillemin r,guillemin rc,,,"(""guillemin rc""[au] OR (""guillemin r""[au] NOT (Electrodiagn Ther[ta] OR Phys Rev Lett[ta] OR vegas[ad] OR lindle[au])))"
