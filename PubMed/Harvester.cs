@@ -346,90 +346,100 @@ namespace Com.StellmanGreene.PubMed
             }
 
             Publications mpr = new Publications(results, pubTypes);
-            foreach (Publication publication in mpr.PublicationList)
+            if (mpr.PublicationList != null)
             {
-                numberFound++;
-
-                // Exit immediately if the user interrupted the harvest
-                if (InterruptCallback())
-                    return numberWritten;
-
-                try
+                foreach (Publication publication in mpr.PublicationList)
                 {
-                    // Calculate the average time, to return in the callback status function
-                    StartTime = DateTime.Now;
+                    numberFound++;
 
-                    // Add the publication to PeoplePublications
-                    // First find the author position and calculate the position type
-                    int AuthorPosition = 0;
-                    for (int i = 1; (publication.Authors != null) && (AuthorPosition == 0) && (i <= publication.Authors.Length); i++)
-                        foreach (string name in person.Names)
+                    // Exit immediately if the user interrupted the harvest
+                    if (InterruptCallback())
+                        return numberWritten;
+
+                    try
+                    {
+                        // Calculate the average time, to return in the callback status function
+                        StartTime = DateTime.Now;
+
+                        // Add the publication to PeoplePublications
+                        // First find the author position and calculate the position type
+                        int AuthorPosition = 0;
+                        for (int i = 1; (publication.Authors != null) && (AuthorPosition == 0) && (i <= publication.Authors.Length); i++)
+                            foreach (string name in person.Names)
+                            {
+                                if (StringComparer.CurrentCultureIgnoreCase.Equals(
+                                    publication.Authors[i - 1], name //.ToUpper()
+                                    ))
+                                {
+                                    AuthorPosition = i;
+                                }
+                                else if (name == "*")
+                                {
+                                    AuthorPosition = -1;
+                                }
+                            }
+
+                        // If the PMID is 0, we don't have a way to process the publication
+                        // and it was probably a Medline search result error.
+                        if (publication.PMID == int.MinValue)
                         {
-                            if (StringComparer.CurrentCultureIgnoreCase.Equals(
-                                publication.Authors[i - 1], name //.ToUpper()
-                                ))
-                            {
-                                AuthorPosition = i;
-                            }
-                            else if (name == "*")
-                            {
-                                AuthorPosition = -1;
-                            }
+                            string errorMessage = "Found an invalid publication";
+                            if (!string.IsNullOrEmpty(publication.Title))
+                                errorMessage += " (Title = '" + publication.Title + "')";
+                            person.WriteErrorToDB(DB, errorMessage);
+                            MessageCallback(errorMessage, false);
+                        }
+                        else if (publication.PMID == 0)
+                        {
+                            string errorMessage = "WARNING: Found a publication with PMID = 0, not marking this as an error";
+                            if (!string.IsNullOrEmpty(publication.Title))
+                                errorMessage += " (Title = '" + publication.Title + "')";
+                            MessageCallback(errorMessage, false);
                         }
 
-                    // If the PMID is 0, we don't have a way to process the publication
-                    // and it was probably a Medline search result error.
-                    if (publication.PMID == 0)
-                    {
-                        string errorMessage = "Found an invalid publication";
-                        if (!string.IsNullOrEmpty(publication.Title))
-                            errorMessage += " (Title = '" + publication.Title + "')";
-                        person.WriteErrorToDB(DB, errorMessage);
-                        MessageCallback(errorMessage, false);
-                    }
-
-                    // If for some reason the author doesn't exist in the publication, send a message back
-                    else if (AuthorPosition == 0)
-                        MessageCallback("Publication " + publication.PMID + " does not contain author " + person.Setnb, false);
-                    else
-                    {
-                        // Write the publication to the database
-                        if (Publications.WriteToDB(publication, DB, pubTypes, Languages))
+                        // If for some reason the author doesn't exist in the publication, send a message back
+                        else if (AuthorPosition == 0)
+                            MessageCallback("Publication " + publication.PMID + " does not contain author " + person.Setnb, false);
+                        else
                         {
-                            // Exit immediately if the user interrupted the harvest
-                            if (InterruptCallback())
-                                return numberWritten;
-
-                            // Only increment the publication count if the publication
-                            // is actually written or already in the database
-                            numberWritten++;
-
-                            // Only add the row to PeoplePublications if the publication
-                            // was written, or was already in the database. (For example, 
-                            // if the publication is not in English, it won't be written.)
-
-                            Publications.WritePeoplePublicationsToDB(DB, person, publication);
-
-                            // Write the publication for each of the other people
-                            foreach (Person dupe in DuplicatePeople)
+                            // Write the publication to the database
+                            if (Publications.WriteToDB(publication, DB, pubTypes, Languages))
                             {
-                                Publications.WritePeoplePublicationsToDB(DB, dupe, publication);
-                            }
+                                // Exit immediately if the user interrupted the harvest
+                                if (InterruptCallback())
+                                    return numberWritten;
 
-                            // Calculate the average time per publication in milliseconds
-                            EndTime = DateTime.Now;
-                            TimeSpan Difference = EndTime - StartTime;
-                            TotalMilliseconds += Difference.TotalMilliseconds;
-                            AverageMilliseconds = TotalMilliseconds / numberWritten;
+                                // Only increment the publication count if the publication
+                                // is actually written or already in the database
+                                numberWritten++;
+
+                                // Only add the row to PeoplePublications if the publication
+                                // was written, or was already in the database. (For example, 
+                                // if the publication is not in English, it won't be written.)
+
+                                Publications.WritePeoplePublicationsToDB(DB, person, publication);
+
+                                // Write the publication for each of the other people
+                                foreach (Person dupe in DuplicatePeople)
+                                {
+                                    Publications.WritePeoplePublicationsToDB(DB, dupe, publication);
+                                }
+
+                                // Calculate the average time per publication in milliseconds
+                                EndTime = DateTime.Now;
+                                TimeSpan Difference = EndTime - StartTime;
+                                TotalMilliseconds += Difference.TotalMilliseconds;
+                                AverageMilliseconds = TotalMilliseconds / numberWritten;
+                            }
                         }
                     }
+                    catch (Exception ex)
+                    {
+                        person.WriteErrorToDB(DB, ex.Message);
+                        MessageCallback("Error writing publication " + publication.PMID.ToString() + ": " + ex.Message, false);
+                    }
+                    StatusCallback(numberFound, mpr.PublicationList.Length, (int)AverageMilliseconds);
                 }
-                catch (Exception ex)
-                {
-                    person.WriteErrorToDB(DB, ex.Message);
-                    MessageCallback("Error writing publication " + publication.PMID.ToString() + ": " + ex.Message, false);
-                }
-                StatusCallback(numberFound, mpr.PublicationList.Length, (int)AverageMilliseconds);
             }
 
             // Make sure each of the people with the same names and search query

@@ -617,7 +617,7 @@ namespace SCGen
         {
             if (DSN.Text == "")
             {
-                MessageBox.Show("Please specify a valid ODBC data source that points to a MySQL 5.1 server", "Unable to Initialize Database", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Please specify a valid ODBC data source that points to a MySQL 5.5 server", "Unable to Initialize Database", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
