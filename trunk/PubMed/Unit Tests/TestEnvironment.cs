@@ -35,7 +35,7 @@ namespace Com.StellmanGreene.PubMed.Unit_Tests
     public class TestEnvironment
     {
         /// <summary>
-        /// There must be an ODBC DSN called "Publication Harvester Unit Test" that points to a MySQL 5.1 server 
+        /// There must be an ODBC DSN called "Publication Harvester Unit Test" that points to a MySQL 5.5 server 
         /// </summary>
         [Test]
         public void CheckDSN()
@@ -73,12 +73,12 @@ namespace Com.StellmanGreene.PubMed.Unit_Tests
             }
             rootKey.Close();
 
-            Assert.IsTrue(DSNs.Contains("Publication Harvester Unit Test"), "The unit tests require an ODBC DSN called 'Publication Harvester Unit Test' that points to a MySQL 5.1 database");
+            Assert.IsTrue(DSNs.Contains("Publication Harvester Unit Test"), "The unit tests require an ODBC DSN called 'Publication Harvester Unit Test' that points to a MySQL 5.5 database");
         }
 
 
         /// <summary>
-        /// Verify that the "Publication Harvester Unit Test" DSN points to a MySQL 5.1 database
+        /// Verify that the "Publication Harvester Unit Test" DSN points to a MySQL 5.5 database
         /// </summary>
         [Test]
         public void CheckDatabaseVersion()

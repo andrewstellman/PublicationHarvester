@@ -370,7 +370,36 @@ SO  - Cancer Epidemiol Biomarkers Prev 2005 Mar;14(3):576-81.
                 AppDomain.CurrentDomain.BaseDirectory + "\\Unit Tests\\TestPublicationTypes",
                 "PublicationTypes.csv"
                );
+            Publications mpr = new Publications(null, ptc);
+            Assert.IsNull(mpr.PublicationList);
+        }
+
+        [Test]
+        public void EmptyMedlineString()
+        {
+            PublicationTypes ptc = new PublicationTypes(
+                AppDomain.CurrentDomain.BaseDirectory + "\\Unit Tests\\TestPublicationTypes",
+                "PublicationTypes.csv"
+               );
             Publications mpr = new Publications("", ptc);
+            Assert.IsNull(mpr.PublicationList);
+        }
+
+        [Test]
+        public void EmptyPublicationList()
+        {
+            string emptySearchResults = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+
+<eFetchResult>
+        <ERROR>Empty result - nothing to do</ERROR>
+</eFetchResult>";
+
+            PublicationTypes ptc = new PublicationTypes(
+                AppDomain.CurrentDomain.BaseDirectory + "\\Unit Tests\\TestPublicationTypes",
+                "PublicationTypes.csv"
+               );
+
+            Publications mpr = new Publications(emptySearchResults, ptc);
             Assert.IsNull(mpr.PublicationList);
         }
 

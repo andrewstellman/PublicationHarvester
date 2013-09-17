@@ -108,19 +108,38 @@ namespace Com.StellmanGreene.PubMed
         /// Read a string with data full of Medline citations and extract all of 
         /// the publications
         /// </summary>
-        /// <param name="MedlineData">String with data full of Medline citations</param>
-        public Publications(string MedlineData, PublicationTypes pubTypes)
+        /// <param name="medlineData">String with data full of Medline citations</param>
+        public Publications(string medlineData, PublicationTypes pubTypes)
         {
+            if (CheckForEmptyResult(medlineData))
+            {
+                PublicationList = null;
+                return;
+            }
+
             // Get each publication from MedlineData and add it to PublicationList[]
             Publication publication;
             List<Publication> tempList = new List<Publication>();
             if (PublicationList != null) tempList.AddRange(PublicationList);
-            while (GetNextPublication(ref MedlineData, out publication, pubTypes))
+            while (GetNextPublication(ref medlineData, out publication, pubTypes))
             {
                 // Add the publication to the end of PublicationList[]
                 tempList.Add(publication);
             }
             PublicationList = tempList.Count > 0 ? tempList.ToArray() : null;
+        }
+
+        /// <summary>
+        /// Check the raw NCBI search results to see if it's an empty publication list
+        /// </summary>
+        /// <param name="medlineData">String with data full of Medline citations</param>
+        /// <returns>True if the medline data matches the empty result string</returns>
+        private bool CheckForEmptyResult(string medlineData)
+        {
+            if (String.IsNullOrEmpty(medlineData) 
+                || medlineData.Contains("<ERROR>Empty result - nothing to do</ERROR>"))
+                return true;
+            return false;
         }
 
 
@@ -314,7 +333,7 @@ namespace Com.StellmanGreene.PubMed
                     if (IsNumeric(data))
                         publication.PMID = Convert.ToInt32(data);
                     else
-                        publication.PMID = 0;
+                        publication.PMID = int.MinValue;
                     break;
 
                 case "DP":

@@ -55,7 +55,7 @@ namespace PublicationHarvester
         {
             if (DSN.Text == "")
             {
-                MessageBox.Show("Please specify a valid ODBC data source that points to a MySQL 5.1 server", "Unable to Initialize Database", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Please specify a valid ODBC data source that points to a MySQL 5.5 server", "Unable to Initialize Database", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
                 
@@ -342,7 +342,8 @@ namespace PublicationHarvester
             {
                 Database DB = new Database(DSN.Text);
                 Harvester harvester = new Harvester(DB);
-                if (lastDSNSelected != DSN.Text) {
+                if (lastDSNSelected != DSN.Text)
+                {
                     lastDSNSelected = DSN.Text;
                     AddLogEntry("Checking for interrupted data");
                     if ((CheckForInterruptedData.Checked && harvester.InterruptedDataExists())
@@ -353,6 +354,11 @@ namespace PublicationHarvester
 
                     if (CheckForInterruptedData.Checked == false)
                         AddLogEntry("Warning: skipped check for interrupted data");
+                }
+                else
+                {
+                    // Enable the resume harvesting button if the form is enabled and unharvested people exist
+                    ResumeHarvesting.Enabled = Enabled && harvester.UnharvestedPeopleExist();
                 }
             }
             catch
@@ -558,9 +564,10 @@ namespace PublicationHarvester
             // Make an anonymous callback function that keeps track of the callback data
             Harvester.GetPublicationsStatus StatusCallback = delegate(int number, int total, int averageTime)
             {
-                toolStripProgressBar1.Minimum = 0;
-                toolStripProgressBar1.Maximum = total;
-                toolStripProgressBar1.Value = number;
+                // No need to update the progress bar for this -- it leads to a messy-looking UI because it's also updated for the person total
+                // toolStripProgressBar1.Minimum = 0;
+                // toolStripProgressBar1.Maximum = total;
+                // toolStripProgressBar1.Value = number;
                 toolStripStatusLabel1.Text = "Reading publication " + number.ToString() + " of " + total.ToString() + " (" + averageTime.ToString() + " ms average)";
                 UpdateDatabaseStatus();
                 Application.DoEvents();
@@ -588,17 +595,22 @@ namespace PublicationHarvester
             // Get each person's publications and write them to the database
             NCBI ncbi = new NCBI("medline");
             People people = new People(DB);
-            int Total = people.PersonList.Count;
-            int Number = 0;
+            int totalPeopleInPersonList = people.PersonList.Count;
+            int numberOfPeopleProcessed = 0;
+
+            toolStripProgressBar1.Minimum = 0;
+            toolStripProgressBar1.Maximum = totalPeopleInPersonList;
+
             foreach (Person person in people.PersonList)
             {
-                Number++;
+                numberOfPeopleProcessed++;
                 try
                 {
                     // If continuing from interruption, only harvest unharvested people
                     if ((!ContinueFromInterruption) || (!person.Harvested))
                     {
-                        AddLogEntry("Getting publications for " + person.Last + " (" + person.Setnb + "), number " + Number.ToString() + " of " + Total.ToString());
+                        AddLogEntry("Getting publications for " + person.Last + " (" + person.Setnb + "), number " + numberOfPeopleProcessed.ToString() + " of " + totalPeopleInPersonList.ToString());
+                        toolStripProgressBar1.Value = numberOfPeopleProcessed;
                         double AverageMilliseconds;
                         int NumPublications = harvester.GetPublications(ncbi, pubTypes, person, StatusCallback, MessageCallback, InterruptCallback, out AverageMilliseconds);
                         if (InterruptClicked)
@@ -783,7 +795,7 @@ namespace PublicationHarvester
         {
             if (DSN.Text == "")
             {
-                MessageBox.Show("Please specify a valid ODBC data source that points to a MySQL 5.1 server", "Unable to Initialize Database", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Please specify a valid ODBC data source that points to a MySQL 5.5 server", "Unable to Initialize Database", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
