@@ -99,6 +99,14 @@ namespace Com.StellmanGreene.FindRelated
                 return;
             }
 
+            if (liteModeCheckBox.Checked && String.IsNullOrEmpty(liteModeOutputTextBox.Text))
+            {
+                MessageBox.Show("Please specify an output filename for \"lite\" mode. This file will be overwritten.");
+                startButton.Enabled = true;
+                resumeButton.Enabled = true;
+                return;
+            }
+
             PublicationFilter publicationFilter = null;
             try
             {
@@ -120,6 +128,8 @@ namespace Com.StellmanGreene.FindRelated
                 { "inputFileInfo", inputFileInfo },
                 { "publicationFilter", publicationFilter },
                 { "resume", false },
+                { "liteMode", liteModeCheckBox.Checked },
+                { "liteModeOutputFile", liteModeOutputTextBox.Text },
             });
             cancelButton.Enabled = true;
         }
@@ -274,7 +284,9 @@ namespace Com.StellmanGreene.FindRelated
                 args["relatedTableName"] as string,
                 args["inputFileInfo"] as FileInfo,
                 args["publicationFilter"] as PublicationFilter,
-                (bool)args["resume"]);
+                (bool)args["resume"],
+                (bool)args["liteMode"],
+                args["liteModeOutputFile"] as string);
         }
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -462,6 +474,8 @@ namespace Com.StellmanGreene.FindRelated
                 { "inputFileInfo", null},
                 { "publicationFilter", publicationFilter },
                 { "resume", true },
+                { "liteMode", liteModeCheckBox.Checked },
+                { "liteModeOutputFile", liteModeOutputTextBox.Text },
             });
             cancelButton.Enabled = true;
         }
@@ -502,6 +516,27 @@ namespace Com.StellmanGreene.FindRelated
         private void DSN_Leave(object sender, EventArgs e)
         {
             PrintQueueMessage();
+        }
+
+        private void outputFileDialog_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.FileName = liteModeOutputTextBox.Text;
+            saveFileDialog.Filter = "Comma-delimited Text Files (*.csv)|*.csv|All files (*.*)|*.*";
+            saveFileDialog.Title = "Select the output file to save for \"lite\" mode";
+            saveFileDialog.CheckFileExists = false;
+            saveFileDialog.CheckPathExists = true;
+            saveFileDialog.OverwritePrompt = true;
+            DialogResult result = saveFileDialog.ShowDialog();
+            if (result == DialogResult.Cancel)
+                return;
+            liteModeOutputTextBox.Text = saveFileDialog.FileName;
+        }
+
+        private void liteModeCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            liteModeOutputFileDialog.Enabled = liteModeCheckBox.Checked;
+            liteModeOutputTextBox.Enabled = liteModeCheckBox.Checked;
         }
 
     }

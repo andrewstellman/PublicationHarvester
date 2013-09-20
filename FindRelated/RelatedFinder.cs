@@ -46,17 +46,30 @@ namespace Com.StellmanGreene.FindRelated
 
         public System.ComponentModel.BackgroundWorker BackgroundWorker { get; set; }
 
-        public void Go(string odbcDsn, string relatedTable, FileInfo inputFileInfo, PublicationFilter publicationFilter, bool resume)
+        /// <summary>
+        /// Execute the FindRelated search, create and populate the tables
+        /// </summary>
+        /// <param name="odbcDsn">ODBC DSN to access the SQL server</param>
+        /// <param name="relatedTable">Name of the FindRelated SQL table to create</param>
+        /// <param name="inputFileInfo">FileInfo object with information about the input CSV file</param>
+        /// <param name="publicationFilter">PublicationFilter object to use for filtering publications</param>
+        /// <param name="resume">True if resuming a previous run</param>
+        /// <param name="liteMode">True if in "lite" mode, where it only runs the FindRelated search and does not do additional processing</param>
+        /// <param name="liteModeOutputFile">Output filename for "lite" mode (ignored when not in "lite" mode)</param>
+        public void Go(string odbcDsn, string relatedTable, FileInfo inputFileInfo, PublicationFilter publicationFilter, bool resume, bool liteMode, string liteModeOutputFile)
         {
             Database db = new Database(odbcDsn);
 
-            string extremeRelevanceTableName = relatedTable + "_extremerelevance";
             string queueTableName = relatedTable + "_queue";
+            string extremeRelevanceTableName = relatedTable + "_extremerelevance";
 
             InputQueue inputQueue;
             if (!resume)
             {
-                CreateRelatedTable(db, relatedTable, extremeRelevanceTableName, queueTableName);
+                if (liteMode && !CreateLiteModeOutputFile(liteModeOutputFile))
+                    return;
+
+                CreateRelatedTable(db, relatedTable, queueTableName, extremeRelevanceTableName, liteMode);
                 inputQueue = new InputQueue(inputFileInfo, db, queueTableName);
             }
             else
@@ -77,16 +90,99 @@ namespace Com.StellmanGreene.FindRelated
                 Dictionary<int, Dictionary<int, RankAndScore>> relatedRanks;
                 Dictionary<int, List<int>> relatedSearchResults = GetIdsFromXml(xml, out relatedRanks);
 
-                int total = 0;
-                foreach (int key in relatedSearchResults.Keys)
-                    total += relatedSearchResults[key].Count;
-                Trace.WriteLine(DateTime.Now + " - found " + total + " related to " + relatedSearchResults.Keys.Count + " publications");
+                bool completed;
 
-                bool completed = ProcessSearchResults(relatedTable, publicationFilter, db, extremeRelevanceTableName, relatedRanks, relatedSearchResults, inputQueue);
-                if (!completed) // ProcessSearchResults() returns false if the user cancelled the operation
-                    break;
+                if (liteMode)
+                {
+                    Trace.WriteLine(DateTime.Now + " - found " + relatedSearchResults.Count + " PMIDs for setnb " + inputQueue.CurrentSetnb);
+
+                    completed = false;
+                    completed = WriteRelatedRankToOutputFile(relatedSearchResults, relatedRanks, liteModeOutputFile);
+                    if (!completed) // WriteRelatedRankToOutputFile() returns false if the user cancelled the operation
+                        break;
+                }
+                else
+                {
+
+                    int total = 0;
+                    foreach (int key in relatedSearchResults.Keys)
+                        total += relatedSearchResults[key].Count;
+                    Trace.WriteLine(DateTime.Now + " - found " + total + " related to " + relatedSearchResults.Keys.Count + " publications");
+
+                    completed = ProcessSearchResults(relatedTable, publicationFilter, db, extremeRelevanceTableName, relatedRanks, relatedSearchResults, inputQueue);
+                    if (!completed) // ProcessSearchResults() returns false if the user cancelled the operation
+                        break;
+                }
             }
             BackgroundWorker.ReportProgress(100);
+        }
+
+        /// <summary>
+        ///  Create the "lite" mode output file
+        /// </summary>
+        /// <returns></returns>
+        private bool CreateLiteModeOutputFile(string liteModeOutputFile)
+        {
+            try
+            {
+                if (File.Exists(liteModeOutputFile))
+                    File.Delete(liteModeOutputFile);
+
+                string header = "pmid,rltd_pmid,rltd_rank,rltd_score" + Environment.NewLine;
+                File.WriteAllText(liteModeOutputFile, header);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(DateTime.Now + " - unable to create the \"lite\" mode output file: " + ex.Message);
+                Trace.WriteLine(ex.StackTrace);
+            }
+            return true;
+        }
+
+        private bool WriteRelatedRankToOutputFile(Dictionary<int, List<int>> relatedSearchResults, Dictionary<int, Dictionary<int, RankAndScore>> relatedRanks, string liteModeOutputFile)
+        {
+            if (BackgroundWorker != null && BackgroundWorker.CancellationPending)
+            {
+                Trace.WriteLine(DateTime.Now + " - cancelled");
+                return false;
+            }
+
+            foreach (int pmid in relatedSearchResults.Keys)
+            {
+                List<int> relatedPmids = relatedSearchResults[pmid];
+                if (relatedPmids == null)
+                    Trace.WriteLine(DateTime.Now + " - found empty related PMID list for PMID " + pmid);
+                else if (!relatedRanks.ContainsKey(pmid))
+                    Trace.WriteLine(DateTime.Now + " - no ranks or scores found for PMID " + pmid);
+                else 
+                {
+                    Dictionary<int, RankAndScore> ranksAndScores = relatedRanks[pmid];
+
+                    foreach (int relatedPmid in relatedPmids)
+                    {
+                        if (!ranksAndScores.ContainsKey(relatedPmid))
+                            Trace.WriteLine(DateTime.Now + " - unable to find related ranks and scores for PMID " + pmid + ", related PMID " + relatedPmid);
+                        else 
+                        {
+                            RankAndScore rankAndScore = ranksAndScores[relatedPmid];
+                            string line = String.Format("{0},{1},{2},{3}", pmid, relatedPmid, rankAndScore.Rank, rankAndScore.Score);
+                            string output = line + Environment.NewLine;
+                            try
+                            {
+                                File.AppendAllText(liteModeOutputFile, output);
+                            }
+                            catch (Exception ex)
+                            {
+                                Trace.WriteLine(DateTime.Now + " - unable to append '" + line + "' to the \"lite\" mode output file: " + ex.Message);
+                                Trace.WriteLine(ex.StackTrace);
+                                Trace.WriteLine(DateTime.Now + " - cancelling the run, use the Resume button to resume");
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            return true;
         }
 
         /// <summary>
@@ -337,52 +433,56 @@ namespace Com.StellmanGreene.FindRelated
         /// Create the related publications table and its PeoplePublications view
         /// </summary>
         /// <param name="tableName">Name of the talbe to create</param>
-        /// <param name="extremeRelevanceTableName">Name of the _extremerelevance table created</param>
         /// <param name="queueTableName">Name of the _queue table created</param>
-        private static void CreateRelatedTable(Database db, string tableName, string extremeRelevanceTableName, string queueTableName)
+        /// <param name="extremeRelevanceTableName">Name of the _extremerelevance table created</param>
+        /// <param name="liteMode">In "lite" mode, only create the related publications table, not the other tables</param>
+        private static void CreateRelatedTable(Database db, string tableName, string queueTableName, string extremeRelevanceTableName, bool liteMode)
         {
-            db.ExecuteNonQuery("DROP TABLE IF EXISTS " + tableName);
-            db.ExecuteNonQuery("CREATE TABLE " + tableName + @" (
-              PMID int(11) NOT NULL,
-              RelatedPMID int(11) NOT NULL,
-              Rank int NOT NULL,
-              Score int NOT NULL,
-              PRIMARY KEY (PMID, RelatedPMID)
-            ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-            ");
-
-            // Create the view (table name + "_peoplepublications")
-            db.ExecuteNonQuery("CREATE OR REPLACE VIEW " + tableName + @"_peoplepublications AS
-              SELECT p.Setnb, rp.RelatedPMID AS PMID, -1 AS AuthorPosition, 6 AS PositionType
-              FROM people p, peoplepublications pp, relatedpublications rp
-              WHERE p.Setnb = pp.Setnb
-              AND pp.PMID = rp.PMID;
-            ");
-
-            // Create the most/least relevant publications table (table name + "_extremerelevance")
-            db.ExecuteNonQuery("DROP TABLE IF EXISTS " + extremeRelevanceTableName);
-            db.ExecuteNonQuery("CREATE TABLE " + extremeRelevanceTableName + @" (
-              PMID int(11) NOT NULL,
-              MostRelevantPMID int(11) NOT NULL,
-              MostRelevantScore int NOT NULL,
-              LeastRelevantPMID int(11) NOT NULL,
-              LeastRelevantScore int NOT NULL,
-              LeastRelevantRank int NOT NULL,
-              PRIMARY KEY (PMID, MostRelevantPMID)
-            ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-            ");
-
-            // Create the queue
+            // Create the queue -- for both regular and "lite" modes
             db.ExecuteNonQuery("DROP TABLE IF EXISTS " + queueTableName);
             db.ExecuteNonQuery("CREATE TABLE " + queueTableName + @" (
-              Setnb char(8) NOT NULL,
-              PMID int(11) NOT NULL,
-              Processed bit(1) default NULL,
-              Error bit(1) default NULL,
-              PRIMARY KEY (Setnb, PMID)
+                Setnb char(8) NOT NULL,
+                PMID int(11) NOT NULL,
+                Processed bit(1) default NULL,
+                Error bit(1) default NULL,
+                PRIMARY KEY (Setnb, PMID)
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
             ");
 
+            if (!liteMode)
+            {
+                // Create the related table
+                db.ExecuteNonQuery("DROP TABLE IF EXISTS " + tableName);
+                db.ExecuteNonQuery("CREATE TABLE " + tableName + @" (
+                  PMID int(11) NOT NULL,
+                  RelatedPMID int(11) NOT NULL,
+                  Rank int NOT NULL,
+                  Score int NOT NULL,
+                  PRIMARY KEY (PMID, RelatedPMID)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+                ");
+
+                // Create the view (table name + "_peoplepublications")
+                db.ExecuteNonQuery("CREATE OR REPLACE VIEW " + tableName + @"_peoplepublications AS
+                  SELECT p.Setnb, rp.RelatedPMID AS PMID, -1 AS AuthorPosition, 6 AS PositionType
+                  FROM people p, peoplepublications pp, relatedpublications rp
+                  WHERE p.Setnb = pp.Setnb
+                  AND pp.PMID = rp.PMID;
+                ");
+
+                // Create the most/least relevant publications table (table name + "_extremerelevance")
+                db.ExecuteNonQuery("DROP TABLE IF EXISTS " + extremeRelevanceTableName);
+                db.ExecuteNonQuery("CREATE TABLE " + extremeRelevanceTableName + @" (
+                  PMID int(11) NOT NULL,
+                  MostRelevantPMID int(11) NOT NULL,
+                  MostRelevantScore int NOT NULL,
+                  LeastRelevantPMID int(11) NOT NULL,
+                  LeastRelevantScore int NOT NULL,
+                  LeastRelevantRank int NOT NULL,
+                  PRIMARY KEY (PMID, MostRelevantPMID)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+                ");
+            }
         }
 
 
