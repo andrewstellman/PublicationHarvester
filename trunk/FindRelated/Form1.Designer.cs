@@ -66,6 +66,10 @@
             this.peoplePublicationsView = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.resumeButton = new System.Windows.Forms.Button();
+            this.liteModeCheckBox = new System.Windows.Forms.CheckBox();
+            this.liteModeOutputFileDialog = new System.Windows.Forms.Button();
+            this.liteModeOutputTextBox = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
             this.statusStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.maximumLinkRanking)).BeginInit();
@@ -75,7 +79,7 @@
             // 
             // startButton
             // 
-            this.startButton.Location = new System.Drawing.Point(12, 301);
+            this.startButton.Location = new System.Drawing.Point(12, 360);
             this.startButton.Name = "startButton";
             this.startButton.Size = new System.Drawing.Size(75, 23);
             this.startButton.TabIndex = 80;
@@ -134,7 +138,7 @@
             // 
             // logFilename
             // 
-            this.logFilename.Location = new System.Drawing.Point(11, 342);
+            this.logFilename.Location = new System.Drawing.Point(11, 401);
             this.logFilename.Margin = new System.Windows.Forms.Padding(2);
             this.logFilename.Name = "logFilename";
             this.logFilename.ReadOnly = true;
@@ -144,7 +148,7 @@
             // 
             // label5
             // 
-            this.label5.Location = new System.Drawing.Point(11, 327);
+            this.label5.Location = new System.Drawing.Point(11, 386);
             this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(162, 19);
@@ -153,7 +157,7 @@
             // 
             // openInNotepad
             // 
-            this.openInNotepad.Location = new System.Drawing.Point(332, 341);
+            this.openInNotepad.Location = new System.Drawing.Point(332, 400);
             this.openInNotepad.Name = "openInNotepad";
             this.openInNotepad.Size = new System.Drawing.Size(105, 20);
             this.openInNotepad.TabIndex = 200;
@@ -166,14 +170,14 @@
             // 
             this.log.FormattingEnabled = true;
             this.log.HorizontalScrollbar = true;
-            this.log.Location = new System.Drawing.Point(11, 382);
+            this.log.Location = new System.Drawing.Point(11, 441);
             this.log.Name = "log";
             this.log.Size = new System.Drawing.Size(426, 134);
             this.log.TabIndex = 220;
             // 
             // label4
             // 
-            this.label4.Location = new System.Drawing.Point(10, 367);
+            this.label4.Location = new System.Drawing.Point(10, 426);
             this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(162, 19);
@@ -191,7 +195,7 @@
             // cancelButton
             // 
             this.cancelButton.Enabled = false;
-            this.cancelButton.Location = new System.Drawing.Point(174, 301);
+            this.cancelButton.Location = new System.Drawing.Point(174, 360);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
             this.cancelButton.TabIndex = 90;
@@ -204,7 +208,7 @@
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripProgressBar1,
             this.toolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 519);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 578);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(449, 22);
             this.statusStrip1.SizingGrip = false;
@@ -265,7 +269,7 @@
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.sameJournal);
-            this.groupBox1.Location = new System.Drawing.Point(12, 131);
+            this.groupBox1.Location = new System.Drawing.Point(12, 190);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(429, 159);
             this.groupBox1.TabIndex = 30;
@@ -423,7 +427,7 @@
             // 
             // generateReports
             // 
-            this.generateReports.Location = new System.Drawing.Point(335, 301);
+            this.generateReports.Location = new System.Drawing.Point(335, 360);
             this.generateReports.Name = "generateReports";
             this.generateReports.Size = new System.Drawing.Size(106, 23);
             this.generateReports.TabIndex = 221;
@@ -452,7 +456,7 @@
             // 
             // resumeButton
             // 
-            this.resumeButton.Location = new System.Drawing.Point(93, 301);
+            this.resumeButton.Location = new System.Drawing.Point(93, 360);
             this.resumeButton.Name = "resumeButton";
             this.resumeButton.Size = new System.Drawing.Size(75, 23);
             this.resumeButton.TabIndex = 224;
@@ -460,11 +464,55 @@
             this.resumeButton.UseVisualStyleBackColor = true;
             this.resumeButton.Click += new System.EventHandler(this.resumeButton_Click);
             // 
+            // liteModeCheckBox
+            // 
+            this.liteModeCheckBox.AutoSize = true;
+            this.liteModeCheckBox.Location = new System.Drawing.Point(14, 131);
+            this.liteModeCheckBox.Name = "liteModeCheckBox";
+            this.liteModeCheckBox.Size = new System.Drawing.Size(365, 17);
+            this.liteModeCheckBox.TabIndex = 225;
+            this.liteModeCheckBox.Text = "&\"Lite\" mode (no additional processing done, only queue table is created)";
+            this.liteModeCheckBox.UseVisualStyleBackColor = true;
+            this.liteModeCheckBox.CheckedChanged += new System.EventHandler(this.liteModeCheckBox_CheckedChanged);
+            // 
+            // outputFileDialog
+            // 
+            this.liteModeOutputFileDialog.AutoEllipsis = true;
+            this.liteModeOutputFileDialog.Enabled = false;
+            this.liteModeOutputFileDialog.Location = new System.Drawing.Point(427, 165);
+            this.liteModeOutputFileDialog.Margin = new System.Windows.Forms.Padding(2);
+            this.liteModeOutputFileDialog.Name = "outputFileDialog";
+            this.liteModeOutputFileDialog.Size = new System.Drawing.Size(16, 19);
+            this.liteModeOutputFileDialog.TabIndex = 228;
+            this.liteModeOutputFileDialog.Text = "...";
+            this.liteModeOutputFileDialog.Click += new System.EventHandler(this.outputFileDialog_Click);
+            // 
+            // liteModeOutputTextBox
+            // 
+            this.liteModeOutputTextBox.Enabled = false;
+            this.liteModeOutputTextBox.Location = new System.Drawing.Point(13, 164);
+            this.liteModeOutputTextBox.Name = "liteModeOutputTextBox";
+            this.liteModeOutputTextBox.Size = new System.Drawing.Size(409, 20);
+            this.liteModeOutputTextBox.TabIndex = 227;
+            // 
+            // label12
+            // 
+            this.label12.Location = new System.Drawing.Point(11, 151);
+            this.label12.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(162, 19);
+            this.label12.TabIndex = 226;
+            this.label12.Text = "Lite mode &output file";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(449, 541);
+            this.ClientSize = new System.Drawing.Size(449, 600);
+            this.Controls.Add(this.liteModeOutputFileDialog);
+            this.Controls.Add(this.liteModeOutputTextBox);
+            this.Controls.Add(this.label12);
+            this.Controls.Add(this.liteModeCheckBox);
             this.Controls.Add(this.resumeButton);
             this.Controls.Add(this.peoplePublicationsView);
             this.Controls.Add(this.label11);
@@ -544,6 +592,10 @@
         private System.Windows.Forms.TextBox peoplePublicationsView;
         internal System.Windows.Forms.Label label11;
         private System.Windows.Forms.Button resumeButton;
+        private System.Windows.Forms.CheckBox liteModeCheckBox;
+        internal System.Windows.Forms.Button liteModeOutputFileDialog;
+        private System.Windows.Forms.TextBox liteModeOutputTextBox;
+        internal System.Windows.Forms.Label label12;
     }
 }
 
