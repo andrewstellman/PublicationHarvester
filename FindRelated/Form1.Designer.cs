@@ -47,7 +47,7 @@
             this.inputFileTextBox = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.inputFileDialog = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.filtersGroupBox = new System.Windows.Forms.GroupBox();
             this.includeLanguages = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.includeCategories = new System.Windows.Forms.TextBox();
@@ -71,7 +71,7 @@
             this.liteModeOutputTextBox = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
             this.statusStrip1.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.filtersGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.maximumLinkRanking)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pubWindowLowerBound)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pubWindowUpperBound)).BeginInit();
@@ -253,28 +253,28 @@
             this.inputFileDialog.Text = "...";
             this.inputFileDialog.Click += new System.EventHandler(this.inputFileDialog_Click);
             // 
-            // groupBox1
+            // filtersGroupBox
             // 
-            this.groupBox1.Controls.Add(this.includeLanguages);
-            this.groupBox1.Controls.Add(this.label10);
-            this.groupBox1.Controls.Add(this.includeCategories);
-            this.groupBox1.Controls.Add(this.maximumLinkRanking);
-            this.groupBox1.Controls.Add(this.enableMaximumLinkRanking);
-            this.groupBox1.Controls.Add(this.pubWindowLowerBound);
-            this.groupBox1.Controls.Add(this.enableLowerBound);
-            this.groupBox1.Controls.Add(this.pubWindowUpperBound);
-            this.groupBox1.Controls.Add(this.enableUpperBound);
-            this.groupBox1.Controls.Add(this.label9);
-            this.groupBox1.Controls.Add(this.label8);
-            this.groupBox1.Controls.Add(this.label7);
-            this.groupBox1.Controls.Add(this.label6);
-            this.groupBox1.Controls.Add(this.sameJournal);
-            this.groupBox1.Location = new System.Drawing.Point(12, 190);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(429, 159);
-            this.groupBox1.TabIndex = 30;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Filters";
+            this.filtersGroupBox.Controls.Add(this.includeLanguages);
+            this.filtersGroupBox.Controls.Add(this.label10);
+            this.filtersGroupBox.Controls.Add(this.includeCategories);
+            this.filtersGroupBox.Controls.Add(this.maximumLinkRanking);
+            this.filtersGroupBox.Controls.Add(this.enableMaximumLinkRanking);
+            this.filtersGroupBox.Controls.Add(this.pubWindowLowerBound);
+            this.filtersGroupBox.Controls.Add(this.enableLowerBound);
+            this.filtersGroupBox.Controls.Add(this.pubWindowUpperBound);
+            this.filtersGroupBox.Controls.Add(this.enableUpperBound);
+            this.filtersGroupBox.Controls.Add(this.label9);
+            this.filtersGroupBox.Controls.Add(this.label8);
+            this.filtersGroupBox.Controls.Add(this.label7);
+            this.filtersGroupBox.Controls.Add(this.label6);
+            this.filtersGroupBox.Controls.Add(this.sameJournal);
+            this.filtersGroupBox.Location = new System.Drawing.Point(12, 190);
+            this.filtersGroupBox.Name = "filtersGroupBox";
+            this.filtersGroupBox.Size = new System.Drawing.Size(429, 159);
+            this.filtersGroupBox.TabIndex = 30;
+            this.filtersGroupBox.TabStop = false;
+            this.filtersGroupBox.Text = "Filters";
             // 
             // includeLanguages
             // 
@@ -469,19 +469,19 @@
             this.liteModeCheckBox.AutoSize = true;
             this.liteModeCheckBox.Location = new System.Drawing.Point(14, 131);
             this.liteModeCheckBox.Name = "liteModeCheckBox";
-            this.liteModeCheckBox.Size = new System.Drawing.Size(365, 17);
+            this.liteModeCheckBox.Size = new System.Drawing.Size(389, 17);
             this.liteModeCheckBox.TabIndex = 225;
-            this.liteModeCheckBox.Text = "&\"Lite\" mode (no additional processing done, only queue table is created)";
+            this.liteModeCheckBox.Text = "&\"Lite\" mode (no additional processing, only related and queue tables created)";
             this.liteModeCheckBox.UseVisualStyleBackColor = true;
             this.liteModeCheckBox.CheckedChanged += new System.EventHandler(this.liteModeCheckBox_CheckedChanged);
             // 
-            // outputFileDialog
+            // liteModeOutputFileDialog
             // 
             this.liteModeOutputFileDialog.AutoEllipsis = true;
             this.liteModeOutputFileDialog.Enabled = false;
             this.liteModeOutputFileDialog.Location = new System.Drawing.Point(427, 165);
             this.liteModeOutputFileDialog.Margin = new System.Windows.Forms.Padding(2);
-            this.liteModeOutputFileDialog.Name = "outputFileDialog";
+            this.liteModeOutputFileDialog.Name = "liteModeOutputFileDialog";
             this.liteModeOutputFileDialog.Size = new System.Drawing.Size(16, 19);
             this.liteModeOutputFileDialog.TabIndex = 228;
             this.liteModeOutputFileDialog.Text = "...";
@@ -517,7 +517,7 @@
             this.Controls.Add(this.peoplePublicationsView);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.generateReports);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.filtersGroupBox);
             this.Controls.Add(this.inputFileDialog);
             this.Controls.Add(this.inputFileTextBox);
             this.Controls.Add(this.label3);
@@ -542,8 +542,8 @@
             this.Load += new System.EventHandler(this.Form1_Load);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.filtersGroupBox.ResumeLayout(false);
+            this.filtersGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.maximumLinkRanking)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pubWindowLowerBound)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pubWindowUpperBound)).EndInit();
@@ -573,7 +573,7 @@
         private System.Windows.Forms.TextBox inputFileTextBox;
         internal System.Windows.Forms.Label label3;
         internal System.Windows.Forms.Button inputFileDialog;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox filtersGroupBox;
         private System.Windows.Forms.CheckBox sameJournal;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label8;
