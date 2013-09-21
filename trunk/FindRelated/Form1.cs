@@ -108,17 +108,24 @@ namespace Com.StellmanGreene.FindRelated
             }
 
             PublicationFilter publicationFilter = null;
-            try
+            if (!liteModeCheckBox.Checked)
             {
-                publicationFilter = GetPublicationFilter();
+                try
+                {
+                    publicationFilter = GetPublicationFilter();
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine("Exception caught creating filters:");
+                    Trace.WriteLine(ex.Message);
+                    startButton.Enabled = true;
+                    resumeButton.Enabled = true;
+                    return;
+                }
             }
-            catch (Exception ex)
+            else
             {
-                Trace.WriteLine("Exception caught creating filters:");
-                Trace.WriteLine(ex.Message);
-                startButton.Enabled = true;
-                resumeButton.Enabled = true;
-                return;
+                Trace.WriteLine(DateTime.Now + " - \"Lite\" mode, filtering is disabled");
             }
 
             // Start the run
@@ -537,6 +544,8 @@ namespace Com.StellmanGreene.FindRelated
         {
             liteModeOutputFileDialog.Enabled = liteModeCheckBox.Checked;
             liteModeOutputTextBox.Enabled = liteModeCheckBox.Checked;
+            filtersGroupBox.Enabled = !liteModeCheckBox.Checked;
+            generateReports.Enabled = !liteModeCheckBox.Checked;
         }
 
     }

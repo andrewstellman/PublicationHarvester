@@ -50,18 +50,18 @@ namespace Com.StellmanGreene.FindRelated
         /// Execute the FindRelated search, create and populate the tables
         /// </summary>
         /// <param name="odbcDsn">ODBC DSN to access the SQL server</param>
-        /// <param name="relatedTable">Name of the FindRelated SQL table to create</param>
+        /// <param name="relatedTableName">Name of the FindRelated SQL table to create</param>
         /// <param name="inputFileInfo">FileInfo object with information about the input CSV file</param>
         /// <param name="publicationFilter">PublicationFilter object to use for filtering publications</param>
         /// <param name="resume">True if resuming a previous run</param>
         /// <param name="liteMode">True if in "lite" mode, where it only runs the FindRelated search and does not do additional processing</param>
         /// <param name="liteModeOutputFile">Output filename for "lite" mode (ignored when not in "lite" mode)</param>
-        public void Go(string odbcDsn, string relatedTable, FileInfo inputFileInfo, PublicationFilter publicationFilter, bool resume, bool liteMode, string liteModeOutputFile)
+        public void Go(string odbcDsn, string relatedTableName, FileInfo inputFileInfo, PublicationFilter publicationFilter, bool resume, bool liteMode, string liteModeOutputFile)
         {
             Database db = new Database(odbcDsn);
 
-            string queueTableName = relatedTable + "_queue";
-            string extremeRelevanceTableName = relatedTable + "_extremerelevance";
+            string queueTableName = relatedTableName + "_queue";
+            string extremeRelevanceTableName = relatedTableName + "_extremerelevance";
 
             InputQueue inputQueue;
             if (!resume)
@@ -69,7 +69,7 @@ namespace Com.StellmanGreene.FindRelated
                 if (liteMode && !CreateLiteModeOutputFile(liteModeOutputFile))
                     return;
 
-                CreateRelatedTable(db, relatedTable, queueTableName, extremeRelevanceTableName, liteMode);
+                CreateTables(db, relatedTableName, queueTableName, extremeRelevanceTableName, liteMode);
                 inputQueue = new InputQueue(inputFileInfo, db, queueTableName);
             }
             else
@@ -97,7 +97,7 @@ namespace Com.StellmanGreene.FindRelated
                     Trace.WriteLine(DateTime.Now + " - found " + relatedSearchResults.Count + " PMIDs for setnb " + inputQueue.CurrentSetnb);
 
                     completed = false;
-                    completed = WriteRelatedRankToOutputFile(relatedSearchResults, relatedRanks, liteModeOutputFile);
+                    completed = WriteRelatedRanksToOutputFileAndDatabaseForLiteMode(db, relatedTableName, relatedSearchResults, relatedRanks, liteModeOutputFile, inputQueue);
                     if (!completed) // WriteRelatedRankToOutputFile() returns false if the user cancelled the operation
                         break;
                 }
@@ -109,7 +109,7 @@ namespace Com.StellmanGreene.FindRelated
                         total += relatedSearchResults[key].Count;
                     Trace.WriteLine(DateTime.Now + " - found " + total + " related to " + relatedSearchResults.Keys.Count + " publications");
 
-                    completed = ProcessSearchResults(relatedTable, publicationFilter, db, extremeRelevanceTableName, relatedRanks, relatedSearchResults, inputQueue);
+                    completed = ProcessSearchResults(db, relatedTableName, publicationFilter, extremeRelevanceTableName, relatedRanks, relatedSearchResults, inputQueue);
                     if (!completed) // ProcessSearchResults() returns false if the user cancelled the operation
                         break;
                 }
@@ -126,7 +126,16 @@ namespace Com.StellmanGreene.FindRelated
             try
             {
                 if (File.Exists(liteModeOutputFile))
-                    File.Delete(liteModeOutputFile);
+                {
+                    string outputFileName = Path.GetFileName(liteModeOutputFile);
+                    if (File.Exists(liteModeOutputFile + ".bak"))
+                    {
+                        Trace.WriteLine(DateTime.Now + " - deleting old \"lite\" mode output .bak file '" + outputFileName + ".bak'");
+                        File.Delete(liteModeOutputFile + ".bak");
+                    }
+                    Trace.WriteLine(DateTime.Now + " - renaming old \"lite\" mode output file '" + outputFileName + "' to '" + outputFileName + ".bak'");
+                    File.Move(liteModeOutputFile, liteModeOutputFile + ".bak");
+                }
 
                 string header = "pmid,rltd_pmid,rltd_rank,rltd_score" + Environment.NewLine;
                 File.WriteAllText(liteModeOutputFile, header);
@@ -139,7 +148,20 @@ namespace Com.StellmanGreene.FindRelated
             return true;
         }
 
-        private bool WriteRelatedRankToOutputFile(Dictionary<int, List<int>> relatedSearchResults, Dictionary<int, Dictionary<int, RankAndScore>> relatedRanks, string liteModeOutputFile)
+        /// <summary>
+        /// Go through all of the ranks and scores retrieved from the server for each PMID and write them to the output file and the database.
+        /// This is used by the 'lite' mode.
+        /// </summary>
+        /// <param name="db">Database to write to</param>
+        /// <param name="relatedTableName">Name of the related table</param>
+        /// <param name="relatedSearchResults">NCBI search results parsed into a dictionary that maps queried PMIDs to a list of related PMIDs</param>
+        /// <param name="relatedRanks">Dictionary parsed from NCBI search results that maps each queried PMID to a dictionary of related PMIDs and their ranks and scores</param>
+        /// <param name="liteModeOutputFile">Output file to append to</param>
+        /// <param name="inputQueue">Input queue for marking success or error</param>
+        /// <returns>True if a lines were successfully added to the file and table, false if an error occurred</returns>
+        private bool WriteRelatedRanksToOutputFileAndDatabaseForLiteMode(Database db, string relatedTableName, 
+            Dictionary<int, List<int>> relatedSearchResults, Dictionary<int, Dictionary<int, RankAndScore>> relatedRanks,
+            string liteModeOutputFile, InputQueue inputQueue)
         {
             if (BackgroundWorker != null && BackgroundWorker.CancellationPending)
             {
@@ -162,7 +184,7 @@ namespace Com.StellmanGreene.FindRelated
                     {
                         if (!ranksAndScores.ContainsKey(relatedPmid))
                             Trace.WriteLine(DateTime.Now + " - unable to find related ranks and scores for PMID " + pmid + ", related PMID " + relatedPmid);
-                        else 
+                        else
                         {
                             RankAndScore rankAndScore = ranksAndScores[relatedPmid];
                             string line = String.Format("{0},{1},{2},{3}", pmid, relatedPmid, rankAndScore.Rank, rankAndScore.Score);
@@ -176,12 +198,23 @@ namespace Com.StellmanGreene.FindRelated
                                 Trace.WriteLine(DateTime.Now + " - unable to append '" + line + "' to the \"lite\" mode output file: " + ex.Message);
                                 Trace.WriteLine(ex.StackTrace);
                                 Trace.WriteLine(DateTime.Now + " - cancelling the run, use the Resume button to resume");
+
+                                inputQueue.MarkError(pmid);
+
                                 return false;
                             }
+
+                            bool written = WriteRelatedRankToDatabase(db, relatedTableName, pmid, relatedPmid, rankAndScore.Rank, rankAndScore.Score);
+                            if (!written)
+                                return false;
                         }
                     }
                 }
+
+                // Mark the PMID processed in the queue
+                inputQueue.MarkProcessed(pmid);
             }
+
             return true;
         }
 
@@ -189,15 +222,15 @@ namespace Com.StellmanGreene.FindRelated
         /// For each of the author's publications in the results, do a PubMed search for the linked publications
         /// (constructed from the results) and add each of them to the database.
         /// </summary>
-        /// <param name="relatedTable"></param>
-        /// <param name="publicationFilter"></param>
-        /// <param name="db"></param>
-        /// <param name="extremeRelevanceTableName"></param>
-        /// <param name="pubTypes"></param>
-        /// <param name="relatedRanks"></param>
-        /// <param name="relatedSearchResults"></param>
+        /// <param name="db">Database to write to</param>
+        /// <param name="relatedTableName">Name of the related table</param>
+        /// <param name="publicationFilter">Publication filter for filtering results</param>
+        /// <param name="extremeRelevanceTableName">Name of the extreme relavance table in the database</param>
+        /// <param name="relatedRanks">Dictionary parsed from NCBI search results that maps each queried PMID to a dictionary of related PMIDs and their ranks and scores</param>
+        /// <param name="relatedSearchResults">NCBI search results parsed into a dictionary that maps queried PMIDs to a list of related PMIDs</param>
+        /// <param name="inputQueue">Input queue for marking success or error</param>
         /// <returns>True if completed, false if cancelled</returns>
-        private bool ProcessSearchResults(string relatedTable, PublicationFilter publicationFilter, Database db, string extremeRelevanceTableName, 
+        private bool ProcessSearchResults(Database db, string relatedTableName, PublicationFilter publicationFilter, string extremeRelevanceTableName, 
             Dictionary<int, Dictionary<int, RankAndScore>> relatedRanks, Dictionary<int, List<int>> relatedSearchResults,
             InputQueue inputQueue)
         {
@@ -239,7 +272,7 @@ namespace Com.StellmanGreene.FindRelated
 
                 // Only write this article's related publications to the database if they haven't already been added.
                 // (Multiple authors might link to the same publication, and each will add the same links.)
-                int relatedCount = db.GetIntValue("SELECT Count(*) FROM " + relatedTable + " WHERE PMID = (?)",
+                int relatedCount = db.GetIntValue("SELECT Count(*) FROM " + relatedTableName + " WHERE PMID = (?)",
                     new System.Collections.ArrayList() { Database.Parameter(authorPublicationPmid) });
                 if (relatedCount != 0)
                 {
@@ -306,32 +339,15 @@ namespace Com.StellmanGreene.FindRelated
                         // Use the publication filter to include only publications that match the filter
                         if (publicationFilter.FilterPublication(relatedPublication, rank, authorPublication, pubTypes))
                         {
-                            try
-                            {
-                                // Add the publication to the publications table
-                                // (this will only add it if it's not already there)
-                                Publications.WriteToDB(relatedPublication, db, pubTypes, null);
+                            // Add the publication to the publications table
+                            // (this will only add it if it's not already there)
+                            Publications.WriteToDB(relatedPublication, db, pubTypes, null);
 
-                                // Write the pmid/relatedPmid pair to the related publications table.
-
-                                db.ExecuteNonQuery(
-                                     "INSERT INTO " + relatedTable + " (PMID, RelatedPMID, Rank, Score) VALUES (?, ?, ?, ?)",
-                                     new System.Collections.ArrayList() { 
-                                            Database.Parameter(authorPublicationPmid), 
-                                            Database.Parameter(relatedPublication.PMID),
-                                            Database.Parameter(rank),
-                                            Database.Parameter(score),
-                                        });
-
+                            bool success = WriteRelatedRankToDatabase(db, relatedTableName, authorPublicationPmid, relatedPublication.PMID, rank, score);
+                            if (success)
                                 publicationsWritten++;
-                            }
-                            catch (Exception ex)
-                            {
-                                Trace.WriteLine("Unable to add related article " + relatedPublication.PMID + ", error message follows");
-                                Trace.WriteLine(ex.Message);
-
+                            else
                                 error = true;
-                            }
                         }
                         else
                         {
@@ -394,6 +410,33 @@ namespace Com.StellmanGreene.FindRelated
             return true;
         }
 
+        private static bool WriteRelatedRankToDatabase(Database db, string relatedTableName, int authorPublicationPmid, 
+            int relatedPublicationPmid, int rank, int score)
+        {
+            try
+            {
+                // Write the pmid/relatedPmid pair to the related publications table.
+
+                db.ExecuteNonQuery(
+                     "INSERT INTO " + relatedTableName + " (PMID, RelatedPMID, Rank, Score) VALUES (?, ?, ?, ?)",
+                     new System.Collections.ArrayList() { 
+                                            Database.Parameter(authorPublicationPmid), 
+                                            Database.Parameter(relatedPublicationPmid),
+                                            Database.Parameter(rank),
+                                            Database.Parameter(score),
+                                        });
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine("Unable to add related article " + relatedPublicationPmid + ", error message follows");
+                Trace.WriteLine(ex.Message);
+
+                return false;
+            }
+        }
+
         /// <summary>
         /// Search PubMed for all of the related publications and add them to the database, keep trying until search is successful
         /// </summary>
@@ -432,38 +475,38 @@ namespace Com.StellmanGreene.FindRelated
         /// <summary>
         /// Create the related publications table and its PeoplePublications view
         /// </summary>
-        /// <param name="tableName">Name of the talbe to create</param>
+        /// <param name="relatedTableName">Name of the talbe to create</param>
         /// <param name="queueTableName">Name of the _queue table created</param>
         /// <param name="extremeRelevanceTableName">Name of the _extremerelevance table created</param>
         /// <param name="liteMode">In "lite" mode, only create the related publications table, not the other tables</param>
-        private static void CreateRelatedTable(Database db, string tableName, string queueTableName, string extremeRelevanceTableName, bool liteMode)
+        private static void CreateTables(Database db, string relatedTableName, string queueTableName, string extremeRelevanceTableName, bool liteMode)
         {
+            // Create the related table -- for both regular and "lite" modes
+            db.ExecuteNonQuery("DROP TABLE IF EXISTS " + relatedTableName);
+            db.ExecuteNonQuery("CREATE TABLE " + relatedTableName + @" (
+                PMID int(11) NOT NULL,
+                RelatedPMID int(11) NOT NULL,
+                Rank int NOT NULL,
+                Score int NOT NULL,
+                PRIMARY KEY (PMID, RelatedPMID)
+            ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+            ");
+
             // Create the queue -- for both regular and "lite" modes
             db.ExecuteNonQuery("DROP TABLE IF EXISTS " + queueTableName);
             db.ExecuteNonQuery("CREATE TABLE " + queueTableName + @" (
                 Setnb char(8) NOT NULL,
                 PMID int(11) NOT NULL,
-                Processed bit(1) default NULL,
-                Error bit(1) default NULL,
+                Processed bit(1) default 0 NOT NULL,
+                Error bit(1) default 0 NOT NULL,
                 PRIMARY KEY (Setnb, PMID)
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
             ");
 
             if (!liteMode)
             {
-                // Create the related table
-                db.ExecuteNonQuery("DROP TABLE IF EXISTS " + tableName);
-                db.ExecuteNonQuery("CREATE TABLE " + tableName + @" (
-                  PMID int(11) NOT NULL,
-                  RelatedPMID int(11) NOT NULL,
-                  Rank int NOT NULL,
-                  Score int NOT NULL,
-                  PRIMARY KEY (PMID, RelatedPMID)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-                ");
-
                 // Create the view (table name + "_peoplepublications")
-                db.ExecuteNonQuery("CREATE OR REPLACE VIEW " + tableName + @"_peoplepublications AS
+                db.ExecuteNonQuery("CREATE OR REPLACE VIEW " + relatedTableName + @"_peoplepublications AS
                   SELECT p.Setnb, rp.RelatedPMID AS PMID, -1 AS AuthorPosition, 6 AS PositionType
                   FROM people p, peoplepublications pp, relatedpublications rp
                   WHERE p.Setnb = pp.Setnb
