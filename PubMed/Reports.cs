@@ -489,13 +489,14 @@ namespace Com.StellmanGreene.PubMed
                         // Find the minimum and maximum years
                         int YearMinimum = pubs.PublicationList[0].Year;
                         int YearMaximum = pubs.PublicationList[0].Year;
-                        foreach (Publication pub in pubs.PublicationList)
-                        {
-                            if (pub.Year < YearMinimum)
-                                YearMinimum = pub.Year;
-                            if (pub.Year > YearMaximum)
-                                YearMaximum = pub.Year;
-                        }
+                        if (pubs.PublicationList != null)
+                            foreach (Publication pub in pubs.PublicationList)
+                            {
+                                if (pub.Year < YearMinimum)
+                                    YearMinimum = pub.Year;
+                                if (pub.Year > YearMaximum)
+                                    YearMaximum = pub.Year;
+                            }
 
                         // Write each row
                         for (int Year = YearMinimum; Year <= YearMaximum; Year++)
@@ -610,7 +611,7 @@ namespace Com.StellmanGreene.PubMed
                         MessageCallback("Unable to retrive publications for " + person.Last + " (" + person.Setnb + "): " + ex.Message);
                     }
 
-                    if (pubs != null)
+                    if (pubs != null && pubs.PublicationList != null)
                     {
                         foreach (Publication pub in pubs.PublicationList)
                         {
@@ -732,30 +733,31 @@ namespace Com.StellmanGreene.PubMed
                     int MaxYear = 0;
                     Publications pubs = new Publications(DB, person, PeoplePublicationsTable, false);
                     Hashtable years = new Hashtable();
-                    foreach (Publication pub in pubs.PublicationList)
-                    {
-                        if (MinYear == 0 || MinYear > pub.Year)
-                            MinYear = pub.Year;
-                        if (MaxYear == 0 || MaxYear < pub.Year)
-                            MaxYear = pub.Year;
-
-                        // Go through each of the MeSH headings and count how many
-                        // occurrences of each heading are in each year. Store each
-                        // count in a hashtable keyed by heading, which in turn is 
-                        // stored in a hashtable keyed by year.
-                        if (!years.ContainsKey(pub.Year))
-                            years[pub.Year] = new Hashtable();
-                        Hashtable yearHeadings = (Hashtable)years[pub.Year];
-                        if (pub.MeSHHeadings != null)
+                    if (pubs.PublicationList != null)
+                        foreach (Publication pub in pubs.PublicationList)
                         {
-                            foreach (string Heading in pub.MeSHHeadings)
+                            if (MinYear == 0 || MinYear > pub.Year)
+                                MinYear = pub.Year;
+                            if (MaxYear == 0 || MaxYear < pub.Year)
+                                MaxYear = pub.Year;
+
+                            // Go through each of the MeSH headings and count how many
+                            // occurrences of each heading are in each year. Store each
+                            // count in a hashtable keyed by heading, which in turn is 
+                            // stored in a hashtable keyed by year.
+                            if (!years.ContainsKey(pub.Year))
+                                years[pub.Year] = new Hashtable();
+                            Hashtable yearHeadings = (Hashtable)years[pub.Year];
+                            if (pub.MeSHHeadings != null)
                             {
-                                if (!yearHeadings.ContainsKey(Heading))
-                                    yearHeadings[Heading] = 0;
-                                yearHeadings[Heading] = ((int)yearHeadings[Heading]) + 1;
+                                foreach (string Heading in pub.MeSHHeadings)
+                                {
+                                    if (!yearHeadings.ContainsKey(Heading))
+                                        yearHeadings[Heading] = 0;
+                                    yearHeadings[Heading] = ((int)yearHeadings[Heading]) + 1;
+                                }
                             }
                         }
-                    }
 
                     // Write the heading rows for each year
                     for (int Year = MinYear; Year <= MaxYear; Year++)
