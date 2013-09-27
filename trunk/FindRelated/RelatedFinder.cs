@@ -307,7 +307,7 @@ namespace Com.StellmanGreene.FindRelated
 
                     // Write each publication to the database
                     Publications publications = new Publications(searchResults, pubTypes);
-                    foreach (Publication relatedPublication in publications.PublicationList)
+                    if (publications.PublicationList != null) foreach (Publication relatedPublication in publications.PublicationList)
                     {
                         if (BackgroundWorker != null && BackgroundWorker.CancellationPending)
                         {

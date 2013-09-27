@@ -280,7 +280,7 @@ namespace Com.StellmanGreene.PubMed.Unit_Tests
                 {
                     case "A6009400": // Van Eys
                         Assert.IsTrue(pubs.PublicationList.Length == 8);
-                        foreach (Publication pub in pubs.PublicationList)
+                        if (pubs.PublicationList != null) foreach (Publication pub in pubs.PublicationList)
                             switch (pub.PMID)
                             {
                                 case 9876482:
@@ -359,7 +359,7 @@ namespace Com.StellmanGreene.PubMed.Unit_Tests
                         break;
                     case "A5401532": // Tobian
                         Assert.IsTrue(pubs.PublicationList.Length == 5);
-                        foreach (Publication pub in pubs.PublicationList)
+                        if (pubs.PublicationList != null) foreach (Publication pub in pubs.PublicationList)
                             switch (pub.PMID)
                             {
                                 case 9931073:
@@ -399,7 +399,7 @@ namespace Com.StellmanGreene.PubMed.Unit_Tests
 
                     case "A5501586": // Reemtsma
                         Assert.IsTrue(pubs.PublicationList.Length == 3);
-                        foreach (Publication pub in pubs.PublicationList)
+                        if (pubs.PublicationList != null) foreach (Publication pub in pubs.PublicationList)
                             switch (pub.PMID)
                             {
                                 case 11528018:
@@ -438,7 +438,7 @@ namespace Com.StellmanGreene.PubMed.Unit_Tests
 
                     case "A5702471": // Guillemin
                         Assert.IsTrue(pubs.PublicationList.Length == 6);
-                        foreach (Publication pub in pubs.PublicationList)
+                        if (pubs.PublicationList != null) foreach (Publication pub in pubs.PublicationList)
                             switch (pub.PMID)
                             {
                                 case 15642779:
@@ -598,7 +598,7 @@ namespace Com.StellmanGreene.PubMed.Unit_Tests
             // Verify that the data was written properly
             int FoundPublications = 0;
             Publications pubs = new Publications(DB, person, false);
-            foreach (Publication pub in pubs.PublicationList)
+            if (pubs.PublicationList != null) foreach (Publication pub in pubs.PublicationList)
             {
                 FoundPublications++;
                 switch (pub.PMID)

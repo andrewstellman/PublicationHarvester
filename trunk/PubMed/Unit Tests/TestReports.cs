@@ -148,7 +148,7 @@ namespace Com.StellmanGreene.PubMed.Unit_Tests
             {
                 Publications pubs = new Publications(DB, person, false);
 
-                foreach (Publication pub in pubs.PublicationList)
+                if (pubs.PublicationList != null) foreach (Publication pub in pubs.PublicationList)
                 {
 
 

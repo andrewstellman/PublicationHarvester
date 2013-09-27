@@ -209,7 +209,10 @@ AND cp.Setnb = sc.Setnb
 AND pp.PMID = cp.PMID";
 
             DataTable results = DB.ExecuteQuery(sql);
-            using (StreamWriter writer = new StreamWriter(StarColleaguePositions.Text))
+
+            string Filename = Folder.Text + "\\" + StarColleaguePositions.Text;
+
+            using (StreamWriter writer = new StreamWriter(Filename))
             {
                 writer.WriteLine("star_setnb,colleague_setnb,pmid,star_pos,colleague_pos");
                 foreach (DataRow row in results.Rows)

@@ -71,7 +71,7 @@ namespace SCGen
             {
                 pubs = null;
             }
-            if (pubs != null)
+            if (pubs != null && pubs.PublicationList != null)
             {
                 foreach (Publication pub in pubs.PublicationList)
                 {
@@ -167,29 +167,30 @@ namespace SCGen
 
                         // Write the publications to the database -- but only if they
                         // actually belong to the colleague.
-                        foreach (Publication pub in ColleaguePublications.PublicationList)
-                        {
-                            // If the publication has no authors, it's clearly not actually
-                            // a publication that belongs to this colleague. 
-                            // Also, since the publication harvester only harvests 
-                            // English publications, we exclude any non-English ones as well.
-                            if ((pub.Authors != null) && (pub.Language == "eng") 
-                                && (AllowedPubTypeCategories.Contains(pubTypes.GetCategoryNumber(pub.PubType))))
+                        if (ColleaguePublications.PublicationList != null)
+                            foreach (Publication pub in ColleaguePublications.PublicationList)
                             {
-                                // Add a row to the ColleaguePublications table -- this will
-                                // return False if the publication doesn't actually belong
-                                // to the colleague
-                                bool PubBelongsToColleague = WriteColleaguePublicationsToDB(DB, Colleague, pub, pubTypes, Languages);
-                                if (PubBelongsToColleague)
+                                // If the publication has no authors, it's clearly not actually
+                                // a publication that belongs to this colleague. 
+                                // Also, since the publication harvester only harvests 
+                                // English publications, we exclude any non-English ones as well.
+                                if ((pub.Authors != null) && (pub.Language == "eng")
+                                    && (AllowedPubTypeCategories.Contains(pubTypes.GetCategoryNumber(pub.PubType))))
                                 {
-                                    // Make sure the publication doesn't already exist, then write
-                                    // it to the database.
-                                    if (DB.GetIntValue("SELECT Count(*) FROM Publications WHERE PMID = " + pub.PMID.ToString()) == 0)
-                                        Publications.WriteToDB(pub, DB, pubTypes, Languages);
-                                }
+                                    // Add a row to the ColleaguePublications table -- this will
+                                    // return False if the publication doesn't actually belong
+                                    // to the colleague
+                                    bool PubBelongsToColleague = WriteColleaguePublicationsToDB(DB, Colleague, pub, pubTypes, Languages);
+                                    if (PubBelongsToColleague)
+                                    {
+                                        // Make sure the publication doesn't already exist, then write
+                                        // it to the database.
+                                        if (DB.GetIntValue("SELECT Count(*) FROM Publications WHERE PMID = " + pub.PMID.ToString()) == 0)
+                                            Publications.WriteToDB(pub, DB, pubTypes, Languages);
+                                    }
 
+                                }
                             }
-                        }
 
                         // Update the Harvested column in the Colleagues table
                         ArrayList Parameters = new ArrayList();
@@ -263,11 +264,12 @@ namespace SCGen
                         }
 
                         // Check if the star and colleague have publications in common
-                        foreach (Publication pub in StarPublications.PublicationList)
-                        {
-                            if (PMIDs.Contains(pub.PMID))
-                                PublicationsInCommon++;
-                        }
+                        if (StarPublications.PublicationList != null)
+                            foreach (Publication pub in StarPublications.PublicationList)
+                            {
+                                if (PMIDs.Contains(pub.PMID))
+                                    PublicationsInCommon++;
+                            }
 
                         // Eliminate any false colleagues
                         if (PublicationsInCommon == 0)
