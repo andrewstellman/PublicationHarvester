@@ -86,7 +86,27 @@ namespace Com.StellmanGreene.FindRelated
                 // Do the linked publication search for the author's PMIDs and process the results.
                 // This returns a Dictionary that maps author publications (from the PeoplePublications table)
                 // to linked publications, so each key is one of the author publications read from the DB originally.
-                string xml = ExecuteRelatedSearch(inputQueue.CurrentPmids);
+                string xml = null;
+                bool success = false;
+                bool failed = false;
+                while (!success)
+                {
+                    try
+                    {
+                        xml = ExecuteRelatedSearch(inputQueue.CurrentPmids);
+                        success = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        Trace.WriteLine(DateTime.Now + " - an error occurred while executing the related query, attempting to repeat the search");
+                        Trace.WriteLine(ex.Message);
+                        Trace.WriteLine(ex.StackTrace);
+                        failed = true;
+                    }
+                }
+                if (failed)
+                    Trace.WriteLine(DateTime.Now + " - successfully recovered from the error, continuing execution");
+
                 Dictionary<int, Dictionary<int, RankAndScore>> relatedRanks;
                 Dictionary<int, List<int>> relatedSearchResults = GetIdsFromXml(xml, out relatedRanks);
 
