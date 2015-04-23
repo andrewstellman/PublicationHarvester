@@ -9,3 +9,11 @@ It consists of several different components:
 * FindRelated: http://www.stellman-greene.com/FindRelated/
 
 It is also related to the ScientificDistance project: http://www.stellman-greene.com/ScientificDistance/
+
+This software is released under the GNU General Public License (GPL): http://www.gnu.org/copyleft/gpl.html
+
+The Publication Harvester project is maintained by Andrew Stellman of Stellman & Greene Consulting. If you have questions, comments, patches, or bug reports, please contact pubharvester@stellman-greene.com.
+
+We gratefully acknowledgement is given to the financial support of the National Science Foundation (Award SBE-0738142).
+
+© 2015 Stellman & Greene Consulting LLC - http://www.stellman-greene.com
