@@ -50,6 +50,8 @@
             this.label3 = new System.Windows.Forms.Label();
             this.mostRelevantFilename = new System.Windows.Forms.TextBox();
             this.mostRelevant = new System.Windows.Forms.CheckBox();
+            this.alternateTempFolderTextBox = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -65,7 +67,7 @@
             this.toolStripStatusLabel1,
             this.toolStripProgressBar1,
             this.toolStripStatusLabel2});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 273);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 300);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 10, 0);
             this.statusStrip1.Size = new System.Drawing.Size(428, 23);
@@ -76,9 +78,9 @@
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.AutoSize = false;
-            this.toolStripStatusLabel1.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top)
-                        | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right)
-                        | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
+            this.toolStripStatusLabel1.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top) 
+            | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
+            | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(150, 18);
             this.toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -94,7 +96,7 @@
             // 
             // generateReports
             // 
-            this.generateReports.Location = new System.Drawing.Point(115, 239);
+            this.generateReports.Location = new System.Drawing.Point(115, 272);
             this.generateReports.Margin = new System.Windows.Forms.Padding(2);
             this.generateReports.Name = "generateReports";
             this.generateReports.Size = new System.Drawing.Size(186, 23);
@@ -106,7 +108,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 179);
+            this.label2.Location = new System.Drawing.Point(9, 175);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(139, 13);
@@ -179,7 +181,7 @@
             // specifyFolder
             // 
             this.specifyFolder.AutoEllipsis = true;
-            this.specifyFolder.Location = new System.Drawing.Point(396, 209);
+            this.specifyFolder.Location = new System.Drawing.Point(396, 205);
             this.specifyFolder.Margin = new System.Windows.Forms.Padding(2);
             this.specifyFolder.Name = "specifyFolder";
             this.specifyFolder.Size = new System.Drawing.Size(20, 20);
@@ -190,7 +192,7 @@
             // 
             // folderLabel
             // 
-            this.folderLabel.Location = new System.Drawing.Point(11, 195);
+            this.folderLabel.Location = new System.Drawing.Point(11, 191);
             this.folderLabel.Margin = new System.Windows.Forms.Padding(2);
             this.folderLabel.Multiline = true;
             this.folderLabel.Name = "folderLabel";
@@ -266,11 +268,29 @@
             this.mostRelevant.Text = "E&xtreme relevance";
             this.mostRelevant.UseVisualStyleBackColor = true;
             // 
+            // alternateTempFolderTextBox
+            // 
+            this.alternateTempFolderTextBox.Location = new System.Drawing.Point(141, 240);
+            this.alternateTempFolderTextBox.Name = "alternateTempFolderTextBox";
+            this.alternateTempFolderTextBox.Size = new System.Drawing.Size(276, 20);
+            this.alternateTempFolderTextBox.TabIndex = 230;
+            // 
+            // label13
+            // 
+            this.label13.Location = new System.Drawing.Point(8, 243);
+            this.label13.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(128, 19);
+            this.label13.TabIndex = 231;
+            this.label13.Text = "Use alternate temp folder:";
+            // 
             // ReportsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(428, 296);
+            this.ClientSize = new System.Drawing.Size(428, 323);
+            this.Controls.Add(this.alternateTempFolderTextBox);
+            this.Controls.Add(this.label13);
             this.Controls.Add(this.mostRelevantFilename);
             this.Controls.Add(this.mostRelevant);
             this.Controls.Add(this.label3);
@@ -325,5 +345,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox mostRelevantFilename;
         private System.Windows.Forms.CheckBox mostRelevant;
+        private System.Windows.Forms.TextBox alternateTempFolderTextBox;
+        internal System.Windows.Forms.Label label13;
     }
 }

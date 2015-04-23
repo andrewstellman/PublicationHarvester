@@ -14,8 +14,9 @@ namespace Com.StellmanGreene.FindRelated
     {
         private readonly Database db;
         private readonly string folder;
+        private readonly string tempFolder;
 
-        public RelatedReports(Database db, string folder)
+        public RelatedReports(Database db, string folder, string tempFolder)
         {
             if (!folder.EndsWith("\\")) folder += "\\";
 
@@ -26,6 +27,7 @@ namespace Com.StellmanGreene.FindRelated
 
             this.db = db;
             this.folder = folder;
+            this.tempFolder = tempFolder;
         }
 
         /// <summary>
@@ -35,10 +37,19 @@ namespace Com.StellmanGreene.FindRelated
         /// <param name="filename">File to write (will be overwritten)</param>
         /// <param name="columnNames">Column names</param>
         /// <returns></returns>
-        int ExecuteReport(string sql, string filename, IEnumerable<string> columnNames)
+        int ExecuteReport(string sql, string filename, IEnumerable<string> columnNames, string useTempFolder)
         {
             // Temporary filename to generate the report into (without column name header)
-            string tempFile = Path.GetTempFileName();
+            string tempFile;
+            if (!string.IsNullOrEmpty(useTempFolder)
+                && (File.GetAttributes(Path.GetDirectoryName(Path.GetFullPath(useTempFolder + "\\"))) & FileAttributes.Directory) == FileAttributes.Directory)
+            {
+                string tempDir = Path.GetDirectoryName(Path.GetFullPath(useTempFolder + "\\"));
+                tempFile = tempDir + "\\" + Path.GetRandomFileName();
+                Trace.WriteLine("Creating temporary file " + tempFile + " to generate " + filename);
+            } else {
+                tempFile = Path.GetTempFileName();
+            }
             if (File.Exists(tempFile)) File.Delete(tempFile);
 
             // Query that generates the report into a temporary file
@@ -111,7 +122,8 @@ Rank AS link_ranking, Score AS link_score
 FROM " + relatedPublicationsTableName;
 
             ExecuteReport(sql, filename, 
-                new string[] { "source_pmid", "related_pmid", "link_ranking", "link_score" });
+                new string[] { "source_pmid", "related_pmid", "link_ranking", "link_score" },
+                tempFolder);
         }
 
         /// <summary>
@@ -131,7 +143,8 @@ WHERE rp.RelatedPMID = p.PMID";
 
             ExecuteReport(sql, filename,
                 new string[] { "related_pmid", "journal", "authors", "year", "month", "day", 
-                    "title", "volume", "issue", "pages", "pubtype", "pubtypecategoryid" });
+                    "title", "volume", "issue", "pages", "pubtype", "pubtypecategoryid" },
+                    tempFolder);
         }
 
         /// <summary>
@@ -150,7 +163,8 @@ WHERE RP.RelatedPMID = pmh.PMID
 AND pmh.MeSHHeadingID = mh.ID";
 
             ExecuteReport(sql, filename,
-                new string[] { "related_pmid", "related_mesh" });
+                new string[] { "related_pmid", "related_mesh" },
+                tempFolder);
         }
 
 
@@ -174,7 +188,8 @@ AND pp.PMID = rp.PMID
 AND cp.Setnb = sc.Setnb";
 
             ExecuteReport(sql, filename,
-                new string[] { "star_setnb", "setnb", "source_pmid", "related_pmid",  "author_position", "position_type" });
+                new string[] { "star_setnb", "setnb", "source_pmid", "related_pmid",  "author_position", "position_type" },
+                tempFolder);
         }
 
         /// <summary>
@@ -192,7 +207,8 @@ LeastRelevantPMID as least_rlvnt_pmid, LeastRelevantScore as least_rlvnt_score, 
 FROM " + relatedPublicationsTableName + "_extremerelevance";
 
             ExecuteReport(sql, filename,
-                new string[] { "source_pmid", "most_rlvnt_pmid", "most_rlvnt_score", "least_rlvnt_pmid", "least_rlvnt_score", "least_rlvnt_rank" });
+                new string[] { "source_pmid", "most_rlvnt_pmid", "most_rlvnt_score", "least_rlvnt_pmid", "least_rlvnt_score", "least_rlvnt_rank" },
+                tempFolder);
         }
     }
 }

@@ -38,7 +38,7 @@ namespace Com.StellmanGreene.FindRelated
             try
             {
                 string folder = string.IsNullOrEmpty(folderLabel.Text) ? Environment.CurrentDirectory : folderLabel.Text;
-                relatedReports = new RelatedReports(db, folder);
+                relatedReports = new RelatedReports(db, folder, alternateTempFolderTextBox.Text);
             }
             catch (ArgumentException ex)
             {
