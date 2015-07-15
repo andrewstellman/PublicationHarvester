@@ -262,6 +262,15 @@ namespace Com.StellmanGreene.PubMed
                 return Convert.ToInt32(Results.Rows[0]["AuthorPosition"]);
             }
         }
+
+        /// <summary>
+        /// ToString prints the name and setnb
+        /// </summary>
+        /// <returns>Last, First (Setnb)</returns>
+        public override string ToString()
+        {
+            return String.Format("{0}, {1} ({2})", Last, First, Setnb);
+        }
     }
 
 }
