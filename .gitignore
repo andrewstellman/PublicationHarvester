@@ -8,3 +8,6 @@ SCGen/bin/
 SCGen/obj/
 SocialNetworking/bin/
 SocialNetworking/obj/
+ExportRdf/bin/
+ExportRdf/obj/
+packages/
