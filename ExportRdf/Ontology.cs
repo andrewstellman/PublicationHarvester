@@ -42,6 +42,7 @@ namespace ExportRdf
                 new OntologyProperty("publication:year", false, "publication:Publication", "xsd:integer", "Issue", "Property holds the year of a publication"),
                 new OntologyProperty("publication:title", false, "publication:Publication", "xsd:string", "Issue", "Property holds the title of a publication"),
                 new OntologyProperty("publication:publicationType", false, "publication:Publication", "publication:PublicationType", "Publication Type", "Property links to the type of a publication"),
+                new OntologyProperty("publication:meshHeading", false, "publication:Publication", "xsd:string", "MeSH Heading", "Property holds a MeSH heading for a publication"),
                 new OntologyProperty("publication:hasAuthor", false, "publication:Publication", "publication:PublicationAuthor", "Has Author", "Property links to a publication author node"),
                 new OntologyProperty("publication:author", false, "publication:PublicationAuthor", "person:Person", "Author", "Property that links to the author of a publication"),
                 new OntologyProperty("publication:authorCount", false, "publication:PublicationAuthor", "xsd:integer", "Author Count", "Property that holds the author count"),

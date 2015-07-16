@@ -79,6 +79,17 @@ namespace ExportRdf
                 if (pub.Authors != null)
                     g.Assert(new Triple(publicationNode, g.GetPropertyNode("publication:authorCount"), g.CreateLiteralNode(pub.Authors.Length.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger))));
 
+                if (pub.MeSHHeadings != null)
+                {
+                    foreach (var meshHeading in pub.MeSHHeadings)
+                    {
+                        if (meshHeading != null)
+                        {
+                            g.Assert(new Triple(publicationNode, g.GetPropertyNode("publication:meshHeading"), g.CreateLiteralNode(meshHeading.ToString())));
+                        }
+                    }
+                }
+
                 var data = _db.ExecuteQuery("SELECT Setnb, AuthorPosition, PositionType FROM PeoplePublications WHERE PMID = " + pub.PMID);
                 foreach (DataRow row in data.Rows)
                 {
