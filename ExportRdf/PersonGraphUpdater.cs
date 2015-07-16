@@ -11,21 +11,21 @@ using VDS.RDF.Parsing;
 
 namespace ExportRdf
 {
-    class PersonGraphCreator
+    /// <summary>
+    /// Class to look up a person (including publications and colleagues) in the database and add triples to a graph
+    /// </summary>
+    class PersonGraphUpdater
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        private readonly Database DB;
+        private readonly Database _db;
 
-        public readonly IDictionary<string, bool> peopleAdded = new Dictionary<string, bool>();
-        public readonly IDictionary<int, bool> publicationsAdded = new Dictionary<int, bool>();
-
-        public PersonGraphCreator(Database DB)
+        public PersonGraphUpdater(Database DB)
         {
-            this.DB = DB;
+            _db = DB;
         }
 
-        public IGraph AssertTriplesForPerson(IGraph g, Person person)
+        public IGraph AddPersonToGraph(IGraph g, Person person)
         {
             IUriNode personNode;
             personNode = g.CreateUriNode(new Uri("http://www.stellman-greene.com/person/" + person.Setnb));
@@ -35,7 +35,7 @@ namespace ExportRdf
             g.Assert(new Triple(personNode, GraphHelper.First, g.CreateLiteralNode(person.First)));
             g.Assert(new Triple(personNode, GraphHelper.Setnb, g.CreateLiteralNode(person.Setnb)));
 
-            Publications publications = new Publications(DB, person, false);
+            Publications publications = new Publications(_db, person, false);
             foreach (Publication pub in publications.PublicationList)
             {
                 AddPublicationAssertions(g, pub);
@@ -48,7 +48,7 @@ namespace ExportRdf
 
         private void AddColleagues(IGraph g, Person person)
         {
-            DataTable colleagues = DB.ExecuteQuery(String.Format("SELECT StarSetnb, Setnb FROM StarColleagues WHERE Setnb = '{0}' OR StarSetnb = '{0}'", person.Setnb));
+            DataTable colleagues = _db.ExecuteQuery(String.Format("SELECT StarSetnb, Setnb FROM StarColleagues WHERE Setnb = '{0}' OR StarSetnb = '{0}'", person.Setnb));
             foreach (DataRow dataRow in colleagues.Rows)
             {
                 var starUri = new Uri("http://www.stellman-greene.com/person/" + dataRow["Setnb"]);
@@ -61,10 +61,10 @@ namespace ExportRdf
 
         private void AddPublicationAssertions(IGraph g, Publication pub)
         {
-            if (!publicationsAdded.ContainsKey(pub.PMID))
+            if (!PreviouslyAddedChecker.CheckPublication(pub.PMID))
             {
-                publicationsAdded[pub.PMID] = true;
-                IUriNode publicationNode = g.CreateUriNode(new Uri("http://www.stellman-greene.com/publications/" + pub.PMID));
+                PreviouslyAddedChecker.AddPublication(pub.PMID);
+                IUriNode publicationNode = g.CreateUriNode(new Uri("http://www.stellman-greene.com/publication/" + pub.PMID));
                 g.Assert(new Triple(publicationNode, GraphHelper.RdfType, GraphHelper.PublicationClass));
                 g.Assert(new Triple(publicationNode, GraphHelper.Year, g.CreateLiteralNode(pub.Year.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger))));
                 if (pub.Journal != null)
@@ -78,7 +78,7 @@ namespace ExportRdf
                 if (pub.Authors != null)
                     g.Assert(new Triple(publicationNode, GraphHelper.AuthorCount, g.CreateLiteralNode(pub.Authors.Length.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger))));
 
-                var data = DB.ExecuteQuery("SELECT Setnb, AuthorPosition, PositionType FROM PeoplePublications WHERE PMID = " + pub.PMID);
+                var data = _db.ExecuteQuery("SELECT Setnb, AuthorPosition, PositionType FROM PeoplePublications WHERE PMID = " + pub.PMID);
                 foreach (DataRow row in data.Rows)
                 {
                     var authorNode = g.CreateUriNode(new Uri("http://www.stellman-greene.com/person/" + row.Field<String>("Setnb")));

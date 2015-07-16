@@ -65,7 +65,8 @@
     <Compile Include="ForEachExtension.cs" />
     <Compile Include="GraphHelper.cs" />
     <Compile Include="PersonGraphWriter.cs" />
-    <Compile Include="PersonGraphCreator.cs" />
+    <Compile Include="PersonGraphUpdater.cs" />
+    <Compile Include="PreviouslyAddedChecker.cs" />
     <Compile Include="RdfExporter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

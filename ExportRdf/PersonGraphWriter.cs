@@ -12,60 +12,37 @@ using VDS.RDF.Writing;
 
 namespace ExportRdf
 {
-    class PersonGraphWriter
+    /// <summary>
+    /// Class to write a graph to a file in the same folder as the binary
+    /// </summary>
+    static class PersonGraphWriter
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        private readonly string folder;
-        private readonly string filename;
+        private static readonly string _folder;
+        private static readonly string _filename;
+        public static string Filename { get { return _filename; } }
 
-        private readonly IRdfWriter writer = new NTriplesWriter();
+        private static readonly IRdfWriter writer = new NTriplesWriter();
 
         private const string EXT = ".nt";
 
-        public PersonGraphWriter()
+        static PersonGraphWriter()
         {
-            folder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            filename = "RdfExport_" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + EXT;
-            logger.Info("Writing files to " + filename);
-            File.Create(folder + "\\" + filename);
-
-            /*
-            outputFolder = workingFolder + "\\RdfExport_" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
-            if (!Directory.Exists(outputFolder))
-            {
-                logger.Info("Creating output folder \"" + outputFolder + "\"");
-                Directory.CreateDirectory(outputFolder);
-            }
-             */
-
-
+            _folder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            _filename = "RdfExport_" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + EXT;
+            File.Create(_folder + "\\" + _filename);
         }
 
-
-        public void Write(IGraph g)
+        /// <summary>
+        /// Write a graph to a string and append it to _filename in folder _filder
+        /// </summary>
+        /// <param name="g">Graph to write</param>
+        public static void Write(IGraph g)
         {
-            /*
-            SparqlResultSet results = g.ExecuteQuery(@"
-PREFIX person: <http://www.stellman-greene.com/person#>
-SELECT ?setnb { 
-   ?person a person:Person .
-   ?person person:setnb ?setnb .
-}
-ORDER BY ?setnb
-"
-                ) as SparqlResultSet;
-
-            string startingSetnb = results[0]["setnb"].ToString();
-            string endingSetnb = results[results.Count - 1]["setnb"].ToString();
-            string filename = String.Format("{0} to {1} ({2} people).{3}", startingSetnb, endingSetnb, results.Count, EXT);
-
-            logger.Info(String.Format("Writing file \"{0}\"", filename));
-            */
-
             var stringWriter = new System.IO.StringWriter();
             writer.Save(g, stringWriter);
-            File.AppendAllText(folder + "\\" + filename, stringWriter.ToString());
+            File.AppendAllText(_folder + "\\" + _filename, stringWriter.ToString());
         }
     }
 }
