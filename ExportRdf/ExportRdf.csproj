@@ -63,7 +63,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ForEachExtension.cs" />
-    <Compile Include="GraphHelper.cs" />
+    <Compile Include="Ontology.cs" />
+    <Compile Include="OntologyClass.cs" />
+    <Compile Include="OntologyMember.cs" />
+    <Compile Include="OntologyPrimitive.cs" />
+    <Compile Include="OntologyProperty.cs" />
     <Compile Include="PersonGraphWriter.cs" />
     <Compile Include="PersonGraphUpdater.cs" />
     <Compile Include="PreviouslyAddedChecker.cs" />

@@ -56,7 +56,7 @@ namespace ExportRdf
             
             DateTime startTime = DateTime.Now;
 
-            IGraph g = GraphHelper.GetNewGraph();
+            IGraph g = Ontology.GetNewGraph();
 
             People people = new People(_db);
             int total = people.PersonList.Count - PreviouslyAddedChecker._PeopleSkipped;
@@ -74,7 +74,7 @@ namespace ExportRdf
                     {
                         PersonGraphWriter.Write(g);
                         g.Dispose();
-                        g = GraphHelper.GetNewGraph();                        
+                        g = Ontology.GetNewGraph();                        
                     }
 
                     if ((PreviouslyAddedChecker.PeopleAdded - PreviouslyAddedChecker._PeopleSkipped) % 10 == 0)

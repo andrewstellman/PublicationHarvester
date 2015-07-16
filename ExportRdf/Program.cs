@@ -15,13 +15,18 @@ namespace ExportRdf
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
+        private const string ONTOLOGY_FILENAME = "Ontology.trig";
+
         static int Main(string[] args)
         {
             if (args.Length != 1 && args.Length != 3)
             {
-                Console.WriteLine("ExportRdf " + Assembly.GetExecutingAssembly().GetName().Version);
-                Console.WriteLine(@"Export Publication Harvester data to an RDF NTriples file
-that can be imported into an RDF store such as Sesame
+                string assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+                Console.WriteLine("ExportRdf " + assemblyVersion);
+                Console.WriteLine(@"
+Export Publication Harvester data to an RDF NTriples file that can be imported
+into an RDF store such as Sesame. An ontology graph that contains the classes
+and properties used in the exported data is written to a Ontology.trig.
 
 usage: ExportRdf odbc_data_source [sesame_server sesame_repositry]
 
@@ -35,7 +40,9 @@ parameters:
 example usage - exporting stars and loading them into a Sesame repsotory:
 +---
 | C:\Temp>ExportRdf stars_for_stars http://localhost:8080/openrdf-sesame SforS
+| 2015-07-15 17:19:35 ExportRdf " + assemblyVersion + @" started
 | 2015-07-15 17:19:35 Exporting RDF to RdfExport_2015-07-15_17-19-35.nt
+| 2015-07-15 17:19:35 Wrote ontology to Ontology.trig
 | 2015-07-15 17:19:36 Exporting RDF data from ODBC data source stars_for_stars
 | ...
 | 2015-07-15 18:02:12 Finished writing RDF to RdfExport_2015-07-15_17-19-35.nt
@@ -46,8 +53,16 @@ example usage - exporting stars and loading them into a Sesame repsotory:
 | Sesame Console, an interactive shell to communicate with Sesame repositories.
 | 
 | Type 'help' for help.
+| SforS> load Ontology.trig
+| Loading data...
+| Data has been added to the repository (74 ms)
 | SforS> load RdfExport_2015-07-15_17-19-35.nt
 | Loading data...
+| Data has been added to the repository (113866 ms)
+| SforS> quit
+| Closing repository 'SforS'...
+| Disconnecting from http://localhost:8080/openrdf-sesame
+| Bye
 +---
 
 basic instructions for instsalling the Sesame server:
@@ -76,10 +91,16 @@ basic instructions for instsalling the Sesame server:
                 return -1;
             }
 
+            logger.Info("ExportRdf " + Assembly.GetExecutingAssembly().GetName().Version + " started");
             logger.Info("Exporting RDF to " + PersonGraphWriter.Filename);
 
+#if !DEBUG
             try
             {
+#endif
+                Ontology.WriteOntology(ONTOLOGY_FILENAME);
+                logger.Info("Wrote ontology to " + ONTOLOGY_FILENAME);
+
                 Database db = new Database(args[0]);
 
                 RdfExporter rdfExporter;
@@ -99,11 +120,13 @@ basic instructions for instsalling the Sesame server:
 
                 return 0;
             }
+#if !DEBUG
             catch (Exception ex)
             {
                 logger.Error(ex, "An error occurred while generating the RDF");
                 return -1;
             }
         }
+#endif
     }
 }
