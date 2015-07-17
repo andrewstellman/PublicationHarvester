@@ -32,8 +32,8 @@ namespace ExportRdf
             personNode = g.CreateUriNode(new Uri("http://www.stellman-greene.com/person/" + person.Setnb));
 
             g.Assert(new Triple(personNode, g.CreateUriNode(new Uri(OntologyHelper.PropertyType)), g.GetClassNode("person:Person")));
-            g.Assert(new Triple(personNode, g.GetPropertyNode("person:first"), g.CreateLiteralNode(person.Last)));
-            g.Assert(new Triple(personNode, g.GetPropertyNode("person:last"), g.CreateLiteralNode(person.First)));
+            g.Assert(new Triple(personNode, g.GetPropertyNode("person:last"), g.CreateLiteralNode(person.Last)));
+            g.Assert(new Triple(personNode, g.GetPropertyNode("person:first"), g.CreateLiteralNode(person.First)));
             g.Assert(new Triple(personNode, g.GetPropertyNode("person:setnb"), g.CreateLiteralNode(person.Setnb)));
 
             Publications publications = new Publications(_db, person, false);
