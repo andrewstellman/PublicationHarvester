@@ -10,4 +10,6 @@ SocialNetworking/bin/
 SocialNetworking/obj/
 ExportRdf/bin/
 ExportRdf/obj/
+ExportRdfTests/bin/
+ExportRdfTests/obj/
 packages/

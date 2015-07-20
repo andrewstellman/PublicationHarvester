@@ -10,7 +10,7 @@ namespace SCGen
     /// <summary>
     /// Object to find the colleagues for a star
     /// </summary>
-    class ColleagueFinder
+    public class ColleagueFinder
     {
         // PubMed objects passed as constructor parameters
         private Database DB;

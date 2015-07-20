@@ -15,7 +15,7 @@ namespace SCGen
     /// <summary>
     /// Class to wrap around the AAMC roster file
     /// </summary>
-    class Roster
+    public class Roster
     {
 
         /// <summary>

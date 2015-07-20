@@ -36,7 +36,7 @@ namespace Com.StellmanGreene.PubMed.Unit_Tests
     {
         private Database DB;
 
-        private void ResetDatabase()
+        public void ResetDatabase()
         {
             // Import "TestPeopleMaintenance/input1 plus testhyphens.xls" into the People table
             People PeopleFromFile = new People(

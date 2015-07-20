@@ -11,7 +11,7 @@ using VDS.RDF.Writing;
 
 namespace ExportRdf
 {
-    static class Ontology
+    public static class Ontology
     {
         public static readonly Uri ContextUri = new Uri("http://www.stellman-greene.com/PublicationHarvester/Ontology");
 

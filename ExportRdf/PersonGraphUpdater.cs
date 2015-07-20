@@ -15,7 +15,7 @@ namespace ExportRdf
     /// <summary>
     /// Class to look up a person (including publications and colleagues) in the database and add triples to a graph
     /// </summary>
-    class PersonGraphUpdater
+    public class PersonGraphUpdater
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -36,10 +36,23 @@ namespace ExportRdf
             g.Assert(new Triple(personNode, g.GetPropertyNode("person:first"), g.CreateLiteralNode(person.First)));
             g.Assert(new Triple(personNode, g.GetPropertyNode("person:setnb"), g.CreateLiteralNode(person.Setnb)));
 
-            Publications publications = new Publications(_db, person, false);
-            foreach (Publication pub in publications.PublicationList)
+            try
             {
-                AddPublicationAssertions(g, pub);
+                Publications publications = new Publications(_db, person, false);
+                foreach (Publication pub in publications.PublicationList)
+                {
+                    AddPublicationAssertions(g, pub);
+                }
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("No publications found for")) {
+                    logger.Warn(ex.Message);
+                }
+                else
+                {
+                    logger.Error(ex, "An error occurred while reading publications for person " + person.ToString());
+                }
             }
 
             AddColleagues(g, person);
