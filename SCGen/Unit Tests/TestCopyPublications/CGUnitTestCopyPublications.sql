@@ -61,7 +61,7 @@ CREATE TABLE `CGUnitTestCopyPublications`.`people` (
   `Name2` varchar(36) default NULL,
   `Name3` varchar(36) default NULL,
   `Name4` varchar(36) default NULL,
-  `MedlineSearch` varchar(512) NOT NULL,
+  `MedlineSearch` varchar(10000) NOT NULL,
   `Harvested` bit(1) NOT NULL default '\0',
   `Error` bit(1) default NULL,
   `ErrorMessage` varchar(512) default NULL,

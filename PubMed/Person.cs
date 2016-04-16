@@ -138,7 +138,7 @@ namespace Com.StellmanGreene.PubMed
                     Parameters.Add(Database.Parameter(Names.Length >= 3 ? Database.Left(Names[2], 36) : null));
                     Parameters.Add(Database.Parameter(Names.Length >= 4 ? Database.Left(Names[3], 36) : null));
                     Parameters.Add(Database.Parameter(Harvested));
-                    Parameters.Add(Database.Parameter(Database.Left(MedlineSearch, 512)));
+                    Parameters.Add(Database.Parameter(Database.Left(MedlineSearch, 10000)));
                     Parameters.Add(Database.Parameter(Database.Left(Setnb, 8)));
                     DB.ExecuteNonQuery(
                         @"UPDATE " + PeopleTable + @" 
@@ -159,7 +159,7 @@ namespace Com.StellmanGreene.PubMed
                     Parameters.Add(Database.Parameter(Names.Length >= 2 ? Database.Left(Names[1], 36) : null));
                     Parameters.Add(Database.Parameter(Names.Length >= 3 ? Database.Left(Names[2], 36) : null));
                     Parameters.Add(Database.Parameter(Names.Length >= 4 ? Database.Left(Names[3], 36) : null));
-                    Parameters.Add(Database.Parameter(Database.Left(MedlineSearch, 512)));
+                    Parameters.Add(Database.Parameter(Database.Left(MedlineSearch, 10000)));
                     DB.ExecuteNonQuery(
                         @"INSERT INTO " + PeopleTable + @" 
                                  (Setnb, First, Middle, Last, Name1, Name2, Name3, Name4, MedlineSearch)
@@ -199,7 +199,7 @@ namespace Com.StellmanGreene.PubMed
             try
             {
                 ArrayList Parameters = new ArrayList();
-                Parameters.Add(Database.Parameter(1));
+                Parameters.Add(Database.Parameter(true));
                 if (ErrorMessage.Length > 512)
                     ErrorMessage = ErrorMessage.Substring(0, 511);
                 Parameters.Add(Database.Parameter(ErrorMessage));
@@ -209,7 +209,7 @@ namespace Com.StellmanGreene.PubMed
                      SET Error = ? , ErrorMessage = ?
                    WHERE Setnb = ?", Parameters);
             }
-            catch 
+            catch
             {
                 // if there's an error, do nothing
             }
@@ -220,7 +220,7 @@ namespace Com.StellmanGreene.PubMed
             try
             {
                 ArrayList Parameters = new ArrayList();
-                Parameters.Add(Database.Parameter(0));
+                Parameters.Add(Database.Parameter(false));
                 Parameters.Add(Database.Parameter(""));
                 Parameters.Add(Database.Parameter(this.Setnb));
                 DB.ExecuteNonQuery(
