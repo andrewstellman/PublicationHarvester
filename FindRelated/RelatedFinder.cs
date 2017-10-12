@@ -38,7 +38,7 @@ namespace Com.StellmanGreene.FindRelated
             public int Score { get; set; }
         }
 
-        const string ELINK_URL = "http://www.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi";
+        const string ELINK_URL = "https://www.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi";
         const string ELINK_DB = "pubmed";
         const string ELINK_DBFROM = "pubmed";
 
