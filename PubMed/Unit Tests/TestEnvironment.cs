@@ -18,13 +18,10 @@
  * Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Collections;
 using Microsoft.Win32;
-using System.Data;
 using NUnit.Framework;
+using System.Collections;
+using System.Data;
 
 namespace Com.StellmanGreene.PubMed.Unit_Tests
 {
@@ -85,7 +82,7 @@ namespace Com.StellmanGreene.PubMed.Unit_Tests
         {
             Database DB = new Database("Publication Harvester Unit Test");
             DataTable Results = DB.ExecuteQuery("SHOW VARIABLES WHERE Variable_name = 'version'");
-            Assert.IsTrue(Results.Rows[0]["value"].ToString().StartsWith("5.5"), "The unit tests require an ODBC DSN called 'Publication Harvester Unit Test' that points to a MySQL 5.5 database");
+            Assert.IsTrue(Results.Rows[0]["value"].ToString().StartsWith("5.7"), "The unit tests require an ODBC DSN called 'Publication Harvester Unit Test' that points to a MySQL 5.5 database");
         }
     }
 }

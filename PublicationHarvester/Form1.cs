@@ -594,6 +594,15 @@ namespace PublicationHarvester
 
             // Get each person's publications and write them to the database
             NCBI ncbi = new NCBI("medline");
+            if (NCBI.ApiKeyExists)
+            {
+                AddLogEntry("Using API key: " + NCBI.ApiKeyPath);
+            } else
+            {
+                AddLogEntry("Performance is limited to under 3 requests per second.");
+                AddLogEntry("Consider pasting an API key into " + NCBI.ApiKeyPath);
+                AddLogEntry("For more information, see https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/");
+            }
             People people = new People(DB);
             int totalPeopleInPersonList = people.PersonList.Count;
             int numberOfPeopleProcessed = 0;

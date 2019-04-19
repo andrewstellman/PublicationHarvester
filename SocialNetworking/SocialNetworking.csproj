@@ -68,6 +68,7 @@
     <Reference Include="nunit.framework">
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
+      <HintPath>..\..\..\..\..\..\temp\NUnit-2.6.4\NUnit-2.6.4\bin\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

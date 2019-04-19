@@ -40,6 +40,32 @@ namespace Com.StellmanGreene.PubMed
         private string FetchMethod;
 
         /// <summary>
+        /// The "&api_key=" parameter to add to an API Request,
+        /// will be blank if no API key is being used
+        /// </summary>
+        public static string ApiKeyParam = "";
+
+        /// <summary>
+        /// Path of the api_key.txt file to read the API key from
+        /// </summary>
+        public static string ApiKeyPath { get; private set; }
+
+        /// <summary>
+        /// True if an API key is being used
+        /// </summary>
+        public static bool ApiKeyExists { get; private set; }
+
+        /// <summary>
+        /// For throttling NCBI requests, depends on whether an API key is specified
+        /// </summary>
+        private static int requestsPerSecond = 2;
+
+        static NCBI()
+        {
+            GetApiKey();
+        }
+
+        /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="FetchMethod">The fetch method ("docsum", "medline", "xml", etc.)</param>
@@ -50,23 +76,49 @@ namespace Com.StellmanGreene.PubMed
         }
 
         /// <summary>
+        /// Get the API key from api_key.txt in the executing assembly directory
+        /// </summary>
+        /// <remarks>
+        /// See https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/
+        /// </remarks>
+        private static void GetApiKey()
+        {
+            string directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            ApiKeyPath = directory + "\\api_key.txt";
+            if (File.Exists(ApiKeyPath))
+            {
+                string apiKey = System.Text.RegularExpressions.Regex.Replace(File.ReadAllText(ApiKeyPath), @"\s+", string.Empty);
+                if (apiKey.Length > 2)
+                {
+                    ApiKeyParam = "&api_key=" + apiKey;
+                    requestsPerSecond = 8;
+                    ApiKeyExists = true;
+                }
+                else
+                {
+                    ApiKeyExists = false;
+                }
+            }
+        }
+
+        /// <summary>
         /// Execute a query against NCBI
         /// This is a virtual function because MockNCBI must override it
         /// </summary>
-        /// <param name="Query">The query string to search for</param>
+        /// <param name="query">The query string to search for</param>
         /// <returns>The results of the search in the format specified when the instance was initializd</returns>
-        public virtual string Search(string Query)
+        public virtual string Search(string query)
         {
-            EsearchResults esearchResults = ExecuteEsearch(Query);
+            EsearchResults esearchResults = ExecuteEsearch(query, ApiKeyParam);
             return ExecuteFetch(esearchResults);
         }
 
         /// <summary>
         /// Issue the first NCBI query to initialize the search.
         /// </summary>
-        /// <param name="Query">The Medline query to issue</param>
+        /// <param name="query">The Medline query to issue</param>
         /// <returns>A string containing the XML result header</returns>
-        private static EsearchResults ExecuteEsearch(string Query)
+        private static EsearchResults ExecuteEsearch(string query, string apiKeyParam)
         {
             string sURL = "http://www.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi";
 
@@ -75,8 +127,10 @@ namespace Com.StellmanGreene.PubMed
             // If we're using a GET request (default) instead of a POST request, create the query with the request term
             if (!UsePostRequest)
             {
-                sURL += "?db=Pubmed&retmax=1&usehistory=y&term=";
-                sURL += Query;
+                sURL += "?";
+                sURL += "&db=Pubmed&retmax=1&usehistory=y";
+                sURL += apiKeyParam;
+                sURL += "&term=" + query;
                 request = WebRequest.Create(sURL);
             }
             else
@@ -85,7 +139,7 @@ namespace Com.StellmanGreene.PubMed
                 request = WebRequest.Create(sURL);
                 request.Method = "POST";
                 request.ContentType = "application/x-www-form-urlencoded";
-                byte[] byteArray = UTF8Encoding.UTF8.GetBytes("db=Pubmed&retmax=1&usehistory=y&term=" + Query);
+                byte[] byteArray = UTF8Encoding.UTF8.GetBytes("db=Pubmed&retmax=1&usehistory=y" + apiKeyParam + "&term=" + query);
                 request.ContentLength = byteArray.Length;
                 using (Stream dataStream = request.GetRequestStream())
                 {
@@ -93,15 +147,10 @@ namespace Com.StellmanGreene.PubMed
                 }
             }
 
-            using (WebResponse response = request.GetResponse())
-            using (Stream responseStream = response.GetResponseStream())
-            using (StreamReader reader = new StreamReader(responseStream))
-            {
-                string ResultString = reader.ReadToEnd();
-                return ParseSearchResults(ResultString);
-            }
+            string results = ExecuteWebRequest(request);
+            return ParseSearchResults(results);
         }
-        
+
         /// <summary>
         /// Issue the second NCBI query to fetch the results.
         /// </summary>
@@ -110,16 +159,56 @@ namespace Com.StellmanGreene.PubMed
         private string ExecuteFetch(EsearchResults results)
         {
             string sURL = "http://www.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?rettype=" + this.FetchMethod + "&retmode=text&restart=0&db=Pubmed";
+            sURL = sURL + ApiKeyParam;
             sURL = sURL + "&retmax=" + results.Count;
             sURL = sURL + "&query_key=" + results.QueryKey;
             sURL = sURL + "&WebEnv=" + results.WebEnv;
             WebRequest request = WebRequest.Create(sURL);
-            using (WebResponse response = request.GetResponse())
-            using (Stream responseStream = response.GetResponseStream())
-            using (StreamReader reader = new StreamReader(responseStream))
+
+            return ExecuteWebRequest(request);
+        }
+
+        /// <summary>
+        /// Track the request times in ticks to throttle requesets
+        /// </summary>
+        private static List<long> requestTimes = new List<long>();
+
+        /// <summary>
+        /// Execute a web request, throttling requests to under 3/sec if there's no API
+        /// key specified, or under 10/sec if there is
+        /// </summary>
+        /// <param name="request">WebRequest to execute</param>
+        /// <returns>Results of the request, or throws an exception</returns>
+        public static string ExecuteWebRequest(WebRequest request)
+        {
+            long oneSecondAgo = DateTime.Now.Ticks - 8999999;
+            long oneSecondFromNow = DateTime.Now.Ticks + 11000000;
+
+            do
             {
-                string Results = reader.ReadToEnd();
-                return Results;
+                List<long> newRequestTimes = new List<long>();
+                foreach(long t in requestTimes)
+                {
+                    if (t > oneSecondAgo) newRequestTimes.Add(t);
+                }
+                requestTimes = newRequestTimes;
+            } while ((requestTimes.Count >= requestsPerSecond) && (DateTime.Now.Ticks < oneSecondFromNow));
+
+            requestTimes.Add(DateTime.Now.Ticks);
+
+            try
+            {
+                using (WebResponse response = request.GetResponse())
+                using (Stream responseStream = response.GetResponseStream())
+                using (StreamReader reader = new StreamReader(responseStream))
+                {
+                    string Results = reader.ReadToEnd();
+                    return Results;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
 

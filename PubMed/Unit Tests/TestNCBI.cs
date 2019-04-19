@@ -32,7 +32,7 @@ namespace Com.StellmanGreene.PubMed.Unit_Tests
     {
         private NCBI ncbi;
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void TestNCBIWebQuerySetUp()
         {
             ncbi = new NCBI("medline");
@@ -110,6 +110,4 @@ namespace Com.StellmanGreene.PubMed.Unit_Tests
             }
         }
     }
-
-
 }

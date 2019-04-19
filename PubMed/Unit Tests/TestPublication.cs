@@ -34,7 +34,7 @@ namespace Com.StellmanGreene.PubMed.Unit_Tests
     public class TestPublication
     {
         private PublicationTypes pubTypes;
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void TestPublicationSetUp()
         {
             pubTypes = new PublicationTypes(

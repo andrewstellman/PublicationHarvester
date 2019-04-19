@@ -58,6 +58,17 @@ namespace Com.StellmanGreene.FindRelated
         /// <param name="liteModeOutputFile">Output filename for "lite" mode (ignored when not in "lite" mode)</param>
         public void Go(string odbcDsn, string relatedTableName, FileInfo inputFileInfo, PublicationFilter publicationFilter, bool resume, bool liteMode, string liteModeOutputFile)
         {
+            if (NCBI.ApiKeyExists)
+            {
+                Trace.WriteLine("Using API key: " + NCBI.ApiKeyPath);
+            }
+            else
+            {
+                Trace.WriteLine("Performance is limited to under 3 requests per second.");
+                Trace.WriteLine("Consider pasting an API key into " + NCBI.ApiKeyPath);
+                Trace.WriteLine("For more information, see https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/");
+            }
+
             Database db = new Database(odbcDsn);
 
             string queueTableName = relatedTableName + "_queue";
@@ -548,7 +559,6 @@ namespace Com.StellmanGreene.FindRelated
             }
         }
 
-
         /// <summary>
         /// Use the NCBI Elink request to retrieve related IDs for one or more publication IDs
         /// </summary>
@@ -590,13 +600,8 @@ namespace Com.StellmanGreene.FindRelated
                 dataStream.Write(byteArray, 0, byteArray.Length);
             }
 
-            using (WebResponse response = request.GetResponse())
-            using (Stream responseStream = response.GetResponseStream())
-            using (StreamReader reader = new StreamReader(responseStream))
-            {
-                string result = reader.ReadToEnd();
-                return result;
-            }
+            string result = NCBI.ExecuteWebRequest(request);
+            return result;
         }
 
         /// <summary>
