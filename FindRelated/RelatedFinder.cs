@@ -589,6 +589,8 @@ namespace Com.StellmanGreene.FindRelated
 
             // Add "&cmd=neighbor_score" to get the <Score> elements
             query.Append("&cmd=neighbor_score");
+
+            query.Append(NCBI.ApiKeyParam);
             
             WebRequest request = WebRequest.Create(ELINK_URL);
             request.Method = "POST";
