@@ -27,7 +27,7 @@ namespace SCGen.Unit_Tests
         /// then find the colleagues, get their publications and
         /// remove false colleagues.
         /// </summary>
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void TestStarColleaguesSetUp() {
             string[] Languages = { "eng" };
             DoSetUp(out DB, out harvester, out PubTypes, out ncbi, Languages);

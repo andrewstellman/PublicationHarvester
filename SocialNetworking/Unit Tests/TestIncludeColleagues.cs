@@ -21,7 +21,7 @@ namespace Com.StellmanGreene.SocialNetworking.Unit_Tests
         int CallbackCalled;
 
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void TestReportSetUp()
         {
             UnitTestData.Create();

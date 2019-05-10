@@ -19,7 +19,7 @@ namespace Com.StellmanGreene.SocialNetworking.Unit_Tests
     {
         private Database DB;
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void TestCommonPublicationsSetUp()
         {
             UnitTestData.Create();

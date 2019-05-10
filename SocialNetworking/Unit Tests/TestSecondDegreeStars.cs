@@ -15,7 +15,7 @@ namespace Com.StellmanGreene.SocialNetworking.Unit_Tests
     {
         private Database DB;
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void TestSecondDegreeStarsSetUp()
         {
             UnitTestData.Create();

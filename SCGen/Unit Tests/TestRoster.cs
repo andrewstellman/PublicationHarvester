@@ -14,7 +14,7 @@ namespace SCGen.Unit_Tests
         /// <summary>
         /// Set up the test fixture by loading the roster
         /// </summary>
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void TestRosterSetUp()
         {
             roster = new Roster(AppDomain.CurrentDomain.BaseDirectory + "\\Unit Tests\\TestRoster\\testroster.csv");

@@ -84,7 +84,7 @@ namespace Com.StellmanGreene.PubMed
             Last = PeopleFileData["last"].ToString();
             Names = new string[1];
             Names[0] = PeopleFileData["name1"].ToString();
-            for (int Num = 2; Num <= 4; Num++)
+            for (int Num = 2; Num <= 6; Num++)
             {
                 string Name = PeopleFileData["Name" + Num.ToString()].ToString();
                 if (Name.Length != 0)
@@ -137,6 +137,8 @@ namespace Com.StellmanGreene.PubMed
                     Parameters.Add(Database.Parameter(Names.Length >= 2 ? Database.Left(Names[1], 36) : null));
                     Parameters.Add(Database.Parameter(Names.Length >= 3 ? Database.Left(Names[2], 36) : null));
                     Parameters.Add(Database.Parameter(Names.Length >= 4 ? Database.Left(Names[3], 36) : null));
+                    Parameters.Add(Database.Parameter(Names.Length >= 5 ? Database.Left(Names[4], 36) : null));
+                    Parameters.Add(Database.Parameter(Names.Length >= 6 ? Database.Left(Names[5], 36) : null));
                     Parameters.Add(Database.Parameter(Harvested));
                     Parameters.Add(Database.Parameter(Database.Left(MedlineSearch, 10000)));
                     Parameters.Add(Database.Parameter(Database.Left(Setnb, 8)));
@@ -144,7 +146,8 @@ namespace Com.StellmanGreene.PubMed
                         @"UPDATE " + PeopleTable + @" 
                              SET First = ?, Middle = ?, Last = ?, 
                                  Name1 = ?, Name2 = ?, Name3 = ?, 
-                                 Name4 = ?, Harvested = ?, MedlineSearch = ?
+                                 Name4 = ?, Name5 = ?, Name6 = ?, 
+                                 Harvested = ?, MedlineSearch = ?
                            WHERE Setnb = ?", Parameters);
                 }
                 else
@@ -159,11 +162,13 @@ namespace Com.StellmanGreene.PubMed
                     Parameters.Add(Database.Parameter(Names.Length >= 2 ? Database.Left(Names[1], 36) : null));
                     Parameters.Add(Database.Parameter(Names.Length >= 3 ? Database.Left(Names[2], 36) : null));
                     Parameters.Add(Database.Parameter(Names.Length >= 4 ? Database.Left(Names[3], 36) : null));
+                    Parameters.Add(Database.Parameter(Names.Length >= 5 ? Database.Left(Names[4], 36) : null));
+                    Parameters.Add(Database.Parameter(Names.Length >= 6 ? Database.Left(Names[5], 36) : null));
                     Parameters.Add(Database.Parameter(Database.Left(MedlineSearch, 10000)));
                     DB.ExecuteNonQuery(
                         @"INSERT INTO " + PeopleTable + @" 
-                                 (Setnb, First, Middle, Last, Name1, Name2, Name3, Name4, MedlineSearch)
-                          VALUES ( ? , ? , ? , ? , ? , ? , ? , ? , ? )", Parameters);
+                                 (Setnb, First, Middle, Last, Name1, Name2, Name3, Name4, Name5, Name6, MedlineSearch)
+                          VALUES ( ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ?)", Parameters);
                 }
 
             }

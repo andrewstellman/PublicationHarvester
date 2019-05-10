@@ -37,7 +37,7 @@ namespace Com.StellmanGreene.FindRelated
             RelatedReports relatedReports;
             try
             {
-                string folder = string.IsNullOrEmpty(folderLabel.Text) ? Environment.CurrentDirectory : folderLabel.Text;
+                string folder = string.IsNullOrEmpty(folderLabel.Text) ? AppDomain.CurrentDomain.BaseDirectory : folderLabel.Text;
                 relatedReports = new RelatedReports(db, folder);
             }
             catch (ArgumentException ex)
@@ -58,7 +58,7 @@ namespace Com.StellmanGreene.FindRelated
             if (!string.IsNullOrEmpty(folderLabel.Text))
                 folderBrowserDialog1.SelectedPath = folderLabel.Text;
             else
-                folderBrowserDialog1.SelectedPath = Environment.CurrentDirectory;
+                folderBrowserDialog1.SelectedPath = AppDomain.CurrentDomain.BaseDirectory;
             DialogResult result = folderBrowserDialog1.ShowDialog();
             if (result == DialogResult.Cancel)
                 return;
@@ -68,7 +68,7 @@ namespace Com.StellmanGreene.FindRelated
 
         private void ReportsDialog_Load(object sender, EventArgs e)
         {
-            folderLabel.Text = Settings.GetValueString("ReportsDialog_Folder", Environment.CurrentDirectory);
+            folderLabel.Text = Settings.GetValueString("ReportsDialog_Folder", AppDomain.CurrentDomain.BaseDirectory);
         }
     }
 }

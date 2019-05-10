@@ -68,7 +68,6 @@ namespace Com.StellmanGreene.PubMed.Unit_Tests
                     break;
                 default:
                     Filename = "";
-                    Assert.Fail("Invalid query: " + Query);
                     break;
             }
             StreamReader reader = new StreamReader(AppDomain.CurrentDomain.BaseDirectory 

@@ -62,6 +62,8 @@ namespace Com.StellmanGreene.PubMed
               Name2 varchar(36) default NULL,
               Name3 varchar(36) default NULL,
               Name4 varchar(36) default NULL,
+              Name5 varchar(36) default NULL,
+              Name6 varchar(36) default NULL,
               MedlineSearch varchar(10000) NOT NULL,
               Harvested bit(1) NOT NULL default '\0',
               Error bit(1) default NULL,
@@ -262,11 +264,11 @@ namespace Com.StellmanGreene.PubMed
             // we'll also write them for the other people as well.
 
             // Look in the database for any other people with the same
-            // values for name1, name2, name3, name4 and MedlineSearch.
+            // values for name1, name2, name3, name4, name5, name6, and MedlineSearch.
             // Write their PeoplePublications as well.
             string NamesClause = "";
             Parameters = new ArrayList();
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 6; i++)
             {
                 if (i < person.Names.Length)
                 {

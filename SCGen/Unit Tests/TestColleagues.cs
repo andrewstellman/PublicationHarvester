@@ -27,7 +27,7 @@ namespace SCGen.Unit_Tests
         /// publication won't be found. The program should handle all of those cases
         /// gracefully.
         /// </summary>
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void TestColleaguesSetUp()
         {
             // Create the AAMC roster object

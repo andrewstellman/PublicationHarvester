@@ -312,6 +312,8 @@ namespace SCGen
               Name2 varchar(36) default NULL,
               Name3 varchar(36) default NULL,
               Name4 varchar(36) default NULL,
+              Name5 varchar(36) default NULL,
+              Name6 varchar(36) default NULL,
               MedlineSearch varchar(10000) NOT NULL,
               Harvested bit(1) NOT NULL default false,
               Error bit(1) default NULL,
@@ -444,11 +446,13 @@ namespace SCGen
                         Parameters.Add(Database.Parameter(Colleague.Names.Length >= 2 ? Database.Left(Colleague.Names[1], 36) : null));
                         Parameters.Add(Database.Parameter(Colleague.Names.Length >= 3 ? Database.Left(Colleague.Names[2], 36) : null));
                         Parameters.Add(Database.Parameter(Colleague.Names.Length >= 4 ? Database.Left(Colleague.Names[3], 36) : null));
+                        Parameters.Add(Database.Parameter(Colleague.Names.Length >= 5 ? Database.Left(Colleague.Names[4], 36) : null));
+                        Parameters.Add(Database.Parameter(Colleague.Names.Length >= 6 ? Database.Left(Colleague.Names[5], 36) : null));
                         Parameters.Add(Database.Parameter(Database.Left(Colleague.MedlineSearch, 10000)));
                         DB.ExecuteNonQuery(
                             @"INSERT INTO Colleagues 
-                                 (Setnb, First, Middle, Last, Name1, Name2, Name3, Name4, MedlineSearch)
-                          VALUES ( ? , ? , ? , ? , ? , ? , ? , ? , ? )", Parameters);
+                                 (Setnb, First, Middle, Last, Name1, Name2, Name3, Name4, Name5, Name6, MedlineSearch)
+                          VALUES ( ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? )", Parameters);
                     }
 
                     // The colleague isn't really a colleague of the star until it's

@@ -263,7 +263,7 @@ namespace Com.StellmanGreene.PubMed
         /// <summary>
         /// The columns from the People table for use in a SQL query
         /// </summary>
-        public const string PEOPLE_COLUMNS = " Setnb, First, Middle, Last, Name1, Name2, Name3, Name4, MedlineSearch, CAST(Harvested AS unsigned integer) AS Harvested, CAST(Error AS unsigned integer) AS Error, ErrorMessage ";
+        public const string PEOPLE_COLUMNS = " Setnb, First, Middle, Last, Name1, Name2, Name3, Name4, Name5, Name6, MedlineSearch, CAST(Harvested AS unsigned integer) AS Harvested, CAST(Error AS unsigned integer) AS Error, ErrorMessage ";
 
         /// <summary>
         /// Get a boolean value from an object

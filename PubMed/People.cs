@@ -92,7 +92,6 @@ namespace Com.StellmanGreene.PubMed
         /// <param name="filename">Name of the People file</param>
         public People(string folder, string filename)
         {
-            // string[] columns = { "setnb", "first", "middle", "last", "name1", "name2", "name3", "name4", "medline_search1" };
             DataTable results;
             if (filename.ToLower().EndsWith(".csv"))
             {

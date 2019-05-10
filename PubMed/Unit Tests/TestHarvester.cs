@@ -196,7 +196,7 @@ namespace Com.StellmanGreene.PubMed.Unit_Tests
             harvester.ImportPeople(AppDomain.CurrentDomain.BaseDirectory
                 + "\\Unit Tests\\TestPeople\\input1.xls");
             DataTable Results = DB.ExecuteQuery(
-                @"SELECT Setnb, First, Middle, Last, Name1, Name2, Name3, Name4, 
+                @"SELECT Setnb, First, Middle, Last, Name1, Name2, Name3, Name4, Name5, Name6,
                         MedlineSearch, Harvested, Error, ErrorMessage
                    FROM People"
             );
@@ -231,11 +231,13 @@ namespace Com.StellmanGreene.PubMed.Unit_Tests
                         Assert.IsTrue(person.First == "Keith");
                         Assert.IsTrue(person.Middle == "B");
                         Assert.IsTrue(person.Last == "Reemtsma");
-                        Assert.IsTrue(person.Names.Length == 4);
+                        Assert.IsTrue(person.Names.Length == 6);
                         Assert.IsTrue(person.Names[0] == "reemtsma k");
                         Assert.IsTrue(person.Names[1] == "reemtsma kb");
                         Assert.IsTrue(person.Names[2] == "test data");
                         Assert.IsTrue(person.Names[3] == "more test data");
+                        Assert.IsTrue(person.Names[4] == "test data name 5");
+                        Assert.IsTrue(person.Names[5] == "test data name 6");
                         Assert.IsTrue(person.MedlineSearch == "((\"reemtsma k\"[au] OR \"reemtsma kb\"[au]) AND 1956:2000[dp])");
                         break;
                     case "A5702471":

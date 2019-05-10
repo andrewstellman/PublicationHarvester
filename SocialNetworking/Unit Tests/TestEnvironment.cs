@@ -88,7 +88,7 @@ namespace Com.StellmanGreene.SocialNetworking
         {
             Database DB = new Database("Social Networking Unit Test");
             DataTable Results = DB.ExecuteQuery("SHOW VARIABLES WHERE Variable_name = 'version'");
-            Assert.IsTrue(Results.Rows[0]["value"].ToString().StartsWith("5.5"), "The unit tests require an ODBC DSN called 'Publication Harvester Unit Test' that points to a MySQL 5.5 database");
+            Assert.IsTrue(Results.Rows[0]["value"].ToString().StartsWith("5.7"), "The unit tests require an ODBC DSN called 'Publication Harvester Unit Test' that points to a MySQL 5.7 database");
         }
     }
 }

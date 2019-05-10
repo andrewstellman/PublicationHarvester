@@ -227,7 +227,7 @@ namespace Com.StellmanGreene.PubMed
             catch
             {
                 // If the XML is malformed, write it to a log file called pubharvester_error.log and throw an exception
-                using (StreamWriter writer = new StreamWriter(Environment.CurrentDirectory + "\\pubharvester_error.log", true))
+                using (StreamWriter writer = new StreamWriter(AppDomain.CurrentDomain.BaseDirectory + "\\pubharvester_error.log", true))
                 {
                     writer.WriteLine("XML data received " + System.DateTime.Now.ToString());
                     writer.WriteLine("--- begin data ---");
