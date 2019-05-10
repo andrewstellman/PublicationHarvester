@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License along with thi
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Stellman & Greene Consulting LLC")]
 [assembly: AssemblyProduct("SC/Gen - Stars Colleague Generator")]
-[assembly: AssemblyCopyright("Copyright © 2012")]
+[assembly: AssemblyCopyright("Copyright © 2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

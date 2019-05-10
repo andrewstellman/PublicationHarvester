@@ -1,7 +1,7 @@
 /*
  *                           Publication Harvester
  *                          Social Networking Report
- *              Copyright (c) 2003-2006 Stellman & Greene Consulting
+ *              Copyright © 2003-2019 Stellman & Greene Consulting
  *      Developed for Joshua Zivin and Pierre Azoulay, Columbia University
  *            http://www.stellman-greene.com/PublicationHarvester
  *
@@ -76,12 +76,12 @@ namespace Com.StellmanGreene.SocialNetworking
             }
             rootKey.Close();
 
-            Assert.IsTrue(DSNs.Contains("Social Networking Unit Test"), "The unit tests require an ODBC DSN called 'Social Networking Unit Test' that points to a MySQL 5.5 database");
+            Assert.IsTrue(DSNs.Contains("Social Networking Unit Test"), "The unit tests require an ODBC DSN called 'Social Networking Unit Test' that points to a MySQL 5.7 database");
         }
 
 
         /// <summary>
-        /// Verify that the "Social Networking Unit Test" DSN points to a MySQL 5.5 database
+        /// Verify that the "Social Networking Unit Test" DSN points to a MySQL 5.7 database
         /// </summary>
         [Test]
         public void CheckDatabaseVersion()

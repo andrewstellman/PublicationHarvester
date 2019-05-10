@@ -1,6 +1,6 @@
 ﻿/*
  *                         Stars Colleague Generator
- *              Copyright (c) 2003-2006 Stellman & Greene Consulting
+ *              Copyright © 2003-2019 Stellman & Greene Consulting
  *      Developed for Joshua Zivin and Pierre Azoulay, Columbia University
  *            http://www.stellman-greene.com/PublicationHarvester
  *
@@ -38,7 +38,7 @@ You should have received a copy of the GNU General Public License along with thi
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Stellman & Greene Consulting LLC")]
 [assembly: AssemblyProduct("Publication Harvester")]
-[assembly: AssemblyCopyright("Copyright © 2016")]
+[assembly: AssemblyCopyright("Copyright © 2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

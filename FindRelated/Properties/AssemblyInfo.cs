@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Stellman & Greene Consulting LLC")]
 [assembly: AssemblyProduct("Publication Harvester")]
-[assembly: AssemblyCopyright("Copyright © 2014")]
+[assembly: AssemblyCopyright("Copyright © 2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

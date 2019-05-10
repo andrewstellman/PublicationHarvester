@@ -1,6 +1,6 @@
 ﻿/*
  *                           Publication Harvester
- *              Copyright (c) 2003-2006 Stellman & Greene Consulting
+ *              Copyright © 2003-2019 Stellman & Greene Consulting
  *      Developed for Joshua Zivin and Pierre Azoulay, Columbia University
  *            http://www.stellman-greene.com/PublicationHarvester
  *
@@ -30,7 +30,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Stellman & Greene Consulting LLC")]
 [assembly: AssemblyProduct("PubMed")]
-[assembly: AssemblyCopyright("Copyright © 2016")]
+[assembly: AssemblyCopyright("Copyright © 2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

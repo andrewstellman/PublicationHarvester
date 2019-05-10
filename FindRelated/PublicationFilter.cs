@@ -1,6 +1,6 @@
 ﻿/*
  *                                FindRelated
- *              Copyright (c) 2003-2011 Stellman & Greene Consulting
+ *              Copyright © 2003-2019 Stellman & Greene Consulting
  *      Developed for Joshua Zivin and Pierre Azoulay, Columbia University
  *            http://www.stellman-greene.com/PublicationHarvester
  *
