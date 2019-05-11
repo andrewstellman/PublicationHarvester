@@ -11,15 +11,6 @@ namespace Com.StellmanGreene.FindRelated
 {
     class InputQueue
     {
-        /* TODO:
-         * Make Next() work
-         * Make the properties work
-         * Read/write queue from the database
-         * Add error reporting
-         * Add queue interrupt/clear/restart
-         * Add UI
-         */ 
-
         public string CurrentSetnb { get; private set; }
 
         public IEnumerable<int> CurrentPmids { get; private set; }
