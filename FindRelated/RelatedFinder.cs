@@ -27,6 +27,7 @@ using System.IO;
 using System.Data;
 using System.Diagnostics;
 using Com.StellmanGreene.PubMed;
+using System.Linq;
 
 namespace Com.StellmanGreene.FindRelated
 {
@@ -38,11 +39,32 @@ namespace Com.StellmanGreene.FindRelated
             public int Score { get; set; }
         }
 
+        /// <summary>
+        /// URL of the NCBI eLink API
+        /// </summary>
         const string ELINK_URL = "https://www.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi";
+
+        /// <summary>
+        /// DB to use with the NCBI eLink API
+        /// </summary>
         const string ELINK_DB = "pubmed";
+
+        /// <summary>
+        /// DBFROM to use with the NCBI eLink API
+        /// </summary>
         const string ELINK_DBFROM = "pubmed";
 
+        /// <summary>
+        /// Number of IDs to ask for in every NCBI eLink request
+        /// </summary>
+        const int ELINK_IDS_PER_REQUEST = 10;
+
         private NCBI ncbi = new NCBI("medline");
+
+        /// <summary>
+        /// Number of PMIDs processed
+        /// </summary>
+        private int _pmidsProcessed = 0;
 
         public System.ComponentModel.BackgroundWorker BackgroundWorker { get; set; }
 
@@ -54,7 +76,12 @@ namespace Com.StellmanGreene.FindRelated
         /// <param name="inputFileInfo">FileInfo object with information about the input CSV file</param>
         /// <param name="resume">True if resuming a previous run</param>
         /// <param name="outputFilename">Output filename</param>
-        public void Go(string odbcDsn, string relatedTableName, FileInfo inputFileInfo, bool resume, string outputFilename)
+        public void Go(
+            string odbcDsn,
+            string relatedTableName,
+            FileInfo inputFileInfo,
+            bool resume,
+            string outputFilename)
         {
             if (NCBI.ApiKeyExists)
             {
@@ -66,6 +93,8 @@ namespace Com.StellmanGreene.FindRelated
                 Trace.WriteLine("Consider pasting an API key into " + NCBI.ApiKeyPath);
                 Trace.WriteLine("For more information, see https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/");
             }
+
+            Trace.WriteLine($"Requesting up to {ELINK_IDS_PER_REQUEST} PMIDs per NCBI eLink API request");
 
             Database db = new Database(odbcDsn);
 
@@ -85,11 +114,11 @@ namespace Com.StellmanGreene.FindRelated
                 inputQueue = new InputQueue(db, queueTableName);
             }
 
-            int setnbCount = 0;
-            while (inputQueue.Next())
+            while (inputQueue.Next(ELINK_IDS_PER_REQUEST) > 0)
             {
-                BackgroundWorker.ReportProgress((100 * setnbCount) / inputQueue.Count);
-                Trace.WriteLine(DateTime.Now + " - querying for related articles for setnb " + inputQueue.CurrentSetnb + " (" + ++setnbCount + " of " + inputQueue.Count + ")");
+                BackgroundWorker.ReportProgress((100 * inputQueue.Progress) / inputQueue.TotalPmidsAdded);
+
+                Trace.WriteLine($"{DateTime.Now} - executing API query for related articles for {inputQueue.CurrentPmids.Count()} PMIDs");
 
                 // Do the linked publication search for the author's PMIDs and process the results.
                 // This returns a Dictionary that maps author publications (from the PeoplePublications table)
@@ -119,7 +148,6 @@ namespace Com.StellmanGreene.FindRelated
 
                 bool completed;
 
-                Trace.WriteLine(DateTime.Now + " - found " + relatedSearchResults.Count + " PMIDs for setnb " + inputQueue.CurrentSetnb);
                 completed = WriteRelatedRanksToOutputFileAndDatabase(db, relatedTableName, relatedSearchResults, relatedRanks, outputFilename, inputQueue);
                 if (!completed) // WriteRelatedRankToOutputFile() returns false if the user stopped the operation
                     break;
@@ -181,12 +209,19 @@ namespace Com.StellmanGreene.FindRelated
             foreach (int pmid in relatedSearchResults.Keys)
             {
                 List<int> relatedPmids = relatedSearchResults[pmid];
+
                 if (relatedPmids == null)
-                    Trace.WriteLine(DateTime.Now + " - found empty related PMID list for PMID " + pmid);
-                else if (!relatedRanks.ContainsKey(pmid))
-                    Trace.WriteLine(DateTime.Now + " - no ranks or scores found for PMID " + pmid);
-                else 
                 {
+                    Trace.WriteLine($"{DateTime.Now} - found empty related PMID list for PMID {pmid} ({++_pmidsProcessed} of {inputQueue.TotalPmidsAdded})");
+                }
+                else if (!relatedRanks.ContainsKey(pmid))
+                {
+                    Trace.WriteLine($"{DateTime.Now} - no ranks or scores found  for PMID {pmid} ({++_pmidsProcessed} of {inputQueue.TotalPmidsAdded})");
+                }
+                else
+                {
+                    Trace.WriteLine($"{DateTime.Now} - found {relatedPmids.Count} results for PMID {pmid} ({++_pmidsProcessed} of {inputQueue.TotalPmidsAdded})");
+
                     Dictionary<int, RankAndScore> ranksAndScores = relatedRanks[pmid];
 
                     foreach (int relatedPmid in relatedPmids)
@@ -310,11 +345,10 @@ namespace Com.StellmanGreene.FindRelated
             // Create the queue table
             db.ExecuteNonQuery("DROP TABLE IF EXISTS " + queueTableName);
             db.ExecuteNonQuery("CREATE TABLE " + queueTableName + @" (
-                Setnb char(8) NOT NULL,
                 PMID int(11) NOT NULL,
                 Processed bit(1) default 0 NOT NULL,
                 Error bit(1) default 0 NOT NULL,
-                PRIMARY KEY (Setnb, PMID)
+                PRIMARY KEY (PMID)
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
             ");
         }
@@ -323,10 +357,8 @@ namespace Com.StellmanGreene.FindRelated
         /// Use the NCBI Elink request to retrieve related IDs for one or more publication IDs
         /// </summary>
         /// <param name="ids">IDs to retrieve</param>
-        /// <param name="mindate">Optional minimum date</param>
-        /// <param name="maxdate">Optional maximum date</param>
         /// <returns>A string with XML results from elink.fcgi</returns>
-        private static string ExecuteRelatedSearch(IEnumerable<int> ids, string mindate = null, string maxdate = null)
+        private static string ExecuteRelatedSearch(IEnumerable<int> ids)
         {
             if (ids == null)
                 throw new ArgumentNullException("ids");
@@ -342,10 +374,6 @@ namespace Com.StellmanGreene.FindRelated
                     first = false;
                 query.Append(id);
             }
-            if (!string.IsNullOrEmpty(mindate))
-                query.AppendFormat("&mindate={0}", mindate);
-            if (!string.IsNullOrEmpty(maxdate))
-                query.AppendFormat("&mindate={0}", maxdate);
 
             // Add "&cmd=neighbor_score" to get the <Score> elements
             query.Append("&cmd=neighbor_score");

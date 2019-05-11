@@ -60,7 +60,7 @@ namespace Com.StellmanGreene.FindRelated
             {
                 MessageBox.Show("Please specify a valid input file");
                 startButton.Enabled = true;
-                resumeButton.Enabled = true;
+                resumeButton.Enabled = UnprocessedPMIDsFound();
                 return;
             }
 
@@ -69,7 +69,7 @@ namespace Com.StellmanGreene.FindRelated
             {
                 MessageBox.Show("Please specify a valid input file");
                 startButton.Enabled = true;
-                resumeButton.Enabled = true;
+                resumeButton.Enabled = UnprocessedPMIDsFound();
                 return;
             }
 
@@ -77,7 +77,7 @@ namespace Com.StellmanGreene.FindRelated
             {
                 MessageBox.Show("Please select an ODBC data source from the dropdown");
                 startButton.Enabled = true;
-                resumeButton.Enabled = true;
+                resumeButton.Enabled = UnprocessedPMIDsFound();
                 return;
             }
 
@@ -86,7 +86,7 @@ namespace Com.StellmanGreene.FindRelated
             {
                 MessageBox.Show("Please specify a related publications table to create/replace");
                 startButton.Enabled = true;
-                resumeButton.Enabled = true;
+                resumeButton.Enabled = UnprocessedPMIDsFound();
                 return;
             }
 
@@ -95,7 +95,7 @@ namespace Com.StellmanGreene.FindRelated
             if (dialogResult == DialogResult.Cancel)
             {
                 startButton.Enabled = true;
-                resumeButton.Enabled = true;
+                resumeButton.Enabled = UnprocessedPMIDsFound();
                 return;
             }
 
@@ -103,7 +103,7 @@ namespace Com.StellmanGreene.FindRelated
             {
                 MessageBox.Show("Please specify an output filename. This file will be overwritten.");
                 startButton.Enabled = true;
-                resumeButton.Enabled = true;
+                resumeButton.Enabled = UnprocessedPMIDsFound();
                 return;
             }
 
@@ -270,7 +270,7 @@ namespace Com.StellmanGreene.FindRelated
             {
                 MessageBox.Show("Please select an ODBC data source from the dropdown");
                 startButton.Enabled = true;
-                resumeButton.Enabled = true;
+                resumeButton.Enabled = UnprocessedPMIDsFound();
                 return;
             }
 
@@ -279,7 +279,7 @@ namespace Com.StellmanGreene.FindRelated
             {
                 MessageBox.Show("Please specify a related publications table to resume from");
                 startButton.Enabled = true;
-                resumeButton.Enabled = true;
+                resumeButton.Enabled = UnprocessedPMIDsFound();
                 return;
             }
 
@@ -292,6 +292,48 @@ namespace Com.StellmanGreene.FindRelated
                 { "outputFilename", outputFileTextBox.Text },
             });
             stopButton.Enabled = true;
+        }
+
+        /// <summary>
+        /// Last _queue table checked for unprocessed PMIDs (to avoid duplicate log entries)
+        /// </summary>
+        private string _lastQueueTableChecked = "";
+
+        /// <summary>
+        /// Checks if there are unprocessed PMIDs from the queue table
+        /// </summary>
+        private bool UnprocessedPMIDsFound()
+        {
+            string dsn = DSN.Text;
+            if (!(string.IsNullOrEmpty(dsn) || dsn.StartsWith("==") || dsn.EndsWith("DSNs") || string.IsNullOrEmpty(relatedTable.Text)))
+            {
+                var queueTableName = relatedTable.Text + "_queue";
+                try
+                {
+                    var db = new Database(dsn);
+
+                    var tableExists = db.ExecuteScalar($"SHOW TABLES LIKE '{queueTableName}'");
+                    if (tableExists == null) return false;
+
+                    var unprocessedPmidCount = (long)db.ExecuteScalar($"SELECT COUNT(*) FROM {queueTableName} WHERE Processed = 0");
+
+                    if (_lastQueueTableChecked != queueTableName)
+                    {
+                        PrintQueueMessage();
+                        var enDis = (unprocessedPmidCount > 0) ? "En" : "Dis";
+                        _lastQueueTableChecked = queueTableName;
+                    }
+
+                    return unprocessedPmidCount > 0;
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine($"{DateTime.Now} Database getting unprocess PMID count in {queueTableName}: {ex.Message}");
+                    Trace.WriteLine($"{DateTime.Now} Disabling Resume button");
+                    return false;
+                }
+            }
+            return false;
         }
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
@@ -316,7 +358,7 @@ namespace Com.StellmanGreene.FindRelated
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             startButton.Enabled = true;
-            resumeButton.Enabled = true;
+            resumeButton.Enabled = UnprocessedPMIDsFound();
             stopButton.Enabled = false;
             Trace.WriteLine(DateTime.Now + " - finished run");
         }
@@ -341,7 +383,7 @@ namespace Com.StellmanGreene.FindRelated
                         return;
 
                     int queueSize = db.GetIntValue("SELECT Count(*) FROM " + relatedTable.Text + "_queue WHERE Processed = 0 OR Error = 1");
-                    string message = DateTime.Now + " " + queueSize + " unprocessed pairs in '" + dsn + "'";
+                    string message = DateTime.Now + " " + queueSize + " unprocessed PMIDs in '" + dsn + "'";
                     int errors = db.GetIntValue("SELECT Count(*) FROM " + relatedTable.Text + "_queue WHERE Error = 1");
                     if (errors > 0)
                         message += " (including " + errors + " errors)";
@@ -349,7 +391,7 @@ namespace Com.StellmanGreene.FindRelated
                 }
                 catch
                 {
-                    Trace.WriteLine(DateTime.Now + " Unable to read data about unprocessed Setnbs/PMIDs from database '" + dsn + "'");
+                    Trace.WriteLine(DateTime.Now + " Unable to read data about unprocessed PMIDs from database '" + dsn + "'");
                 }
             }
         }
@@ -379,7 +421,7 @@ namespace Com.StellmanGreene.FindRelated
             if (!string.IsNullOrWhiteSpace(outputFileTextBox.Text))
             {
                 startButton.Enabled = true;
-                resumeButton.Enabled = true;
+                resumeButton.Enabled = UnprocessedPMIDsFound();
             } else
             {
                 startButton.Enabled = false;
