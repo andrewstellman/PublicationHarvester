@@ -24,7 +24,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{1EDEC7
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExportRdfTests", "ExportRdfTests\ExportRdfTests.csproj", "{CD6E368F-6E7E-4715-8058-B77EA76D2E21}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageDistribution", "PackageDistribution\PackageDistribution.csproj", "{97C4DABD-C598-4170-B6E7-1FC8B15EA9A9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageDistribution", "PackageDistribution\PackageDistribution.proj", "{97C4DABD-C598-4170-B6E7-1FC8B15EA9A9}"
 	ProjectSection(ProjectDependencies) = postProject
 		{52C03C14-59CD-40E2-B16D-4E30608A0278} = {52C03C14-59CD-40E2-B16D-4E30608A0278}
 		{F46D614C-EDEE-4DEF-B421-5F9EB691ECB3} = {F46D614C-EDEE-4DEF-B421-5F9EB691ECB3}

@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  
+  <PropertyGroup>
+    <OutputFolder>Distribution</OutputFolder>
+    <PublicationHarvesterPath>..\PublicationHarvester\Bin\Debug\</PublicationHarvesterPath>
+    <SCGenPath>..\SCGen\Bin\Debug\</SCGenPath>
+    <FindRelatedPath>..\FindRelated\Bin\Debug\</FindRelatedPath>
+    <SocialNetworkingPath>..\SocialNetworking\Bin\Debug\</SocialNetworkingPath>
+    <ExportRdfPath>..\ExportRdf\Bin\Debug\</ExportRdfPath>
+    <ProjectGuid>{97C4DABD-C598-4170-B6E7-1FC8B15EA9A9}</ProjectGuid>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PublicationHarvesterFiles Include="$(PublicationHarvesterPath)*.exe;$(PublicationHarvesterPath)*.dll;" Exclude="$(PublicationHarvesterPath)nunit.framework.dll;$(PublicationHarvesterPath)\nunit.engine.dll;$(PublicationHarvesterPath)\nunit.engine.api.dll;$(PublicationHarvesterPath)\NUnit3.TestAdapter.dll;" />
+    <SCGenFiles Include="$(SCGenPath)*.exe;$(SCGenPath)*.dll;" Exclude="$(SCGenPath)nunit.framework.dll;$(SCGenPath)\nunit.engine.dll;$(SCGenPath)\nunit.engine.api.dll;$(SCGenPath)\NUnit3.TestAdapter.dll;" />
+    <FindRelatedFiles Include="$(FindRelatedPath)*.exe;$(FindRelatedPath)*.dll;" Exclude="$(FindRelatedPath)nunit.framework.dll;$(FindRelatedPath)\nunit.engine.dll;$(FindRelatedPath)\nunit.engine.api.dll;$(FindRelatedPath)\NUnit3.TestAdapter.dll;" />
+    <SocialNetworkingFiles Include="$(SocialNetworkingPath)*.exe;$(SocialNetworkingPath)*.dll;" Exclude="$(SocialNetworkingPath)nunit.framework.dll;$(SocialNetworkingPath)\nunit.engine.dll;$(SocialNetworkingPath)\nunit.engine.api.dll;$(SocialNetworkingPath)\NUnit3.TestAdapter.dll;" />
+    <ExportRdfFiles Include="$(ExportRdfPath)*.exe;$(ExportRdfPath)*.dll;" Exclude="$(ExportRdfPath)nunit.framework.dll;$(ExportRdfPath)\nunit.engine.dll;$(ExportRdfPath)\nunit.engine.api.dll;$(ExportRdfPath)\NUnit3.TestAdapter.dll;" />
+  </ItemGroup>
+
+  <Target Name="Clean">
+    <RemoveDir Directories="$(OutputFolder)" />
+  </Target>
+
+  <Target Name="Build" DependsOnTargets="Clean">
+    <Copy SourceFiles="@(PublicationHarvesterFiles);@(SCGenFiles);@(FindRelatedFiles);@(SocialNetworkingFiles);@(ExportRdfFiles);" DestinationFolder="$(OutputFolder)" />
+  </Target>
+
+</Project>
