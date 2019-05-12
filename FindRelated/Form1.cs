@@ -42,80 +42,22 @@ namespace Com.StellmanGreene.FindRelated
         /// <summary>
         /// Currently entered include categories
         /// </summary>
-        private IEnumerable<int> includeCategoriesValues = new List<int>();
+        private readonly IEnumerable<int> includeCategoriesValues = new List<int>();
+
+        private readonly Color _dsnBackColor;
+        private readonly Color _inputFileTextBoxBackColor;
+        private readonly Color _outputFileTextBoxBackColor;
+        private readonly Color _relatedTableBackColor;
+        private readonly Color _warningBackColor = Color.FromArgb(254, 180, 180);
 
         public Form1()
         {
             InitializeComponent();
-        }
 
-        private void startButton_Click(object sender, EventArgs e)
-        {
-            startButton.Enabled = false;
-            resumeButton.Enabled = false;
-
-            string dsn = DSN.Text;
-
-            if (string.IsNullOrEmpty(inputFileTextBox.Text))
-            {
-                MessageBox.Show("Please specify a valid input file");
-                startButton.Enabled = true;
-                resumeButton.Enabled = UnprocessedPMIDsFound();
-                return;
-            }
-
-            FileInfo inputFileInfo = new FileInfo(inputFileTextBox.Text);
-            if (!inputFileInfo.Exists)
-            {
-                MessageBox.Show("Please specify a valid input file");
-                startButton.Enabled = true;
-                resumeButton.Enabled = UnprocessedPMIDsFound();
-                return;
-            }
-
-            if (String.IsNullOrEmpty(dsn) || dsn.StartsWith("==") || dsn.EndsWith("DSNs"))
-            {
-                MessageBox.Show("Please select an ODBC data source from the dropdown");
-                startButton.Enabled = true;
-                resumeButton.Enabled = UnprocessedPMIDsFound();
-                return;
-            }
-
-            string relatedTableName = relatedTable.Text;
-            if (String.IsNullOrEmpty(relatedTableName))
-            {
-                MessageBox.Show("Please specify a related publications table to create/replace");
-                startButton.Enabled = true;
-                resumeButton.Enabled = UnprocessedPMIDsFound();
-                return;
-            }
-
-            DialogResult dialogResult = MessageBox.Show("The table '" + relatedTableName + "' will be deleted and recreated if it exists.",
-                "Overwrite table?", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
-            if (dialogResult == DialogResult.Cancel)
-            {
-                startButton.Enabled = true;
-                resumeButton.Enabled = UnprocessedPMIDsFound();
-                return;
-            }
-
-            if (String.IsNullOrWhiteSpace(outputFileTextBox.Text))
-            {
-                MessageBox.Show("Please specify an output filename. This file will be overwritten.");
-                startButton.Enabled = true;
-                resumeButton.Enabled = UnprocessedPMIDsFound();
-                return;
-            }
-
-            // Start the run
-            backgroundWorker1.RunWorkerAsync(new Dictionary<string, object>() { 
-                { "dsn", dsn }, 
-                { "relatedTableName", relatedTableName }, 
-                { "inputFileInfo", inputFileInfo },
-                { "resume", false },
-                { "outputFilename", outputFileTextBox.Text },
-            });
-            stopButton.Enabled = true;
+            _dsnBackColor = DSN.BackColor;
+            _inputFileTextBoxBackColor = inputFileTextBox.BackColor;
+            _outputFileTextBoxBackColor = outputFileTextBox.BackColor;
+            _relatedTableBackColor = relatedTable.BackColor;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -138,9 +80,19 @@ namespace Com.StellmanGreene.FindRelated
 
             Trace.WriteLine("----------------------------------------------------------");
             Trace.WriteLine(DateTime.Now + " - " + this.Text + " started");
+
+            CheckFieldsAndEnableButtons();
         }
 
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            // Save settings
+            Settings.SetValue("FindRelated_RelatedTable", relatedTable.Text);
+            Settings.SetValue("FindRelated_InputFile", inputFileTextBox.Text);
 
+            Trace.WriteLine(DateTime.Now + " - form closed (stopping any currently running jobs)");
+            backgroundWorker1.CancelAsync();
+        }
 
         #region ODBC Data Source Dropdown
         /// <summary>
@@ -212,26 +164,55 @@ namespace Com.StellmanGreene.FindRelated
         }
         #endregion
 
-        /// <summary>
-        /// Open the log in Notepad
-        /// </summary>
-        private void openInNotepad_Click(object sender, EventArgs e)
+        private void startButton_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process proc = new System.Diagnostics.Process();
-            proc.EnableRaisingEvents = false;
-            proc.StartInfo.FileName = "notepad.exe";
-            proc.StartInfo.Arguments = logFilename.Text;
-            proc.Start();
+            if (String.IsNullOrWhiteSpace(outputFileTextBox.Text))
+            {
+                MessageBox.Show("Please specify an output filename. This file will be overwritten.");
+            }
+            else
+            {
+                DialogResult dialogResult = MessageBox.Show($"The table '{relatedTable.Text}_queue' will be deleted and recreated if it exists.",
+                    "Overwrite table?", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
+                if (dialogResult == DialogResult.OK)
+                {
+                    // Start the run
+                    backgroundWorker1.RunWorkerAsync(new Dictionary<string, object>() {
+                        { "dsn", DSN.Text.Trim() },
+                        { "relatedTableName", relatedTable.Text.Trim() },
+                        { "inputFileInfo", new FileInfo(inputFileTextBox.Text.Trim()) },
+                        { "resume", false },
+                        { "outputFilename", outputFileTextBox.Text },
+                    });
+
+                    startButton.Enabled = false;
+                    resumeButton.Enabled = false;
+                    stopButton.Enabled = true;
+                }
+            }
         }
 
-        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        private void resumeButton_Click(object sender, EventArgs e)
         {
-            // Save settings
-            Settings.SetValue("FindRelated_RelatedTable", relatedTable.Text);
-            Settings.SetValue("FindRelated_InputFile", inputFileTextBox.Text);
+            if (String.IsNullOrWhiteSpace(outputFileTextBox.Text))
+            {
+                MessageBox.Show("Please specify an output filename. This file will be appended (not overwritten).");
+            }
+            else
+            {
+                // Start the run
+                backgroundWorker1.RunWorkerAsync(new Dictionary<string, object>() {
+                    { "dsn", DSN.Text.Trim() },
+                    { "relatedTableName", relatedTable.Text },
+                    { "inputFileInfo", null},
+                    { "resume", true },
+                    { "outputFilename", outputFileTextBox.Text },
+                });
 
-            Trace.WriteLine(DateTime.Now + " - form closed (stopping any currently running jobs)");
-            backgroundWorker1.CancelAsync();
+                stopButton.Enabled = true;
+                startButton.Enabled = false;
+                resumeButton.Enabled = false;
+            }
         }
 
         private void stopButton_Click(object sender, EventArgs e)
@@ -254,44 +235,74 @@ namespace Com.StellmanGreene.FindRelated
             inputFileTextBox.Text = openFileDialog.FileName;
         }
 
-        private void relatedTable_TextChanged(object sender, EventArgs e)
+        /// <summary>
+        /// Open the log in Notepad
+        /// </summary>
+        private void openInNotepad_Click(object sender, EventArgs e)
         {
-            PrintQueueMessage();
+            System.Diagnostics.Process proc = new System.Diagnostics.Process();
+            proc.EnableRaisingEvents = false;
+            proc.StartInfo.FileName = "notepad.exe";
+            proc.StartInfo.Arguments = logFilename.Text;
+            proc.Start();
         }
 
-        private void resumeButton_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Check ODBC DSN, related table, and input and output files, 
+        /// give warnings if they're not filled in correctly, and
+        /// enable or disable the start and resume buttons
+        /// </summary>
+        private void CheckFieldsAndEnableButtons()
         {
-            startButton.Enabled = false;
-            resumeButton.Enabled = false;
-
             string dsn = DSN.Text;
-
-            if (String.IsNullOrEmpty(dsn) || dsn.StartsWith("==") || dsn.EndsWith("DSNs"))
-            {
-                MessageBox.Show("Please select an ODBC data source from the dropdown");
-                startButton.Enabled = true;
-                resumeButton.Enabled = UnprocessedPMIDsFound();
-                return;
-            }
-
             string relatedTableName = relatedTable.Text;
-            if (String.IsNullOrEmpty(relatedTableName))
-            {
-                MessageBox.Show("Please specify a related publications table to resume from");
-                startButton.Enabled = true;
-                resumeButton.Enabled = UnprocessedPMIDsFound();
-                return;
-            }
 
-            // Start the run
-            backgroundWorker1.RunWorkerAsync(new Dictionary<string, object>() { 
-                { "dsn", dsn }, 
-                { "relatedTableName", relatedTableName }, 
-                { "inputFileInfo", null},
-                { "resume", true },
-                { "outputFilename", outputFileTextBox.Text },
-            });
-            stopButton.Enabled = true;
+            DSN.BackColor = _dsnBackColor;
+            inputFileTextBox.BackColor = _inputFileTextBoxBackColor;
+            outputFileTextBox.BackColor = _outputFileTextBoxBackColor;
+            relatedTable.BackColor = _relatedTableBackColor;
+
+            if (String.IsNullOrWhiteSpace(dsn) || dsn.StartsWith("==") || dsn.EndsWith("DSNs"))
+            {
+                DSN.BackColor = _warningBackColor;
+                Trace.WriteLine($"{DateTime.Now} - Please select a valid ODBC data source");
+                startButton.Enabled = false;
+                resumeButton.Enabled = false;
+            }
+            else if (String.IsNullOrWhiteSpace(relatedTableName))
+            {
+                relatedTable.BackColor = _warningBackColor;
+                Trace.WriteLine($"{DateTime.Now} - Please specify a related table");
+                startButton.Enabled = false;
+                resumeButton.Enabled = false;
+            }
+            else if (string.IsNullOrWhiteSpace(inputFileTextBox.Text))
+            {
+                inputFileTextBox.BackColor = _warningBackColor;
+                Trace.WriteLine($"{DateTime.Now} - Please select a valid input file");
+                startButton.Enabled = false;
+                resumeButton.Enabled = false;
+            }
+            else if (!new FileInfo(inputFileTextBox.Text).Exists)
+            {
+                inputFileTextBox.BackColor = _warningBackColor;
+                Trace.WriteLine($"{DateTime.Now} - Please select a valid input file");
+                startButton.Enabled = false;
+                resumeButton.Enabled = false;
+            }
+            else if (string.IsNullOrWhiteSpace(outputFileTextBox.Text))
+            {
+                outputFileTextBox.BackColor = _warningBackColor;
+                Trace.WriteLine($"{DateTime.Now} - Please select an output filename");
+                startButton.Enabled = false;
+                resumeButton.Enabled = false;
+            }
+            else
+            {
+                startButton.Enabled = true;
+                var unprocessedPMIDCount = GetUnprocessedPMIDCount();
+                resumeButton.Enabled = (unprocessedPMIDCount > 0);
+            }
         }
 
         /// <summary>
@@ -300,12 +311,18 @@ namespace Com.StellmanGreene.FindRelated
         private string _lastQueueTableChecked = "";
 
         /// <summary>
-        /// Checks if there are unprocessed PMIDs from the queue table
+        /// Checks if there are unprocessed PMIDs from the queue table,
+        /// sets the Resume button, and prints a message (avoiding 
+        /// duplicates from checking the same table multiple times)
         /// </summary>
-        private bool UnprocessedPMIDsFound()
+        private long GetUnprocessedPMIDCount()
         {
             string dsn = DSN.Text;
-            if (!(string.IsNullOrEmpty(dsn) || dsn.StartsWith("==") || dsn.EndsWith("DSNs") || string.IsNullOrEmpty(relatedTable.Text)))
+            if (string.IsNullOrWhiteSpace(dsn) || dsn.StartsWith("==") || dsn.EndsWith("DSNs") || string.IsNullOrWhiteSpace(relatedTable.Text))
+            {
+                return 0;
+            }
+            else
             {
                 var queueTableName = relatedTable.Text + "_queue";
                 try
@@ -313,27 +330,41 @@ namespace Com.StellmanGreene.FindRelated
                     var db = new Database(dsn);
 
                     var tableExists = db.ExecuteScalar($"SHOW TABLES LIKE '{queueTableName}'");
-                    if (tableExists == null) return false;
+                    if (tableExists == null)
+                    {
+                        if (_lastQueueTableChecked != queueTableName)
+                        {
+                            Trace.WriteLine($"{DateTime.Now} - no previous run for table {relatedTable.Text.Trim()} was found");
+                            Trace.WriteLine($"{DateTime.Now} - Disabling Resume button");
+                            _lastQueueTableChecked = queueTableName;
+                        }
+                        return 0;
+                    }
 
                     var unprocessedPmidCount = (long)db.ExecuteScalar($"SELECT COUNT(*) FROM {queueTableName} WHERE Processed = 0");
 
                     if (_lastQueueTableChecked != queueTableName)
                     {
-                        PrintQueueMessage();
+                        int queueSize = db.GetIntValue($"SELECT Count(*) FROM {queueTableName} WHERE Processed = 0 OR Error = 1");
+                        string message = $"{DateTime.Now} - {queueSize} unprocessed PMIDs in table {relatedTable.Text.Trim()}";
+                        int errors = db.GetIntValue("SELECT Count(*) FROM " + relatedTable.Text + "_queue WHERE Error = 1");
+                        if (errors > 0)
+                            message += " (including " + errors + " errors)";
+                        Trace.WriteLine(message);
+
                         var enDis = (unprocessedPmidCount > 0) ? "En" : "Dis";
+                        Trace.WriteLine($"{DateTime.Now} {enDis}abling Resume button");
                         _lastQueueTableChecked = queueTableName;
                     }
 
-                    return unprocessedPmidCount > 0;
+                    return unprocessedPmidCount;
                 }
                 catch (Exception ex)
                 {
-                    Trace.WriteLine($"{DateTime.Now} Database getting unprocess PMID count in {queueTableName}: {ex.Message}");
-                    Trace.WriteLine($"{DateTime.Now} Disabling Resume button");
-                    return false;
+                    Trace.WriteLine($"{DateTime.Now} Database getting unprocessed PMID count in {queueTableName}: {ex.Message}");
+                    return 0;
                 }
             }
-            return false;
         }
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
@@ -357,48 +388,9 @@ namespace Com.StellmanGreene.FindRelated
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            startButton.Enabled = true;
-            resumeButton.Enabled = UnprocessedPMIDsFound();
+            CheckFieldsAndEnableButtons();
             stopButton.Enabled = false;
             Trace.WriteLine(DateTime.Now + " - finished run");
-        }
-
-        private void DSN_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            PrintQueueMessage();
-        }
-
-        private void PrintQueueMessage()
-        {
-            string dsn = DSN.Text;
-            if (!(String.IsNullOrEmpty(dsn) || dsn.StartsWith("==") || dsn.EndsWith("DSNs") || string.IsNullOrEmpty(relatedTable.Text)))
-            {
-                try
-                {
-                    Database db = new Database(dsn);
-
-                    string sql = "SHOW TABLES LIKE \"" + relatedTable.Text + "_queue\"";
-                    DataTable table = db.ExecuteQuery(sql);
-                    if (table.Rows.Count == 0)
-                        return;
-
-                    int queueSize = db.GetIntValue("SELECT Count(*) FROM " + relatedTable.Text + "_queue WHERE Processed = 0 OR Error = 1");
-                    string message = DateTime.Now + " " + queueSize + " unprocessed PMIDs in '" + dsn + "'";
-                    int errors = db.GetIntValue("SELECT Count(*) FROM " + relatedTable.Text + "_queue WHERE Error = 1");
-                    if (errors > 0)
-                        message += " (including " + errors + " errors)";
-                    Trace.WriteLine(message);
-                }
-                catch
-                {
-                    Trace.WriteLine(DateTime.Now + " Unable to read data about unprocessed PMIDs from database '" + dsn + "'");
-                }
-            }
-        }
-
-        private void DSN_Leave(object sender, EventArgs e)
-        {
-            PrintQueueMessage();
         }
 
         private void outputFileDialog_Click(object sender, EventArgs e)
@@ -416,18 +408,24 @@ namespace Com.StellmanGreene.FindRelated
             outputFileTextBox.Text = saveFileDialog.FileName;
         }
 
+        private void relatedTable_TextChanged(object sender, EventArgs e)
+        {
+            CheckFieldsAndEnableButtons();
+        }
+
+        private void DSN_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            CheckFieldsAndEnableButtons();
+        }
+
+        private void DSN_Leave(object sender, EventArgs e)
+        {
+            CheckFieldsAndEnableButtons();
+        }
+
         private void OutputFileTextBox_TextChanged(object sender, EventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(outputFileTextBox.Text))
-            {
-                startButton.Enabled = true;
-                resumeButton.Enabled = UnprocessedPMIDsFound();
-            } else
-            {
-                startButton.Enabled = false;
-                resumeButton.Enabled = false;
-            }
-
+            CheckFieldsAndEnableButtons();
         }
     }
 }

@@ -113,7 +113,7 @@ namespace Com.StellmanGreene.FindRelated
                         {
                             if (!int.TryParse(line, out int pmid))
                             {
-                                Trace.WriteLine(DateTime.Now + " WARNING - line " + lineCount + ": invalid PMID: " + (String.IsNullOrEmpty(line) ? "(empty)" : line));
+                                Trace.WriteLine(DateTime.Now + " WARNING - line " + lineCount + ": invalid PMID: " + (String.IsNullOrWhiteSpace(line) ? "(empty)" : line));
                                 continue;
                             }
 
