@@ -63,6 +63,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="..\PackageDistribution\SharedAssemblyInfo.cs" />
     <Compile Include="InputQueue.cs" />
     <Compile Include="RelatedFinder.cs" />
     <Compile Include="ListBoxTraceListener.cs" />

@@ -22,15 +22,18 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
+/*
+ * NOTE: AssemblyCompany, AssemblyCopyright, AssemblyVersion, and AssemblyFileVersion
+ * are in ../PackageDistribution/SharedAssemblyInfo.cs
+ */
+
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Com.StellmanGreene.PubMed")]
 [assembly: AssemblyDescription("Publication Harvester Class Library")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Stellman & Greene Consulting LLC")]
 [assembly: AssemblyProduct("PubMed")]
-[assembly: AssemblyCopyright("Copyright © 2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -41,15 +44,3 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("c749c934-5edf-459e-b558-6714dac615bc")]
-
-// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version 
-//      Build Number
-//      Revision
-//
-// You can specify all the values or you can default the Revision and Build Numbers 
-// by using the '*' as shown below:
-[assembly: AssemblyVersion("1.0.40")]
-[assembly: AssemblyFileVersion("1.0.40")]
