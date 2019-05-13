@@ -2,7 +2,7 @@
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   
   <PropertyGroup>
-    <OutputFolder>Distribution</OutputFolder>
+    <OutputFolder>../Distribution</OutputFolder>
     <PublicationHarvesterPath>..\PublicationHarvester\Bin\Debug\</PublicationHarvesterPath>
     <SCGenPath>..\SCGen\Bin\Debug\</SCGenPath>
     <FindRelatedPath>..\FindRelated\Bin\Debug\</FindRelatedPath>
@@ -25,6 +25,9 @@
 
   <Target Name="Build" DependsOnTargets="Clean">
     <Copy SourceFiles="@(PublicationHarvesterFiles);@(SCGenFiles);@(FindRelatedFiles);@(SocialNetworkingFiles);@(ExportRdfFiles);" DestinationFolder="$(OutputFolder)" />
+  </Target>
+
+  <Target Name="Rebuild" DependsOnTargets="Build">
   </Target>
 
 </Project>
