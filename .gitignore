@@ -10,6 +10,8 @@ SCGenTests/bin/
 SCGenTests/obj/
 SocialNetworking/bin/
 SocialNetworking/obj/
+SocialNetworkingTests/bin/
+SocialNetworkingTests/obj/
 ExportRdf/bin/
 ExportRdf/obj/
 ExportRdfTests/bin/

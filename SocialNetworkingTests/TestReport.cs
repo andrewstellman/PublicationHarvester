@@ -298,8 +298,8 @@ namespace Com.StellmanGreene.SocialNetworking.Unit_Tests
             Report report = new Report(DB, "social_unit_test_firstdegree", "social_unit_test_seconddegree", null, null);
             Hashtable Results = report.GetSocialNetwork("Alice");
             Assert.AreEqual(Results.Count, 2);
-            Assert.AreEqual(Results["Carol"].GetType(), Type.GetType("Com.StellmanGreene.SocialNetworking.SecondDegreeStars"));
-            Assert.AreEqual(Results["Justin"].GetType(), Type.GetType("Com.StellmanGreene.SocialNetworking.SecondDegreeStars"));
+            Assert.AreEqual(Results["Carol"].GetType().ToString(), "Com.StellmanGreene.SocialNetworking.SecondDegreeStars");
+            Assert.AreEqual(Results["Justin"].GetType().ToString(), "Com.StellmanGreene.SocialNetworking.SecondDegreeStars");
 
             // Test the Carol network
             SecondDegreeStars Carol = (SecondDegreeStars) Results["Carol"];
@@ -347,8 +347,8 @@ namespace Com.StellmanGreene.SocialNetworking.Unit_Tests
             Report report = new Report(DB, "social_unit_test_seconddegree", "social_unit_test_seconddegree", null, null);
             Hashtable Results = report.GetSocialNetwork("Effie");
             Assert.AreEqual(Results.Count, 2);
-            Assert.AreEqual(Results["Carol"].GetType(), Type.GetType("Com.StellmanGreene.SocialNetworking.SecondDegreeStars"));
-            Assert.AreEqual(Results["Justin"].GetType(), Type.GetType("Com.StellmanGreene.SocialNetworking.SecondDegreeStars"));
+            Assert.AreEqual(Results["Carol"].GetType().ToString(), "Com.StellmanGreene.SocialNetworking.SecondDegreeStars");
+            Assert.AreEqual(Results["Justin"].GetType().ToString(), "Com.StellmanGreene.SocialNetworking.SecondDegreeStars");
 
             // Test the Carol network
             SecondDegreeStars Carol = (SecondDegreeStars)Results["Carol"];
@@ -384,7 +384,7 @@ namespace Com.StellmanGreene.SocialNetworking.Unit_Tests
             Report report = new Report(DB, "social_unit_test_seconddegree", "social_unit_test_seconddegree", null, null);
             Hashtable Results = report.GetSocialNetwork("Lisa");
             Assert.AreEqual(Results.Count, 1);
-            Assert.AreEqual(Results["Carol"].GetType(), Type.GetType("Com.StellmanGreene.SocialNetworking.SecondDegreeStars"));
+            Assert.AreEqual(Results["Carol"].GetType().ToString(), "Com.StellmanGreene.SocialNetworking.SecondDegreeStars");
 
             // Test the Carol network
             SecondDegreeStars Carol = (SecondDegreeStars)Results["Carol"];
@@ -555,7 +555,7 @@ namespace Com.StellmanGreene.SocialNetworking.Unit_Tests
             }
 
             // Compare it with the test report file
-            string TestDataPath = AppDomain.CurrentDomain.BaseDirectory + "\\Unit Tests\\Test Data\\Full report.csv";
+            string TestDataPath = AppDomain.CurrentDomain.BaseDirectory + "\\Test Data\\Full report.csv";
             CompareReport(ReportPath, TestDataPath);
 
 

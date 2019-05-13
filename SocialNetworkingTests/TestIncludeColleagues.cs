@@ -79,7 +79,7 @@ namespace Com.StellmanGreene.SocialNetworking.Unit_Tests
             }
 
             // Compare it with the test report file
-            string TestDataPath = AppDomain.CurrentDomain.BaseDirectory + "\\Unit Tests\\Test Data\\Report for Jimmy.csv";
+            string TestDataPath = AppDomain.CurrentDomain.BaseDirectory + "\\Test Data\\Report for Jimmy.csv";
             TestReport.CompareReport(ReportPath, TestDataPath);
 
             // Remove the CSV file
@@ -140,7 +140,7 @@ namespace Com.StellmanGreene.SocialNetworking.Unit_Tests
             }
 
             // Compare it with the test report file
-            string TestDataPath = AppDomain.CurrentDomain.BaseDirectory + "\\Unit Tests\\Test Data\\Report for Frank and Bob.csv";
+            string TestDataPath = AppDomain.CurrentDomain.BaseDirectory + "\\Test Data\\Report for Frank and Bob.csv";
             TestReport.CompareReport(ReportPath, TestDataPath);
 
             // Remove the CSV file
@@ -246,9 +246,9 @@ namespace Com.StellmanGreene.SocialNetworking.Unit_Tests
                 // ColleaguesToExclude contains Bob and Frank)
                 string TestDataPath = AppDomain.CurrentDomain.BaseDirectory;
                 if (iteration == 0)
-                    TestDataPath += "\\Unit Tests\\Test Data\\Report for Jimmy, Bob, Frank and Alice.csv";
+                    TestDataPath += "\\Test Data\\Report for Jimmy, Bob, Frank and Alice.csv";
                 else
-                    TestDataPath += "\\Unit Tests\\Test Data\\Report for Jimmy and Alice.csv";
+                    TestDataPath += "\\Test Data\\Report for Jimmy and Alice.csv";
 
                 TestReport.CompareReport(ReportPath, TestDataPath);
 

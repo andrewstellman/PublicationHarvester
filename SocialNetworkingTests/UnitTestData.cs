@@ -58,7 +58,7 @@ namespace Com.StellmanGreene.SocialNetworking.Unit_Tests
             DB.ExecuteNonQuery("create database " + DatabaseName + ";");
             DB.ExecuteNonQuery("use " + DatabaseName + ";");
             StreamReader reader = new StreamReader(AppDomain.CurrentDomain.BaseDirectory
-                + "\\Unit Tests\\Test Data\\" + DatabaseName + ".sql");
+                + "\\Test Data\\" + DatabaseName + ".sql");
             string Contents = reader.ReadToEnd();
             int Statement = 0;
             foreach (string SQL in Contents.Split(';'))
@@ -73,7 +73,7 @@ namespace Com.StellmanGreene.SocialNetworking.Unit_Tests
                 }
                 catch (Exception ex)
                 {
-                    System.Windows.Forms.MessageBox.Show("SQL statement #" + Statement.ToString() + " failed: " + ex.Message, "TestCommonPublicationsSetUp");
+                    Console.WriteLine("SQL statement #" + Statement.ToString() + " failed: " + ex.Message, "TestCommonPublicationsSetUp");
                     throw ex;
                 }
             }
