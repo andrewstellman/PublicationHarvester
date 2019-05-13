@@ -14,4 +14,4 @@ ExportRdfTests/bin/
 ExportRdfTests/obj/
 .vs/
 *.user
-PackageDistribution/Distribution/
+Distribution/
