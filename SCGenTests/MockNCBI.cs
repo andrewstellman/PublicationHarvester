@@ -48,7 +48,7 @@ namespace SCGen
                     break;
             }
             StreamReader reader = new StreamReader(AppDomain.CurrentDomain.BaseDirectory 
-                + "\\Unit Tests\\MockNCBI\\" + Filename);
+                + "\\Test Data\\MockNCBI\\" + Filename);
             String results = reader.ReadToEnd();
             reader.Close();
             return results;

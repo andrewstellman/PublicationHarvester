@@ -22,7 +22,7 @@ namespace SCGen.Unit_Tests
 
         /// <summary>
         /// Create a new database and populate it using the mock NCBI object from
-        /// Unit Tests\TestColleagues\PeopleFile.xls -- note that we've seeded this
+        /// Test Data\TestColleagues\PeopleFile.xls -- note that we've seeded this
         /// file with four people whose publications will be found, and one whose
         /// publication won't be found. The program should handle all of those cases
         /// gracefully.
@@ -31,7 +31,7 @@ namespace SCGen.Unit_Tests
         public void TestColleaguesSetUp()
         {
             // Create the AAMC roster object
-            roster = new Roster(AppDomain.CurrentDomain.BaseDirectory + "\\Unit Tests\\TestRoster\\testroster.csv");
+            roster = new Roster(AppDomain.CurrentDomain.BaseDirectory + "\\Test Data\\TestRoster\\testroster.csv");
 
 
             // Stuff for GetPublications()
@@ -57,7 +57,7 @@ namespace SCGen.Unit_Tests
 
             // Read the people file
             People PeopleFromFile = new People(
-                AppDomain.CurrentDomain.BaseDirectory + "\\Unit Tests\\TestColleagues",
+                AppDomain.CurrentDomain.BaseDirectory + "\\Test Data\\TestColleagues",
                 "PeopleFile.xls");
 
             // Drop all tables from the test database
@@ -82,7 +82,7 @@ namespace SCGen.Unit_Tests
             // Populate it using the Mock NCBI object
             ncbi = new MockNCBI("Medline");
             PubTypes = new PublicationTypes(
-                AppDomain.CurrentDomain.BaseDirectory + "\\Unit Tests\\TestColleagues",
+                AppDomain.CurrentDomain.BaseDirectory + "\\Test Data\\TestColleagues",
                 "PublicationTypes.csv"
                 );
 

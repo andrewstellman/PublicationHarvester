@@ -6,6 +6,8 @@ PublicationHarvester/bin/
 PublicationHarvester/obj/
 SCGen/bin/
 SCGen/obj/
+SCGenTests/bin/
+SCGenTests/obj/
 SocialNetworking/bin/
 SocialNetworking/obj/
 ExportRdf/bin/

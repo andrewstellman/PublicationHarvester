@@ -31,7 +31,7 @@ namespace SCGen.Unit_Tests
         public void TestStarColleaguesSetUp() {
             string[] Languages = { "eng" };
             DoSetUp(out DB, out harvester, out PubTypes, out ncbi, Languages);
-            roster = new Roster(AppDomain.CurrentDomain.BaseDirectory + "\\Unit Tests\\TestRoster\\testroster.csv");
+            roster = new Roster(AppDomain.CurrentDomain.BaseDirectory + "\\Test Data\\TestRoster\\testroster.csv");
         }
 
         /// <summary>
@@ -53,14 +53,14 @@ namespace SCGen.Unit_Tests
 
             // Write the publication types to the database
             PubTypes = new PublicationTypes(
-                AppDomain.CurrentDomain.BaseDirectory + "\\Unit Tests\\TestColleagues",
+                AppDomain.CurrentDomain.BaseDirectory + "\\Test Data\\TestColleagues",
                 "PublicationTypes.csv"
                 );
             PubTypes.WriteToDB(DB);
 
             // Create the other objects from the database
             harvester = new Harvester(DB);
-            Roster roster = new Roster(AppDomain.CurrentDomain.BaseDirectory + "\\Unit Tests\\TestRoster\\testroster.csv");
+            Roster roster = new Roster(AppDomain.CurrentDomain.BaseDirectory + "\\Test Data\\TestRoster\\testroster.csv");
             ncbi = new MockNCBI("Medline");
 
             // Find the colleagues and publications
@@ -108,7 +108,7 @@ namespace SCGen.Unit_Tests
 
             // Generate the report 
             string JournalWeightsFilename = AppDomain.CurrentDomain.BaseDirectory
-                + "\\Unit Tests\\TestStarColleaguesReport\\"
+                + "\\Test Data\\TestStarColleaguesReport\\"
                 + "pubmed_jifs.xls";
 
             ArrayList SetnbsToSkip = new ArrayList();
@@ -119,7 +119,7 @@ namespace SCGen.Unit_Tests
             // Read the expected output from the test file
             StreamReader expected = new StreamReader(
                 AppDomain.CurrentDomain.BaseDirectory
-                + "\\Unit Tests\\TestStarColleaguesReport\\"
+                + "\\Test Data\\TestStarColleaguesReport\\"
                 + "TobianBunnReport.csv"
                 );
 
@@ -158,7 +158,7 @@ namespace SCGen.Unit_Tests
 
             // Generate the report 
             string JournalWeightsFilename = AppDomain.CurrentDomain.BaseDirectory
-                + "\\Unit Tests\\TestStarColleaguesReport\\"
+                + "\\Test Data\\TestStarColleaguesReport\\"
                 + "pubmed_jifs.xls";
 
             // Add Bunn's setnb to SetnbsToSkip
@@ -172,7 +172,7 @@ namespace SCGen.Unit_Tests
             // Read the expected output from the test file
             StreamReader expected = new StreamReader(
                 AppDomain.CurrentDomain.BaseDirectory
-                + "\\Unit Tests\\TestStarColleaguesReport\\"
+                + "\\Test Data\\TestStarColleaguesReport\\"
                 + "TobianBunnReport.csv"
                 );
 

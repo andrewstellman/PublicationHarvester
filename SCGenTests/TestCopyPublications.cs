@@ -31,7 +31,7 @@ namespace SCGen.Unit_Tests
 
             Database DB = new Database("Colleague Generator Unit Test");
             StreamReader reader = new StreamReader(AppDomain.CurrentDomain.BaseDirectory
-                + "\\Unit Tests\\TestCopyPublications\\CGUnitTestCopyPublications.sql");
+                + "\\Test Data\\TestCopyPublications\\CGUnitTestCopyPublications.sql");
             string Contents = reader.ReadToEnd();
             foreach (string SQL in Contents.Split(';'))
             {

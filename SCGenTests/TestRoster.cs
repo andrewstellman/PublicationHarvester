@@ -17,7 +17,7 @@ namespace SCGen.Unit_Tests
         [OneTimeSetUp]
         public void TestRosterSetUp()
         {
-            roster = new Roster(AppDomain.CurrentDomain.BaseDirectory + "\\Unit Tests\\TestRoster\\testroster.csv");
+            roster = new Roster(AppDomain.CurrentDomain.BaseDirectory + "\\Test Data\\TestRoster\\testroster.csv");
         }
 
         /// <summary>

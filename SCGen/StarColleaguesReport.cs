@@ -11,7 +11,7 @@ namespace SCGen
     /// <summary>
     /// Class to generate the Star Colleagues Report
     /// </summary>
-    class StarColleaguesReport
+    public class StarColleaguesReport
     {
 
         public static string[] ReportColumns = { 
