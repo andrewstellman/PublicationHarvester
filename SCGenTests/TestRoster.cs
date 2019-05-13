@@ -108,11 +108,13 @@ namespace SCGen.Unit_Tests
                         Assert.AreEqual(person.Middle, "");
                         Assert.AreEqual(person.Last, "DOE");
                         Assert.AreEqual(person.MedlineSearch, "this is meant to be a duplicate of Williams");
-                        Assert.AreEqual(person.Names.Length, 4);
+                        Assert.AreEqual(person.Names.Length, 6);
                         Assert.AreEqual(person.Names[0], "williams k");
                         Assert.AreEqual(person.Names[1], "doe j");
                         Assert.AreEqual(person.Names[2], "another name");
-                        Assert.AreEqual(person.Names[3], "and another"); 
+                        Assert.AreEqual(person.Names[3], "and another");
+                        Assert.AreEqual(person.Names[4], "fifth name");
+                        Assert.AreEqual(person.Names[5], "sixth name");
 
                         // Also check that John Doe's other name matches
                         people = roster.FindPerson("doe j");
@@ -122,11 +124,13 @@ namespace SCGen.Unit_Tests
                         Assert.AreEqual(secondPerson.Middle, "");
                         Assert.AreEqual(secondPerson.Last, "DOE");
                         Assert.AreEqual(secondPerson.MedlineSearch, "this is meant to be a duplicate of Williams");
-                        Assert.AreEqual(secondPerson.Names.Length, 4);
+                        Assert.AreEqual(secondPerson.Names.Length, 6);
                         Assert.AreEqual(secondPerson.Names[0], "williams k");
                         Assert.AreEqual(secondPerson.Names[1], "doe j");
                         Assert.AreEqual(secondPerson.Names[2], "another name");
                         Assert.AreEqual(secondPerson.Names[3], "and another");
+                        Assert.AreEqual(secondPerson.Names[4], "fifth name");
+                        Assert.AreEqual(secondPerson.Names[5], "sixth name");
                         break;
 
                     case "A0100733":

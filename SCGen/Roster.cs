@@ -39,26 +39,8 @@ namespace SCGen
             string Folder = Path.GetDirectoryName(RosterFile);
             string Filename = Path.GetFileName(RosterFile);
 
-//            int Rows = 0;
             if (Filename.ToLower().EndsWith(".csv"))
             {
-                
-                // Get the publication types from the input file
-
-//                We're replacing ODBC CSV code with our own CSVReader
-//
-//                string ConnectionString =
-//                    "Driver={Microsoft Text Driver (*.txt; *.csv)};Dbq="
-//                    + Folder + ";";
-//                OdbcConnection Connection = new OdbcConnection(ConnectionString);
-//                OdbcDataAdapter DataAdapter = new OdbcDataAdapter
-//                    (@"SELECT setnb, fname, mname, lname, suffix, match_name1, 
-//                          match_name2, search_name1, search_name2, search_name3, 
-//                          search_name4, query FROM [" + Filename + "]", Connection);
-//                RosterData = new DataTable();
-//                RosterData.TableName = Filename;
-//                Rows = DataAdapter.Fill(RosterData);
-
                 RosterData = CSVReader.ReadCSVFile(RosterFile, true);
                 RosterData.TableName = Filename;
                 if (File.Exists(Folder + "\\" + Filename + ".xml"))
@@ -129,7 +111,7 @@ namespace SCGen
                     // Build the array of searchnames
                     string[] Names = new string[1];
                     Names[0] = Row["search_name1"].ToString();
-                    for (int i = 2; i <= 4; i++)
+                    for (int i = 2; i <= 6; i++)
                     {
                         string col = "search_name" + i.ToString();
                         if ((!Row[col].Equals(DBNull.Value)) && (Row[col].ToString() != ""))
