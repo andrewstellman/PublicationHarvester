@@ -12,7 +12,6 @@ ExportRdf/bin/
 ExportRdf/obj/
 ExportRdfTests/bin/
 ExportRdfTests/obj/
-packages/
 .vs/
 *.user
 PackageDistribution/Distribution/
