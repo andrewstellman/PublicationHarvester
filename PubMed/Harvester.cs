@@ -341,7 +341,7 @@ namespace Com.StellmanGreene.PubMed
             catch (Exception ex)
             {
                 string Message = "Error reading publications for " 
-                    + person.Last + "(" + person.Setnb + "): " + ex.Message;
+                    + person.Last + " (" + person.Setnb + "): " + ex.Message;
                 person.WriteErrorToDB(DB, Message);
                 MessageCallback(Message, false);
                 return 0;

@@ -155,7 +155,7 @@ namespace SCGen
                     catch (Exception ex)
                     {
                         string Message = "Error reading publications for "
-                            + Colleague.Last + "(" + Colleague.Setnb + ex.Message;
+                            + Colleague.Last + " (" + Colleague.Setnb + ex.Message;
                         ColleagueFinder.WriteErrorToDB(Message, DB, Colleague);
                         throw new Exception(Message);
                     }
