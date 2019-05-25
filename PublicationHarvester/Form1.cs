@@ -601,6 +601,7 @@ namespace PublicationHarvester
             {
                 AddLogEntry("Performance is limited to under 3 requests per second.");
                 AddLogEntry("Consider pasting an API key into " + NCBI.ApiKeyPath);
+                AddLogEntry("Or set the NCBI_API_KEY_FILE environemnt variable to the API key file path");
                 AddLogEntry("For more information, see https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/");
             }
             People people = new People(DB);

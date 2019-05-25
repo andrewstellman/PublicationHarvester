@@ -83,8 +83,13 @@ namespace Com.StellmanGreene.PubMed
         /// </remarks>
         private static void GetApiKey()
         {
-            string directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            ApiKeyPath = directory + "\\api_key.txt";
+            if (Environment.GetEnvironmentVariables().Contains("NCBI_API_KEY_FILE"))
+            {
+                ApiKeyPath = Environment.GetEnvironmentVariables()["NCBI_API_KEY_FILE"].ToString();
+            } else {
+                string directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                ApiKeyPath = directory + "\\api_key.txt";
+            }
             if (File.Exists(ApiKeyPath))
             {
                 string apiKey = System.Text.RegularExpressions.Regex.Replace(File.ReadAllText(ApiKeyPath), @"\s+", string.Empty);

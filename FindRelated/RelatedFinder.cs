@@ -91,6 +91,7 @@ namespace Com.StellmanGreene.FindRelated
             {
                 Trace.WriteLine("Performance is limited to under 3 requests per second.");
                 Trace.WriteLine("Consider pasting an API key into " + NCBI.ApiKeyPath);
+                Trace.WriteLine("Or set the NCBI_API_KEY_FILE environemnt variable to the API key file path");
                 Trace.WriteLine("For more information, see https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/");
             }
 
