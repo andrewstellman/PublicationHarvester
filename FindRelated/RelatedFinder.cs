@@ -340,7 +340,7 @@ namespace Com.StellmanGreene.FindRelated
                 Rank int NOT NULL,
                 Score int NOT NULL,
                 PRIMARY KEY (PMID, RelatedPMID)
-            ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+            ) CHARSET=utf8;
             ");
 
             // Create the queue table
@@ -350,7 +350,7 @@ namespace Com.StellmanGreene.FindRelated
                 Processed bit(1) default 0 NOT NULL,
                 Error bit(1) default 0 NOT NULL,
                 PRIMARY KEY (PMID)
-            ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+            ) CHARSET=utf8;
             ");
         }
 

@@ -299,7 +299,7 @@ namespace SCGen
               Setnb char(8) NOT NULL,
               PRIMARY KEY  (StarSetnb, Setnb),
               KEY Setnb (Setnb)
-            ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+            ) CHARSET=utf8;
             ");
 
             DB.ExecuteNonQuery("DROP TABLE IF EXISTS Colleagues");
@@ -319,7 +319,7 @@ namespace SCGen
               Error bit(1) default NULL,
               ErrorMessage varchar(512) default NULL,
               PRIMARY KEY  (Setnb)
-            ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+            ) CHARSET=utf8;
             ");
 
             DB.ExecuteNonQuery("DROP TABLE IF EXISTS ColleaguePublications");
@@ -331,7 +331,7 @@ namespace SCGen
               PRIMARY KEY  (Setnb,PMID),
               KEY index_setnb (Setnb),
               KEY index_pmid (PMID)
-            ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+            ) CHARSET=utf8;
             ");
 
             DB.ExecuteNonQuery("DROP TABLE IF EXISTS ColleagueMatches");
@@ -344,7 +344,7 @@ namespace SCGen
               KEY index_starsetnb (StarSetnb),
               KEY index_pmid (PMID),
               KEY index_matchname (MatchName)
-            ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+            ) CHARSET=utf8;
             ");
         }
 
