@@ -15,7 +15,7 @@ namespace Com.StellmanGreene.PubMed.Unit_Tests
     public class TestEnvironment
     {
         /// <summary>
-        /// There must be an ODBC DSN called "Publication Harvester Unit Test" that points to a MySQL 5.7 server 
+        /// There must be an ODBC DSN called "Publication Harvester Unit Test" that points to a MySQL 8.0 server 
         /// </summary>
         [Test]
         public void CheckDSN()
@@ -53,19 +53,19 @@ namespace Com.StellmanGreene.PubMed.Unit_Tests
             }
             rootKey.Close();
 
-            Assert.IsTrue(DSNs.Contains("Colleague Generator Unit Test"), "The unit tests require an ODBC DSN called 'Colleague Generator Unit Test' that points to a MySQL 5.7 database");
+            Assert.IsTrue(DSNs.Contains("Colleague Generator Unit Test"), "The unit tests require an ODBC DSN called 'Colleague Generator Unit Test' that points to a MySQL 8.0 database");
         }
 
 
         /// <summary>
-        /// Verify that the "Publication Harvester Unit Test" DSN points to a MySQL 5.7 database
+        /// Verify that the "Publication Harvester Unit Test" DSN points to a MySQL 8.0 database
         /// </summary>
         [Test]
         public void CheckDatabaseVersion()
         {
             Database DB = new Database("Colleague Generator Unit Test");
             DataTable Results = DB.ExecuteQuery("SHOW VARIABLES WHERE Variable_name = 'version'");
-            Assert.IsTrue(Results.Rows[0]["value"].ToString().StartsWith("5.7"), "The unit tests require an ODBC DSN called 'Colleague Generator Unit Test' that points to a MySQL 5.7 database");
+            Assert.IsTrue(Results.Rows[0]["value"].ToString().StartsWith("8.0"), "The unit tests require an ODBC DSN called 'Colleague Generator Unit Test' that points to a MySQL 8.0 database");
         }
     }
 }
