@@ -65,7 +65,7 @@ namespace Com.StellmanGreene.PubMed
               Name5 varchar(36) default NULL,
               Name6 varchar(36) default NULL,
               MedlineSearch varchar(10000) NOT NULL,
-              Harvested bit(1) NOT NULL default '\0',
+              Harvested bit(1) NOT NULL default FALSE,
               Error bit(1) default NULL,
               ErrorMessage varchar(512) default NULL,
               PRIMARY KEY  (Setnb),
