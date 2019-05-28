@@ -81,12 +81,18 @@ namespace Com.StellmanGreene.PubMed
         /// <remarks>
         /// See https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/
         /// </remarks>
-        private static void GetApiKey()
+        public static void GetApiKey(string overrideApiKeyPath = "")
         {
-            if (Environment.GetEnvironmentVariables().Contains("NCBI_API_KEY_FILE"))
+            if (!string.IsNullOrWhiteSpace(overrideApiKeyPath) && File.Exists(overrideApiKeyPath.Trim()))
+            {
+                ApiKeyPath = overrideApiKeyPath.Trim();
+            }
+            else if (Environment.GetEnvironmentVariables().Contains("NCBI_API_KEY_FILE"))
             {
                 ApiKeyPath = Environment.GetEnvironmentVariables()["NCBI_API_KEY_FILE"].ToString();
-            } else {
+            }
+            else
+            {
                 string directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
                 ApiKeyPath = directory + "\\api_key.txt";
             }

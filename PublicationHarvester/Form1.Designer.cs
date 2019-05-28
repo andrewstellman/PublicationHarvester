@@ -72,6 +72,9 @@ namespace PublicationHarvester
             this.LanguageList = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
             this.CheckForInterruptedData = new System.Windows.Forms.CheckBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.ApiKeyFile = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
             this.statusStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -98,7 +101,7 @@ namespace PublicationHarvester
             // DSN
             // 
             this.DSN.FormattingEnabled = true;
-            this.DSN.Location = new System.Drawing.Point(15, 26);
+            this.DSN.Location = new System.Drawing.Point(12, 26);
             this.DSN.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.DSN.Name = "DSN";
             this.DSN.Size = new System.Drawing.Size(547, 24);
@@ -108,7 +111,7 @@ namespace PublicationHarvester
             // 
             // HarvestPublications
             // 
-            this.HarvestPublications.Location = new System.Drawing.Point(15, 167);
+            this.HarvestPublications.Location = new System.Drawing.Point(14, 215);
             this.HarvestPublications.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.HarvestPublications.Name = "HarvestPublications";
             this.HarvestPublications.Size = new System.Drawing.Size(224, 28);
@@ -156,7 +159,7 @@ namespace PublicationHarvester
             this.PublicationTypeFileDialog.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PublicationTypeFileDialog.Name = "PublicationTypeFileDialog";
             this.PublicationTypeFileDialog.Size = new System.Drawing.Size(21, 23);
-            this.PublicationTypeFileDialog.TabIndex = 190;
+            this.PublicationTypeFileDialog.TabIndex = 178;
             this.PublicationTypeFileDialog.Text = "...";
             this.PublicationTypeFileDialog.Click += new System.EventHandler(this.PublicationTypeFileDialog_Click);
             // 
@@ -166,7 +169,7 @@ namespace PublicationHarvester
             this.PublicationTypeFile.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PublicationTypeFile.Name = "PublicationTypeFile";
             this.PublicationTypeFile.Size = new System.Drawing.Size(657, 22);
-            this.PublicationTypeFile.TabIndex = 180;
+            this.PublicationTypeFile.TabIndex = 174;
             this.PublicationTypeFile.TextChanged += new System.EventHandler(this.PublicationTypeFile_TextChanged);
             // 
             // label3
@@ -182,7 +185,7 @@ namespace PublicationHarvester
             this.Log.FormattingEnabled = true;
             this.Log.HorizontalScrollbar = true;
             this.Log.ItemHeight = 16;
-            this.Log.Location = new System.Drawing.Point(16, 489);
+            this.Log.Location = new System.Drawing.Point(15, 537);
             this.Log.Margin = new System.Windows.Forms.Padding(4);
             this.Log.Name = "Log";
             this.Log.Size = new System.Drawing.Size(684, 164);
@@ -190,7 +193,7 @@ namespace PublicationHarvester
             // 
             // label4
             // 
-            this.label4.Location = new System.Drawing.Point(16, 470);
+            this.label4.Location = new System.Drawing.Point(15, 518);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(216, 23);
             this.label4.TabIndex = 90;
@@ -199,7 +202,7 @@ namespace PublicationHarvester
             // OpenInNotepad
             // 
             this.OpenInNotepad.Enabled = false;
-            this.OpenInNotepad.Location = new System.Drawing.Point(560, 446);
+            this.OpenInNotepad.Location = new System.Drawing.Point(559, 494);
             this.OpenInNotepad.Margin = new System.Windows.Forms.Padding(4);
             this.OpenInNotepad.Name = "OpenInNotepad";
             this.OpenInNotepad.Size = new System.Drawing.Size(140, 25);
@@ -217,16 +220,17 @@ namespace PublicationHarvester
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(495, 21);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(493, 21);
             this.toolStripStatusLabel1.Spring = true;
             // 
             // statusStrip1
             // 
+            this.statusStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel2,
             this.toolStripProgressBar1,
             this.toolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 658);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 754);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 19, 0);
             this.statusStrip1.Size = new System.Drawing.Size(705, 26);
@@ -237,12 +241,12 @@ namespace PublicationHarvester
             // toolStripStatusLabel2
             // 
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(55, 21);
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(57, 21);
             this.toolStripStatusLabel2.Text = "Version";
             // 
             // LogFilename
             // 
-            this.LogFilename.Location = new System.Drawing.Point(16, 448);
+            this.LogFilename.Location = new System.Drawing.Point(15, 496);
             this.LogFilename.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.LogFilename.Name = "LogFilename";
             this.LogFilename.ReadOnly = true;
@@ -252,7 +256,7 @@ namespace PublicationHarvester
             // 
             // label5
             // 
-            this.label5.Location = new System.Drawing.Point(16, 430);
+            this.label5.Location = new System.Drawing.Point(15, 478);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(216, 23);
             this.label5.TabIndex = 60;
@@ -276,7 +280,7 @@ namespace PublicationHarvester
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.TablesCreated);
             this.groupBox1.Controls.Add(this.label6);
-            this.groupBox1.Location = new System.Drawing.Point(15, 199);
+            this.groupBox1.Location = new System.Drawing.Point(14, 247);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -449,7 +453,7 @@ namespace PublicationHarvester
             // 
             // HarvestingReports
             // 
-            this.HarvestingReports.Location = new System.Drawing.Point(244, 167);
+            this.HarvestingReports.Location = new System.Drawing.Point(243, 215);
             this.HarvestingReports.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.HarvestingReports.Name = "HarvestingReports";
             this.HarvestingReports.Size = new System.Drawing.Size(224, 28);
@@ -460,7 +464,7 @@ namespace PublicationHarvester
             // 
             // Interrupt
             // 
-            this.Interrupt.Location = new System.Drawing.Point(472, 167);
+            this.Interrupt.Location = new System.Drawing.Point(471, 215);
             this.Interrupt.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Interrupt.Name = "Interrupt";
             this.Interrupt.Size = new System.Drawing.Size(224, 28);
@@ -482,7 +486,7 @@ namespace PublicationHarvester
             // 
             // LanguageList
             // 
-            this.LanguageList.Location = new System.Drawing.Point(15, 389);
+            this.LanguageList.Location = new System.Drawing.Point(14, 437);
             this.LanguageList.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.LanguageList.Name = "LanguageList";
             this.LanguageList.Size = new System.Drawing.Size(683, 22);
@@ -491,19 +495,19 @@ namespace PublicationHarvester
             // 
             // label12
             // 
-            this.label12.Location = new System.Drawing.Point(12, 370);
+            this.label12.Location = new System.Drawing.Point(11, 418);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(679, 23);
             this.label12.TabIndex = 192;
             this.label12.Text = "Languages (list of Medline language abbreviations separated by commas, blank for " +
-                "no restriction)";
+    "no restriction)";
             // 
             // CheckForInterruptedData
             // 
             this.CheckForInterruptedData.AutoSize = true;
             this.CheckForInterruptedData.Checked = true;
             this.CheckForInterruptedData.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.CheckForInterruptedData.Location = new System.Drawing.Point(483, 415);
+            this.CheckForInterruptedData.Location = new System.Drawing.Point(482, 463);
             this.CheckForInterruptedData.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.CheckForInterruptedData.Name = "CheckForInterruptedData";
             this.CheckForInterruptedData.Size = new System.Drawing.Size(195, 21);
@@ -511,11 +515,42 @@ namespace PublicationHarvester
             this.CheckForInterruptedData.Text = "Check for interrupted data";
             this.CheckForInterruptedData.UseVisualStyleBackColor = true;
             // 
+            // button2
+            // 
+            this.button2.AutoEllipsis = true;
+            this.button2.Location = new System.Drawing.Point(675, 182);
+            this.button2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(21, 23);
+            this.button2.TabIndex = 188;
+            this.button2.Text = "...";
+            this.button2.Click += new System.EventHandler(this.ApiKeyFileDialog_Click);
+            // 
+            // ApiKeyFile
+            // 
+            this.ApiKeyFile.Location = new System.Drawing.Point(12, 182);
+            this.ApiKeyFile.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ApiKeyFile.Name = "ApiKeyFile";
+            this.ApiKeyFile.Size = new System.Drawing.Size(657, 22);
+            this.ApiKeyFile.TabIndex = 184;
+            this.ApiKeyFile.TextChanged += new System.EventHandler(this.ApiKeyFile_TextChanged);
+            // 
+            // label13
+            // 
+            this.label13.Location = new System.Drawing.Point(12, 164);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(216, 23);
+            this.label13.TabIndex = 180;
+            this.label13.Text = "API &key file";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(705, 684);
+            this.ClientSize = new System.Drawing.Size(705, 780);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.ApiKeyFile);
+            this.Controls.Add(this.label13);
             this.Controls.Add(this.CheckForInterruptedData);
             this.Controls.Add(this.LanguageList);
             this.Controls.Add(this.label12);
@@ -544,8 +579,8 @@ namespace PublicationHarvester
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.Text = "Publication Harvester";
-            this.Load += new System.EventHandler(this.Form1_Load);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -601,6 +636,9 @@ namespace PublicationHarvester
         private System.Windows.Forms.TextBox LanguageList;
         internal System.Windows.Forms.Label label12;
         private System.Windows.Forms.CheckBox CheckForInterruptedData;
+        internal System.Windows.Forms.Button button2;
+        private System.Windows.Forms.TextBox ApiKeyFile;
+        internal System.Windows.Forms.Label label13;
     }
 }
 

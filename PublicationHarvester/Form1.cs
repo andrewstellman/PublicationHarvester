@@ -53,12 +53,14 @@ namespace PublicationHarvester
         /// </summary>
         private void HarvestPublications_Click(object sender, EventArgs e)
         {
-            if (DSN.Text == "")
+            if (string.IsNullOrWhiteSpace(DSN.Text))
             {
                 MessageBox.Show("Please specify a valid ODBC data source that points to a MySQL 5.5 server", "Unable to Initialize Database", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-                
+
+            if (!SetApiKeyFromFormField())
+                return;
 
             // If the harvester was previously interrupted or there were errors,
             // give an extra warning to the user.
@@ -69,7 +71,7 @@ namespace PublicationHarvester
             int NumErrors;
             try
             {
-                if ( (UpdateDB == null) || (UpdateDB.DSN != DSN.Text) )
+                if ((UpdateDB == null) || (UpdateDB.DSN != DSN.Text))
                     UpdateDB = new Database(DSN.Text);
                 UpdateDB.GetStatus(out TablesCreated, out NumPeople, out NumHarvestedPeople, out NumPublications, out NumErrors);
             }
@@ -113,6 +115,28 @@ namespace PublicationHarvester
             AddLogEntry("Done.");
         }
 
+        /// <summary>
+        /// Sets the NCBI API key from the field on the form
+        /// </summary>
+        /// <returns>
+        /// True if the API key file in the field is found or empty, false if the API it's invalid
+        /// </returns>
+        private bool SetApiKeyFromFormField()
+        {
+            if (!string.IsNullOrWhiteSpace(ApiKeyFile.Text.Trim()))
+            {
+                if (File.Exists(ApiKeyFile.Text.Trim()))
+                {
+                    NCBI.GetApiKey(ApiKeyFile.Text.Trim());
+                }
+                else
+                {
+                    MessageBox.Show($"API key file not found: {ApiKeyFile.Text.Trim()}");
+                    return false;
+                }
+            }
+            return true;
+        }
 
 
         public bool InterruptClicked;
@@ -139,7 +163,7 @@ namespace PublicationHarvester
             LogFilename.Text = (Environment.GetEnvironmentVariable("TMP")
                 + ("PublicationHarvester log " + DateTime.Now.Month + "-" + DateTime.Now.Day + "-" + DateTime.Now.Year
                 + " " + DateTime.Now.Hour + DateTime.Now.Minute + ".log"));
-            
+
 
             // Set the initial directory for open file dialog boxes
             openFileDialog1.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
@@ -167,6 +191,13 @@ namespace PublicationHarvester
             if (!String.IsNullOrEmpty(publicationTypeFile))
             {
                 PublicationTypeFile.Text = publicationTypeFile;
+            }
+
+            // Set the API key textbox to its last value
+            string apiKeyFile = PubMed.Settings.GetValueString("ApiKeyFile", "");
+            if (!String.IsNullOrEmpty(apiKeyFile))
+            {
+                ApiKeyFile.Text = apiKeyFile;
             }
 
             // Enable the GUI objects
@@ -203,7 +234,15 @@ namespace PublicationHarvester
             PubMed.Settings.SetValue("PublicationTypeFile", PublicationTypeFile.Text);
         }
 
-        
+        /// <summary>
+        /// When the API key file is changed, write it to the resgistry
+        /// </summary>
+        private void ApiKeyFile_TextChanged(object sender, EventArgs e)
+        {
+            PubMed.Settings.SetValue("ApiKeyFile", ApiKeyFile.Text);
+        }
+
+
         /// <summary>
         /// Retrieve the ODBC DSNs from the registry and populate the DSN dropdown listbox
         /// </summary>
@@ -223,7 +262,7 @@ namespace PublicationHarvester
                 dsnList = subKey.GetValueNames();
                 DSN.Items.Add("System DSNs");
                 DSN.Items.Add("================");
-                
+
                 foreach (string dsnName in dsnList)
                 {
                     DSN.Items.Add(dsnName);
@@ -294,7 +333,7 @@ namespace PublicationHarvester
                 return false;
             }
 
-            DialogResult result = MessageBox.Show(Message, "Are you sure?", MessageBoxButtons.YesNo , MessageBoxIcon.Question);
+            DialogResult result = MessageBox.Show(Message, "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result == DialogResult.No)
                 return false;
 
@@ -312,7 +351,7 @@ namespace PublicationHarvester
             // Reset the toolstrip
             toolStripProgressBar1.Value = 0;
             toolStripStatusLabel1.Text = "";
-            
+
             // Enable or disable the GUI widgets
             DSN.Enabled = Enabled;
             ODBCPanel.Enabled = Enabled;
@@ -320,13 +359,15 @@ namespace PublicationHarvester
             PeopleFileDialog.Enabled = Enabled;
             PublicationTypeFile.Enabled = Enabled;
             PublicationTypeFileDialog.Enabled = Enabled;
+            ApiKeyFile.Enabled = Enabled;
+            ApiKeyFile.Enabled = Enabled;
             HarvestPublications.Enabled = Enabled;
             HarvestingReports.Enabled = Enabled;
 
             // Enable add/remove buttons only if the databases are created
             AddUpdatePeople.Enabled = Enabled && (TablesCreated.Text.ToLower() == "true");
             RemovePeople.Enabled = Enabled && (TablesCreated.Text.ToLower() == "true");
-                
+
             // Enable the "Interrupt" button only if the system is NOT processing
             Interrupt.Enabled = !Enabled;
 
@@ -382,7 +423,7 @@ namespace PublicationHarvester
 
             try
             {
-                if ( (UpdateDB == null) || (UpdateDB.DSN != DSN.Text) )
+                if ((UpdateDB == null) || (UpdateDB.DSN != DSN.Text))
                     UpdateDB = new Database(DSN.Text);
                 bool TablesCreated;
                 int NumPeople;
@@ -452,7 +493,7 @@ namespace PublicationHarvester
             }
 
 
-            UpdateDatabaseStatus(); 
+            UpdateDatabaseStatus();
             if (ContinueFromInterruption)
                 AddLogEntry("Continuing interrupted harvest");
             else
@@ -477,7 +518,7 @@ namespace PublicationHarvester
                 {
                     Languages = LanguageList.Text.Split(',');
                     harvester.Languages = Languages;
-                    foreach (string Language in Languages) 
+                    foreach (string Language in Languages)
                         AddLogEntry("Adding language restriction: " + Language);
                 }
                 else
@@ -562,7 +603,7 @@ namespace PublicationHarvester
 
 
             // Make an anonymous callback function that keeps track of the callback data
-            Harvester.GetPublicationsStatus StatusCallback = delegate(int number, int total, int averageTime)
+            Harvester.GetPublicationsStatus StatusCallback = delegate (int number, int total, int averageTime)
             {
                 // No need to update the progress bar for this -- it leads to a messy-looking UI because it's also updated for the person total
                 // toolStripProgressBar1.Minimum = 0;
@@ -574,7 +615,7 @@ namespace PublicationHarvester
             };
 
             // Make an anonymous callback function that logs any messages passed back
-            Harvester.GetPublicationsMessage MessageCallback = delegate(string Message, bool StatusBarOnly)
+            Harvester.GetPublicationsMessage MessageCallback = delegate (string Message, bool StatusBarOnly)
             {
                 if (StatusBarOnly)
                 {
@@ -582,12 +623,13 @@ namespace PublicationHarvester
                     //this.Refresh();
                     //statusStrip1.Refresh();
                     Application.DoEvents();
-                } else 
+                }
+                else
                     AddLogEntry(Message);
             };
 
             // Make an anonymous callback function to return the value of Interrupt for CheckForInterrupt
-            Harvester.CheckForInterrupt InterruptCallback = delegate()
+            Harvester.CheckForInterrupt InterruptCallback = delegate ()
             {
                 return InterruptClicked;
             };
@@ -597,7 +639,8 @@ namespace PublicationHarvester
             if (NCBI.ApiKeyExists)
             {
                 AddLogEntry("Using API key: " + NCBI.ApiKeyPath);
-            } else
+            }
+            else
             {
                 AddLogEntry("Performance is limited to under 3 requests per second.");
                 AddLogEntry("Consider pasting an API key into " + NCBI.ApiKeyPath);
@@ -684,9 +727,6 @@ namespace PublicationHarvester
             MessageBox.Show(Entry, ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-
-
-
         /// <summary>
         /// Display the Open File dialog for the People file
         /// </summary>
@@ -702,9 +742,6 @@ namespace PublicationHarvester
                 return;
             PeopleFile.Text = openFileDialog1.FileName;
         }
-
-
-
 
         /// <summary>
         /// Display the Open File dialog for the Publication type file
@@ -722,9 +759,21 @@ namespace PublicationHarvester
             PublicationTypeFile.Text = openFileDialog1.FileName;
         }
 
-
-
-
+        /// <summary>
+        /// Display the Open File dialog for the API key file
+        /// </summary>
+        private void ApiKeyFileDialog_Click(object sender, EventArgs e)
+        {
+            openFileDialog1.FileName = ApiKeyFile.Text;
+            openFileDialog1.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
+            openFileDialog1.Title = "Select API key file";
+            openFileDialog1.CheckFileExists = true;
+            openFileDialog1.CheckPathExists = true;
+            DialogResult result = openFileDialog1.ShowDialog();
+            if (result == DialogResult.Cancel)
+                return;
+            ApiKeyFile.Text = openFileDialog1.FileName;
+        }
 
         /// <summary>
         /// Open the log in Notepad
@@ -746,13 +795,16 @@ namespace PublicationHarvester
             if (!ReadyForHarvest("Continue previously interrupted harvest?"))
                 return;
 
+            if (!SetApiKeyFromFormField())
+                return;
+
             this.Cursor = Cursors.WaitCursor;
             SetGUIEnabled(false);
             Processing = true;
             InterruptClicked = false;
-            
+
             Harvest(PeopleFile.Text, PublicationTypeFile.Text, true);
-            
+
             Processing = false;
             SetGUIEnabled(true);
             this.Cursor = Cursors.Default;
@@ -809,7 +861,7 @@ namespace PublicationHarvester
                 return;
             }
 
-            
+
             bool TablesCreated;
             int NumPeople;
             int NumHarvestedPeople;
