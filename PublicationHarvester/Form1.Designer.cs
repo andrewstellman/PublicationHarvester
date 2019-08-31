@@ -72,7 +72,7 @@ namespace PublicationHarvester
             this.LanguageList = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
             this.CheckForInterruptedData = new System.Windows.Forms.CheckBox();
-            this.button2 = new System.Windows.Forms.Button();
+            this.ApiKeyFileButton = new System.Windows.Forms.Button();
             this.ApiKeyFile = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
             this.statusStrip1.SuspendLayout();
@@ -82,39 +82,39 @@ namespace PublicationHarvester
             // ODBCPanel
             // 
             this.ODBCPanel.AutoEllipsis = true;
-            this.ODBCPanel.Location = new System.Drawing.Point(568, 28);
+            this.ODBCPanel.Location = new System.Drawing.Point(639, 35);
             this.ODBCPanel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.ODBCPanel.Name = "ODBCPanel";
-            this.ODBCPanel.Size = new System.Drawing.Size(21, 23);
+            this.ODBCPanel.Size = new System.Drawing.Size(24, 29);
             this.ODBCPanel.TabIndex = 130;
             this.ODBCPanel.Text = "...";
             this.ODBCPanel.Click += new System.EventHandler(this.ODBCPanel_Click);
             // 
             // Label2
             // 
-            this.Label2.Location = new System.Drawing.Point(12, 10);
+            this.Label2.Location = new System.Drawing.Point(14, 12);
             this.Label2.Name = "Label2";
-            this.Label2.Size = new System.Drawing.Size(216, 23);
+            this.Label2.Size = new System.Drawing.Size(243, 29);
             this.Label2.TabIndex = 110;
             this.Label2.Text = "&ODBC Data Source Name";
             // 
             // DSN
             // 
             this.DSN.FormattingEnabled = true;
-            this.DSN.Location = new System.Drawing.Point(12, 26);
+            this.DSN.Location = new System.Drawing.Point(14, 32);
             this.DSN.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.DSN.Name = "DSN";
-            this.DSN.Size = new System.Drawing.Size(547, 24);
+            this.DSN.Size = new System.Drawing.Size(615, 28);
             this.DSN.TabIndex = 120;
             this.DSN.SelectedIndexChanged += new System.EventHandler(this.DSN_SelectedIndexChanged);
             this.DSN.Click += new System.EventHandler(this.DSN_Click);
             // 
             // HarvestPublications
             // 
-            this.HarvestPublications.Location = new System.Drawing.Point(14, 215);
+            this.HarvestPublications.Location = new System.Drawing.Point(16, 269);
             this.HarvestPublications.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.HarvestPublications.Name = "HarvestPublications";
-            this.HarvestPublications.Size = new System.Drawing.Size(224, 28);
+            this.HarvestPublications.Size = new System.Drawing.Size(252, 35);
             this.HarvestPublications.TabIndex = 10;
             this.HarvestPublications.Text = "&Harvest Publications";
             this.HarvestPublications.UseVisualStyleBackColor = true;
@@ -126,28 +126,28 @@ namespace PublicationHarvester
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(12, 62);
+            this.label1.Location = new System.Drawing.Point(14, 78);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(216, 23);
+            this.label1.Size = new System.Drawing.Size(243, 29);
             this.label1.TabIndex = 140;
             this.label1.Text = "&People file";
             // 
             // PeopleFile
             // 
-            this.PeopleFile.Location = new System.Drawing.Point(12, 79);
+            this.PeopleFile.Location = new System.Drawing.Point(14, 99);
             this.PeopleFile.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PeopleFile.Name = "PeopleFile";
-            this.PeopleFile.Size = new System.Drawing.Size(657, 22);
+            this.PeopleFile.Size = new System.Drawing.Size(739, 26);
             this.PeopleFile.TabIndex = 150;
             this.PeopleFile.TextChanged += new System.EventHandler(this.PeopleFile_TextChanged);
             // 
             // PeopleFileDialog
             // 
             this.PeopleFileDialog.AutoEllipsis = true;
-            this.PeopleFileDialog.Location = new System.Drawing.Point(675, 78);
+            this.PeopleFileDialog.Location = new System.Drawing.Point(759, 98);
             this.PeopleFileDialog.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PeopleFileDialog.Name = "PeopleFileDialog";
-            this.PeopleFileDialog.Size = new System.Drawing.Size(21, 23);
+            this.PeopleFileDialog.Size = new System.Drawing.Size(24, 29);
             this.PeopleFileDialog.TabIndex = 160;
             this.PeopleFileDialog.Text = "...";
             this.PeopleFileDialog.Click += new System.EventHandler(this.PeopleFileDialog_Click);
@@ -155,28 +155,28 @@ namespace PublicationHarvester
             // PublicationTypeFileDialog
             // 
             this.PublicationTypeFileDialog.AutoEllipsis = true;
-            this.PublicationTypeFileDialog.Location = new System.Drawing.Point(675, 132);
+            this.PublicationTypeFileDialog.Location = new System.Drawing.Point(759, 165);
             this.PublicationTypeFileDialog.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PublicationTypeFileDialog.Name = "PublicationTypeFileDialog";
-            this.PublicationTypeFileDialog.Size = new System.Drawing.Size(21, 23);
+            this.PublicationTypeFileDialog.Size = new System.Drawing.Size(24, 29);
             this.PublicationTypeFileDialog.TabIndex = 178;
             this.PublicationTypeFileDialog.Text = "...";
             this.PublicationTypeFileDialog.Click += new System.EventHandler(this.PublicationTypeFileDialog_Click);
             // 
             // PublicationTypeFile
             // 
-            this.PublicationTypeFile.Location = new System.Drawing.Point(12, 132);
+            this.PublicationTypeFile.Location = new System.Drawing.Point(14, 165);
             this.PublicationTypeFile.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PublicationTypeFile.Name = "PublicationTypeFile";
-            this.PublicationTypeFile.Size = new System.Drawing.Size(657, 22);
+            this.PublicationTypeFile.Size = new System.Drawing.Size(739, 26);
             this.PublicationTypeFile.TabIndex = 174;
             this.PublicationTypeFile.TextChanged += new System.EventHandler(this.PublicationTypeFile_TextChanged);
             // 
             // label3
             // 
-            this.label3.Location = new System.Drawing.Point(12, 114);
+            this.label3.Location = new System.Drawing.Point(14, 142);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(216, 23);
+            this.label3.Size = new System.Drawing.Size(243, 29);
             this.label3.TabIndex = 170;
             this.label3.Text = "Publication &type file";
             // 
@@ -184,28 +184,28 @@ namespace PublicationHarvester
             // 
             this.Log.FormattingEnabled = true;
             this.Log.HorizontalScrollbar = true;
-            this.Log.ItemHeight = 16;
-            this.Log.Location = new System.Drawing.Point(15, 537);
-            this.Log.Margin = new System.Windows.Forms.Padding(4);
+            this.Log.ItemHeight = 20;
+            this.Log.Location = new System.Drawing.Point(17, 671);
+            this.Log.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Log.Name = "Log";
-            this.Log.Size = new System.Drawing.Size(684, 164);
+            this.Log.Size = new System.Drawing.Size(769, 204);
             this.Log.TabIndex = 100;
             // 
             // label4
             // 
-            this.label4.Location = new System.Drawing.Point(15, 518);
+            this.label4.Location = new System.Drawing.Point(17, 648);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(216, 23);
+            this.label4.Size = new System.Drawing.Size(243, 29);
             this.label4.TabIndex = 90;
             this.label4.Text = "Log";
             // 
             // OpenInNotepad
             // 
             this.OpenInNotepad.Enabled = false;
-            this.OpenInNotepad.Location = new System.Drawing.Point(559, 494);
-            this.OpenInNotepad.Margin = new System.Windows.Forms.Padding(4);
+            this.OpenInNotepad.Location = new System.Drawing.Point(629, 618);
+            this.OpenInNotepad.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.OpenInNotepad.Name = "OpenInNotepad";
-            this.OpenInNotepad.Size = new System.Drawing.Size(140, 25);
+            this.OpenInNotepad.Size = new System.Drawing.Size(158, 31);
             this.OpenInNotepad.TabIndex = 80;
             this.OpenInNotepad.Text = "Open in &Notepad";
             this.OpenInNotepad.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -215,12 +215,12 @@ namespace PublicationHarvester
             // toolStripProgressBar1
             // 
             this.toolStripProgressBar1.Name = "toolStripProgressBar1";
-            this.toolStripProgressBar1.Size = new System.Drawing.Size(133, 20);
+            this.toolStripProgressBar1.Size = new System.Drawing.Size(150, 24);
             // 
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(493, 21);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(547, 25);
             this.toolStripStatusLabel1.Spring = true;
             // 
             // statusStrip1
@@ -230,10 +230,10 @@ namespace PublicationHarvester
             this.toolStripStatusLabel2,
             this.toolStripProgressBar1,
             this.toolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 754);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 943);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 19, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(705, 26);
+            this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 21, 0);
+            this.statusStrip1.Size = new System.Drawing.Size(793, 32);
             this.statusStrip1.SizingGrip = false;
             this.statusStrip1.TabIndex = 36;
             this.statusStrip1.Text = "statusStrip1";
@@ -241,24 +241,24 @@ namespace PublicationHarvester
             // toolStripStatusLabel2
             // 
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(57, 21);
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(70, 25);
             this.toolStripStatusLabel2.Text = "Version";
             // 
             // LogFilename
             // 
-            this.LogFilename.Location = new System.Drawing.Point(15, 496);
+            this.LogFilename.Location = new System.Drawing.Point(17, 620);
             this.LogFilename.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.LogFilename.Name = "LogFilename";
             this.LogFilename.ReadOnly = true;
-            this.LogFilename.Size = new System.Drawing.Size(537, 22);
+            this.LogFilename.Size = new System.Drawing.Size(604, 26);
             this.LogFilename.TabIndex = 70;
             this.LogFilename.TabStop = false;
             // 
             // label5
             // 
-            this.label5.Location = new System.Drawing.Point(15, 478);
+            this.label5.Location = new System.Drawing.Point(17, 598);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(216, 23);
+            this.label5.Size = new System.Drawing.Size(243, 29);
             this.label5.TabIndex = 60;
             this.label5.Text = "&Log file";
             // 
@@ -280,21 +280,21 @@ namespace PublicationHarvester
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.TablesCreated);
             this.groupBox1.Controls.Add(this.label6);
-            this.groupBox1.Location = new System.Drawing.Point(14, 247);
+            this.groupBox1.Location = new System.Drawing.Point(16, 309);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox1.Size = new System.Drawing.Size(681, 169);
+            this.groupBox1.Size = new System.Drawing.Size(766, 211);
             this.groupBox1.TabIndex = 40;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Database Status";
             // 
             // RemovePeople
             // 
-            this.RemovePeople.Location = new System.Drawing.Point(508, 73);
+            this.RemovePeople.Location = new System.Drawing.Point(572, 91);
             this.RemovePeople.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.RemovePeople.Name = "RemovePeople";
-            this.RemovePeople.Size = new System.Drawing.Size(155, 28);
+            this.RemovePeople.Size = new System.Drawing.Size(174, 35);
             this.RemovePeople.TabIndex = 77;
             this.RemovePeople.Text = "Remove People";
             this.RemovePeople.UseVisualStyleBackColor = true;
@@ -302,10 +302,10 @@ namespace PublicationHarvester
             // 
             // AddUpdatePeople
             // 
-            this.AddUpdatePeople.Location = new System.Drawing.Point(347, 73);
+            this.AddUpdatePeople.Location = new System.Drawing.Point(390, 91);
             this.AddUpdatePeople.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.AddUpdatePeople.Name = "AddUpdatePeople";
-            this.AddUpdatePeople.Size = new System.Drawing.Size(155, 28);
+            this.AddUpdatePeople.Size = new System.Drawing.Size(174, 35);
             this.AddUpdatePeople.TabIndex = 76;
             this.AddUpdatePeople.Text = "Add/Update People";
             this.AddUpdatePeople.UseVisualStyleBackColor = true;
@@ -316,10 +316,10 @@ namespace PublicationHarvester
             this.UpdateStatusDuringHarvest.AutoSize = true;
             this.UpdateStatusDuringHarvest.Checked = true;
             this.UpdateStatusDuringHarvest.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.UpdateStatusDuringHarvest.Location = new System.Drawing.Point(328, 143);
+            this.UpdateStatusDuringHarvest.Location = new System.Drawing.Point(369, 179);
             this.UpdateStatusDuringHarvest.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.UpdateStatusDuringHarvest.Name = "UpdateStatusDuringHarvest";
-            this.UpdateStatusDuringHarvest.Size = new System.Drawing.Size(335, 21);
+            this.UpdateStatusDuringHarvest.Size = new System.Drawing.Size(377, 24);
             this.UpdateStatusDuringHarvest.TabIndex = 75;
             this.UpdateStatusDuringHarvest.Text = "Update these status numbers during the harvest";
             this.UpdateStatusDuringHarvest.UseVisualStyleBackColor = true;
@@ -327,49 +327,49 @@ namespace PublicationHarvester
             // 
             // PeopleNotHarvested
             // 
-            this.PeopleNotHarvested.Location = new System.Drawing.Point(187, 112);
+            this.PeopleNotHarvested.Location = new System.Drawing.Point(210, 140);
             this.PeopleNotHarvested.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PeopleNotHarvested.Name = "PeopleNotHarvested";
             this.PeopleNotHarvested.ReadOnly = true;
-            this.PeopleNotHarvested.Size = new System.Drawing.Size(155, 22);
+            this.PeopleNotHarvested.Size = new System.Drawing.Size(174, 26);
             this.PeopleNotHarvested.TabIndex = 74;
             this.PeopleNotHarvested.TabStop = false;
             // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(183, 92);
+            this.label10.Location = new System.Drawing.Point(206, 115);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(147, 17);
+            this.label10.Size = new System.Drawing.Size(164, 20);
             this.label10.TabIndex = 73;
             this.label10.Text = "People Not Harvested";
             // 
             // PeopleWithErrors
             // 
-            this.PeopleWithErrors.Location = new System.Drawing.Point(25, 112);
+            this.PeopleWithErrors.Location = new System.Drawing.Point(28, 140);
             this.PeopleWithErrors.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PeopleWithErrors.Name = "PeopleWithErrors";
             this.PeopleWithErrors.ReadOnly = true;
-            this.PeopleWithErrors.Size = new System.Drawing.Size(155, 22);
+            this.PeopleWithErrors.Size = new System.Drawing.Size(174, 26);
             this.PeopleWithErrors.TabIndex = 72;
             this.PeopleWithErrors.TabStop = false;
             // 
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(21, 92);
+            this.label11.Location = new System.Drawing.Point(24, 115);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(127, 17);
+            this.label11.Size = new System.Drawing.Size(141, 20);
             this.label11.TabIndex = 71;
             this.label11.Text = "People With Errors";
             // 
             // ResumeHarvesting
             // 
             this.ResumeHarvesting.Enabled = false;
-            this.ResumeHarvesting.Location = new System.Drawing.Point(347, 106);
+            this.ResumeHarvesting.Location = new System.Drawing.Point(390, 132);
             this.ResumeHarvesting.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.ResumeHarvesting.Name = "ResumeHarvesting";
-            this.ResumeHarvesting.Size = new System.Drawing.Size(316, 28);
+            this.ResumeHarvesting.Size = new System.Drawing.Size(356, 35);
             this.ResumeHarvesting.TabIndex = 50;
             this.ResumeHarvesting.Text = "Clear Errors and &Resume Previous Harvesting";
             this.ResumeHarvesting.UseVisualStyleBackColor = true;
@@ -377,86 +377,86 @@ namespace PublicationHarvester
             // 
             // PublicationsFound
             // 
-            this.PublicationsFound.Location = new System.Drawing.Point(508, 44);
+            this.PublicationsFound.Location = new System.Drawing.Point(572, 55);
             this.PublicationsFound.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PublicationsFound.Name = "PublicationsFound";
             this.PublicationsFound.ReadOnly = true;
-            this.PublicationsFound.Size = new System.Drawing.Size(155, 22);
+            this.PublicationsFound.Size = new System.Drawing.Size(174, 26);
             this.PublicationsFound.TabIndex = 69;
             this.PublicationsFound.TabStop = false;
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(505, 25);
+            this.label9.Location = new System.Drawing.Point(568, 31);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(128, 17);
+            this.label9.Size = new System.Drawing.Size(144, 20);
             this.label9.TabIndex = 68;
             this.label9.Text = "Publications Found";
             // 
             // PeopleHarvested
             // 
-            this.PeopleHarvested.Location = new System.Drawing.Point(347, 44);
+            this.PeopleHarvested.Location = new System.Drawing.Point(390, 55);
             this.PeopleHarvested.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PeopleHarvested.Name = "PeopleHarvested";
             this.PeopleHarvested.ReadOnly = true;
-            this.PeopleHarvested.Size = new System.Drawing.Size(155, 22);
+            this.PeopleHarvested.Size = new System.Drawing.Size(174, 26);
             this.PeopleHarvested.TabIndex = 67;
             this.PeopleHarvested.TabStop = false;
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(344, 25);
+            this.label8.Location = new System.Drawing.Point(387, 31);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(121, 17);
+            this.label8.Size = new System.Drawing.Size(135, 20);
             this.label8.TabIndex = 66;
             this.label8.Text = "People Harvested";
             // 
             // People
             // 
-            this.People.Location = new System.Drawing.Point(187, 44);
+            this.People.Location = new System.Drawing.Point(210, 55);
             this.People.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.People.Name = "People";
             this.People.ReadOnly = true;
-            this.People.Size = new System.Drawing.Size(155, 22);
+            this.People.Size = new System.Drawing.Size(174, 26);
             this.People.TabIndex = 65;
             this.People.TabStop = false;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(183, 25);
+            this.label7.Location = new System.Drawing.Point(206, 31);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(52, 17);
+            this.label7.Size = new System.Drawing.Size(58, 20);
             this.label7.TabIndex = 64;
             this.label7.Text = "People";
             // 
             // TablesCreated
             // 
-            this.TablesCreated.Location = new System.Drawing.Point(25, 44);
+            this.TablesCreated.Location = new System.Drawing.Point(28, 55);
             this.TablesCreated.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.TablesCreated.Name = "TablesCreated";
             this.TablesCreated.ReadOnly = true;
-            this.TablesCreated.Size = new System.Drawing.Size(155, 22);
+            this.TablesCreated.Size = new System.Drawing.Size(174, 26);
             this.TablesCreated.TabIndex = 63;
             this.TablesCreated.TabStop = false;
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(21, 25);
+            this.label6.Location = new System.Drawing.Point(24, 31);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(105, 17);
+            this.label6.Size = new System.Drawing.Size(117, 20);
             this.label6.TabIndex = 62;
             this.label6.Text = "Tables Created";
             // 
             // HarvestingReports
             // 
-            this.HarvestingReports.Location = new System.Drawing.Point(243, 215);
+            this.HarvestingReports.Location = new System.Drawing.Point(273, 269);
             this.HarvestingReports.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.HarvestingReports.Name = "HarvestingReports";
-            this.HarvestingReports.Size = new System.Drawing.Size(224, 28);
+            this.HarvestingReports.Size = new System.Drawing.Size(252, 35);
             this.HarvestingReports.TabIndex = 20;
             this.HarvestingReports.Text = "&Generate Harvesting Reports";
             this.HarvestingReports.UseVisualStyleBackColor = true;
@@ -464,10 +464,10 @@ namespace PublicationHarvester
             // 
             // Interrupt
             // 
-            this.Interrupt.Location = new System.Drawing.Point(471, 215);
+            this.Interrupt.Location = new System.Drawing.Point(530, 269);
             this.Interrupt.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Interrupt.Name = "Interrupt";
-            this.Interrupt.Size = new System.Drawing.Size(224, 28);
+            this.Interrupt.Size = new System.Drawing.Size(252, 35);
             this.Interrupt.TabIndex = 30;
             this.Interrupt.Text = "&Interrupt Current Harvest";
             this.Interrupt.UseVisualStyleBackColor = true;
@@ -475,10 +475,10 @@ namespace PublicationHarvester
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(596, 25);
-            this.button1.Margin = new System.Windows.Forms.Padding(4);
+            this.button1.Location = new System.Drawing.Point(670, 31);
+            this.button1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(100, 28);
+            this.button1.Size = new System.Drawing.Size(112, 35);
             this.button1.TabIndex = 191;
             this.button1.Text = "&About";
             this.button1.UseVisualStyleBackColor = true;
@@ -486,18 +486,18 @@ namespace PublicationHarvester
             // 
             // LanguageList
             // 
-            this.LanguageList.Location = new System.Drawing.Point(14, 437);
+            this.LanguageList.Location = new System.Drawing.Point(16, 546);
             this.LanguageList.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.LanguageList.Name = "LanguageList";
-            this.LanguageList.Size = new System.Drawing.Size(683, 22);
+            this.LanguageList.Size = new System.Drawing.Size(768, 26);
             this.LanguageList.TabIndex = 193;
             this.LanguageList.Text = "eng";
             // 
             // label12
             // 
-            this.label12.Location = new System.Drawing.Point(11, 418);
+            this.label12.Location = new System.Drawing.Point(12, 522);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(679, 23);
+            this.label12.Size = new System.Drawing.Size(764, 29);
             this.label12.TabIndex = 192;
             this.label12.Text = "Languages (list of Medline language abbreviations separated by commas, blank for " +
     "no restriction)";
@@ -507,48 +507,48 @@ namespace PublicationHarvester
             this.CheckForInterruptedData.AutoSize = true;
             this.CheckForInterruptedData.Checked = true;
             this.CheckForInterruptedData.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.CheckForInterruptedData.Location = new System.Drawing.Point(482, 463);
+            this.CheckForInterruptedData.Location = new System.Drawing.Point(542, 579);
             this.CheckForInterruptedData.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.CheckForInterruptedData.Name = "CheckForInterruptedData";
-            this.CheckForInterruptedData.Size = new System.Drawing.Size(195, 21);
+            this.CheckForInterruptedData.Size = new System.Drawing.Size(220, 24);
             this.CheckForInterruptedData.TabIndex = 194;
             this.CheckForInterruptedData.Text = "Check for interrupted data";
             this.CheckForInterruptedData.UseVisualStyleBackColor = true;
             // 
-            // button2
+            // ApiKeyFileButton
             // 
-            this.button2.AutoEllipsis = true;
-            this.button2.Location = new System.Drawing.Point(675, 182);
-            this.button2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(21, 23);
-            this.button2.TabIndex = 188;
-            this.button2.Text = "...";
-            this.button2.Click += new System.EventHandler(this.ApiKeyFileDialog_Click);
+            this.ApiKeyFileButton.AutoEllipsis = true;
+            this.ApiKeyFileButton.Location = new System.Drawing.Point(759, 228);
+            this.ApiKeyFileButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ApiKeyFileButton.Name = "ApiKeyFileButton";
+            this.ApiKeyFileButton.Size = new System.Drawing.Size(24, 29);
+            this.ApiKeyFileButton.TabIndex = 188;
+            this.ApiKeyFileButton.Text = "...";
+            this.ApiKeyFileButton.Click += new System.EventHandler(this.ApiKeyFileButton_Click);
             // 
             // ApiKeyFile
             // 
-            this.ApiKeyFile.Location = new System.Drawing.Point(12, 182);
+            this.ApiKeyFile.Location = new System.Drawing.Point(14, 228);
             this.ApiKeyFile.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.ApiKeyFile.Name = "ApiKeyFile";
-            this.ApiKeyFile.Size = new System.Drawing.Size(657, 22);
+            this.ApiKeyFile.Size = new System.Drawing.Size(739, 26);
             this.ApiKeyFile.TabIndex = 184;
             this.ApiKeyFile.TextChanged += new System.EventHandler(this.ApiKeyFile_TextChanged);
             // 
             // label13
             // 
-            this.label13.Location = new System.Drawing.Point(12, 164);
+            this.label13.Location = new System.Drawing.Point(14, 205);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(216, 23);
+            this.label13.Size = new System.Drawing.Size(243, 29);
             this.label13.TabIndex = 180;
             this.label13.Text = "API &key file";
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(705, 780);
-            this.Controls.Add(this.button2);
+            this.ClientSize = new System.Drawing.Size(793, 975);
+            this.Controls.Add(this.ApiKeyFileButton);
             this.Controls.Add(this.ApiKeyFile);
             this.Controls.Add(this.label13);
             this.Controls.Add(this.CheckForInterruptedData);
@@ -636,7 +636,7 @@ namespace PublicationHarvester
         private System.Windows.Forms.TextBox LanguageList;
         internal System.Windows.Forms.Label label12;
         private System.Windows.Forms.CheckBox CheckForInterruptedData;
-        internal System.Windows.Forms.Button button2;
+        internal System.Windows.Forms.Button ApiKeyFileButton;
         private System.Windows.Forms.TextBox ApiKeyFile;
         internal System.Windows.Forms.Label label13;
     }

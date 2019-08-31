@@ -762,7 +762,7 @@ namespace PublicationHarvester
         /// <summary>
         /// Display the Open File dialog for the API key file
         /// </summary>
-        private void ApiKeyFileDialog_Click(object sender, EventArgs e)
+        private void ApiKeyFileButton_Click(object sender, EventArgs e)
         {
             openFileDialog1.FileName = ApiKeyFile.Text;
             openFileDialog1.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
