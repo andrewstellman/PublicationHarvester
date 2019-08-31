@@ -58,11 +58,18 @@ namespace SCGen
                 DSN.Text = dsn; 
             }
 
-            // Set the people file textbox to its last value
+            // Set the roster file textbox to its last value
             string rosterFile = PubMed.Settings.GetValueString("RosterFile", String.Empty);
             if (!String.IsNullOrEmpty(rosterFile))
             {
                 RosterFile.Text = rosterFile;
+            }
+
+            // Set the API key file textbox to its last value
+            string apiKeyFile = PubMed.Settings.GetValueString("ApiKeyFile", String.Empty);
+            if (!String.IsNullOrEmpty(apiKeyFile))
+            {
+                ApiKeyFile.Text = apiKeyFile;
             }
 
             // Set the alternate table checkbox and textbox
@@ -314,6 +321,9 @@ namespace SCGen
         /// </summary>
         private void FindPotentialColleagues_Click(object sender, EventArgs e)
         {
+            if (!SetApiKeyFromFormField())
+                return;
+
             // If the tables aren't populated, don't look for colleagues.
             Database UpdateDB = new Database(DSN.Text);
             bool TablesCreated;
@@ -349,7 +359,7 @@ namespace SCGen
             // Use the ResetDatabase variable to determine whether or not to resume 
             // a past find. If resuming, get the Setnb's of stars from the StarColleagues
             // table so they can be skipped.
-            if (ResetDatabase) 
+            if (ResetDatabase)
                 ColleagueFinder.CreateTables(DB);
             DataTable StarSetnbsResult = DB.ExecuteQuery("SELECT StarSetnb FROM StarColleagues");
             ArrayList StarSetnbs = new ArrayList();
@@ -360,6 +370,8 @@ namespace SCGen
             }
 
             NCBI ncbi = new NCBI("Medline");
+            AddApiKeyLogEntries();
+
             ColleagueFinder finder = new ColleagueFinder(DB, roster, ncbi,
                 GetPeoplePublicationTableName());
             People Stars = new People(DB);
@@ -388,7 +400,22 @@ namespace SCGen
             this.Cursor = Cursors.Default;
             this.Enabled = true;
         }
-        
+
+        private void AddApiKeyLogEntries()
+        {
+            if (NCBI.ApiKeyExists)
+            {
+                AddLogEntry("Using API key: " + NCBI.ApiKeyPath);
+            }
+            else
+            {
+                AddLogEntry("Performance is limited to under 3 requests per second.");
+                AddLogEntry("Consider pasting an API key into " + NCBI.ApiKeyPath);
+                AddLogEntry("Or set the NCBI_API_KEY_FILE environemnt variable to the API key file path");
+                AddLogEntry("For more information, see https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/");
+            }
+        }
+
         /// <summary>
         /// Open the log in Notepad
         /// </summary>
@@ -458,6 +485,9 @@ namespace SCGen
         /// </summary>
         private void RetrieveColleaguePublications_Click(object sender, EventArgs e)
         {
+            if (!SetApiKeyFromFormField())
+                return;
+
             this.Enabled = false;
             this.Cursor = Cursors.WaitCursor;
 
@@ -505,6 +535,8 @@ namespace SCGen
 
             // Retrieve the publications for each unharvested colleague
             NCBI ncbi = new NCBI("Medline");
+            AddApiKeyLogEntries();
+
             ColleagueFinder finder = new ColleagueFinder(DB, roster, ncbi,
                 GetPeoplePublicationTableName());
             People Colleagues = new People(DB, "Colleagues");
@@ -665,6 +697,49 @@ namespace SCGen
             UpdateStatus();
         }
 
+        /// <summary>
+        /// Display the Open File dialog for the API key file
+        /// </summary>
+        private void ApiKeyFileButton_Click(object sender, EventArgs e)
+        {
+            openFileDialog1.FileName = ApiKeyFile.Text;
+            openFileDialog1.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
+            openFileDialog1.Title = "Select API key file";
+            openFileDialog1.CheckFileExists = true;
+            openFileDialog1.CheckPathExists = true;
+            DialogResult result = openFileDialog1.ShowDialog();
+            if (result == DialogResult.Cancel)
+                return;
+            ApiKeyFile.Text = openFileDialog1.FileName;
+        }
 
+        /// <summary>
+        /// Sets the NCBI API key from the field on the form
+        /// </summary>
+        /// <returns>
+        /// True if the API key file in the field is found or empty, false if the API it's invalid
+        /// </returns>
+        private bool SetApiKeyFromFormField()
+        {
+            if (!string.IsNullOrWhiteSpace(ApiKeyFile.Text.Trim()))
+            {
+                if (File.Exists(ApiKeyFile.Text.Trim()))
+                {
+                    NCBI.GetApiKey(ApiKeyFile.Text.Trim());
+                }
+                else
+                {
+                    MessageBox.Show($"API key file not found: {ApiKeyFile.Text.Trim()}");
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private void ApiKeyFile_TextChanged(object sender, EventArgs e)
+        {
+            PubMed.Settings.SetValue("ApiKeyFile", ApiKeyFile.Text);
+            UpdateStatus();
+        }
     }
 }

@@ -84,16 +84,20 @@ namespace SCGen
             this.label19 = new System.Windows.Forms.Label();
             this.useAlternateCheckbox = new System.Windows.Forms.CheckBox();
             this.alternateTableName = new System.Windows.Forms.TextBox();
+            this.ApiKeyFileButton = new System.Windows.Forms.Button();
+            this.ApiKeyFile = new System.Windows.Forms.TextBox();
+            this.label20 = new System.Windows.Forms.Label();
             this.statusStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // About
             // 
-            this.About.Location = new System.Drawing.Point(440, 30);
+            this.About.Location = new System.Drawing.Point(660, 46);
+            this.About.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.About.Name = "About";
-            this.About.Size = new System.Drawing.Size(62, 49);
-            this.About.TabIndex = 206;
+            this.About.Size = new System.Drawing.Size(93, 75);
+            this.About.TabIndex = 95;
             this.About.Text = "&About SC/Gen";
             this.About.UseVisualStyleBackColor = true;
             this.About.Click += new System.EventHandler(this.About_Click);
@@ -101,78 +105,74 @@ namespace SCGen
             // RosterFileDialog
             // 
             this.RosterFileDialog.AutoEllipsis = true;
-            this.RosterFileDialog.Location = new System.Drawing.Point(406, 66);
-            this.RosterFileDialog.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.RosterFileDialog.Location = new System.Drawing.Point(610, 94);
             this.RosterFileDialog.Name = "RosterFileDialog";
-            this.RosterFileDialog.Size = new System.Drawing.Size(16, 19);
-            this.RosterFileDialog.TabIndex = 205;
+            this.RosterFileDialog.Size = new System.Drawing.Size(24, 29);
+            this.RosterFileDialog.TabIndex = 60;
             this.RosterFileDialog.Text = "...";
             this.RosterFileDialog.Click += new System.EventHandler(this.RosterFileDialog_Click);
             // 
             // RosterFile
             // 
-            this.RosterFile.Location = new System.Drawing.Point(11, 66);
-            this.RosterFile.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.RosterFile.Location = new System.Drawing.Point(20, 94);
             this.RosterFile.Name = "RosterFile";
-            this.RosterFile.Size = new System.Drawing.Size(389, 20);
-            this.RosterFile.TabIndex = 204;
+            this.RosterFile.Size = new System.Drawing.Size(578, 26);
+            this.RosterFile.TabIndex = 50;
             this.RosterFile.TextChanged += new System.EventHandler(this.RosterFile_TextChanged);
             // 
             // DSN
             // 
             this.DSN.FormattingEnabled = true;
-            this.DSN.Location = new System.Drawing.Point(13, 23);
-            this.DSN.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.DSN.Location = new System.Drawing.Point(20, 35);
             this.DSN.Name = "DSN";
-            this.DSN.Size = new System.Drawing.Size(387, 21);
-            this.DSN.TabIndex = 201;
+            this.DSN.Size = new System.Drawing.Size(578, 28);
+            this.DSN.TabIndex = 20;
             this.DSN.SelectedIndexChanged += new System.EventHandler(this.DSN_SelectedIndexChanged);
             this.DSN.Click += new System.EventHandler(this.DSN_Click);
             // 
             // ODBCPanel
             // 
             this.ODBCPanel.AutoEllipsis = true;
-            this.ODBCPanel.Location = new System.Drawing.Point(406, 25);
-            this.ODBCPanel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ODBCPanel.Location = new System.Drawing.Point(610, 38);
             this.ODBCPanel.Name = "ODBCPanel";
-            this.ODBCPanel.Size = new System.Drawing.Size(16, 19);
-            this.ODBCPanel.TabIndex = 202;
+            this.ODBCPanel.Size = new System.Drawing.Size(24, 29);
+            this.ODBCPanel.TabIndex = 30;
             this.ODBCPanel.Text = "...";
             this.ODBCPanel.Click += new System.EventHandler(this.ODBCPanel_Click);
             // 
             // Label2
             // 
-            this.Label2.Location = new System.Drawing.Point(11, 10);
-            this.Label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.Label2.Location = new System.Drawing.Point(16, 15);
             this.Label2.Name = "Label2";
-            this.Label2.Size = new System.Drawing.Size(162, 19);
-            this.Label2.TabIndex = 200;
+            this.Label2.Size = new System.Drawing.Size(243, 29);
+            this.Label2.TabIndex = 10;
             this.Label2.Text = "&ODBC Data Source Name";
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(11, 52);
-            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label1.Location = new System.Drawing.Point(16, 72);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(162, 19);
-            this.label1.TabIndex = 203;
+            this.label1.Size = new System.Drawing.Size(243, 29);
+            this.label1.TabIndex = 40;
             this.label1.Text = "&Roster File";
             // 
             // toolStripStatusLabel2
             // 
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(46, 17);
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(70, 25);
             this.toolStripStatusLabel2.Text = "Version";
             // 
             // statusStrip1
             // 
+            this.statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel2,
             this.toolStripProgressBar1,
             this.toolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 682);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 1018);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(511, 22);
+            this.statusStrip1.Padding = new System.Windows.Forms.Padding(2, 0, 21, 0);
+            this.statusStrip1.Size = new System.Drawing.Size(766, 32);
             this.statusStrip1.SizingGrip = false;
             this.statusStrip1.TabIndex = 199;
             this.statusStrip1.Text = "statusStrip1";
@@ -180,12 +180,12 @@ namespace SCGen
             // toolStripProgressBar1
             // 
             this.toolStripProgressBar1.Name = "toolStripProgressBar1";
-            this.toolStripProgressBar1.Size = new System.Drawing.Size(100, 16);
+            this.toolStripProgressBar1.Size = new System.Drawing.Size(150, 24);
             // 
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(348, 17);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(519, 25);
             this.toolStripStatusLabel1.Spring = true;
             // 
             // openFileDialog1
@@ -208,301 +208,280 @@ namespace SCGen
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.TablesCreated);
             this.groupBox1.Controls.Add(this.label6);
-            this.groupBox1.Location = new System.Drawing.Point(13, 93);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox1.Location = new System.Drawing.Point(20, 194);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.groupBox1.Size = new System.Drawing.Size(490, 125);
-            this.groupBox1.TabIndex = 208;
+            this.groupBox1.Size = new System.Drawing.Size(735, 192);
+            this.groupBox1.TabIndex = 100;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Database Status";
             // 
             // ColleaguesWithErrors
             // 
-            this.ColleaguesWithErrors.Location = new System.Drawing.Point(370, 91);
-            this.ColleaguesWithErrors.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ColleaguesWithErrors.Location = new System.Drawing.Point(555, 140);
             this.ColleaguesWithErrors.Name = "ColleaguesWithErrors";
             this.ColleaguesWithErrors.ReadOnly = true;
-            this.ColleaguesWithErrors.Size = new System.Drawing.Size(106, 20);
+            this.ColleaguesWithErrors.Size = new System.Drawing.Size(157, 26);
             this.ColleaguesWithErrors.TabIndex = 76;
             this.ColleaguesWithErrors.TabStop = false;
             // 
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(367, 76);
-            this.label16.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label16.Location = new System.Drawing.Point(550, 117);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(114, 13);
+            this.label16.Size = new System.Drawing.Size(171, 20);
             this.label16.TabIndex = 75;
             this.label16.Text = "Colleagues With Errors";
             // 
             // PeopleNotHarvested
             // 
-            this.PeopleNotHarvested.Location = new System.Drawing.Point(136, 91);
-            this.PeopleNotHarvested.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.PeopleNotHarvested.Location = new System.Drawing.Point(204, 140);
             this.PeopleNotHarvested.Name = "PeopleNotHarvested";
             this.PeopleNotHarvested.ReadOnly = true;
-            this.PeopleNotHarvested.Size = new System.Drawing.Size(106, 20);
+            this.PeopleNotHarvested.Size = new System.Drawing.Size(157, 26);
             this.PeopleNotHarvested.TabIndex = 74;
             this.PeopleNotHarvested.TabStop = false;
             // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(134, 75);
-            this.label10.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label10.Location = new System.Drawing.Point(201, 115);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(112, 13);
+            this.label10.Size = new System.Drawing.Size(164, 20);
             this.label10.TabIndex = 73;
             this.label10.Text = "People Not Harvested";
             // 
             // PeopleWithErrors
             // 
-            this.PeopleWithErrors.Location = new System.Drawing.Point(19, 91);
-            this.PeopleWithErrors.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.PeopleWithErrors.Location = new System.Drawing.Point(28, 140);
             this.PeopleWithErrors.Name = "PeopleWithErrors";
             this.PeopleWithErrors.ReadOnly = true;
-            this.PeopleWithErrors.Size = new System.Drawing.Size(106, 20);
+            this.PeopleWithErrors.Size = new System.Drawing.Size(157, 26);
             this.PeopleWithErrors.TabIndex = 72;
             this.PeopleWithErrors.TabStop = false;
             // 
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(16, 75);
-            this.label11.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label11.Location = new System.Drawing.Point(24, 115);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(95, 13);
+            this.label11.Size = new System.Drawing.Size(141, 20);
             this.label11.TabIndex = 71;
             this.label11.Text = "People With Errors";
             // 
             // PublicationsFound
             // 
-            this.PublicationsFound.Location = new System.Drawing.Point(370, 36);
-            this.PublicationsFound.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.PublicationsFound.Location = new System.Drawing.Point(555, 55);
             this.PublicationsFound.Name = "PublicationsFound";
             this.PublicationsFound.ReadOnly = true;
-            this.PublicationsFound.Size = new System.Drawing.Size(106, 20);
+            this.PublicationsFound.Size = new System.Drawing.Size(157, 26);
             this.PublicationsFound.TabIndex = 69;
             this.PublicationsFound.TabStop = false;
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(368, 20);
-            this.label9.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label9.Location = new System.Drawing.Point(552, 31);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(97, 13);
+            this.label9.Size = new System.Drawing.Size(144, 20);
             this.label9.TabIndex = 68;
             this.label9.Text = "Publications Found";
             // 
             // PeopleHarvested
             // 
-            this.PeopleHarvested.Location = new System.Drawing.Point(253, 36);
-            this.PeopleHarvested.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.PeopleHarvested.Location = new System.Drawing.Point(380, 55);
             this.PeopleHarvested.Name = "PeopleHarvested";
             this.PeopleHarvested.ReadOnly = true;
-            this.PeopleHarvested.Size = new System.Drawing.Size(106, 20);
+            this.PeopleHarvested.Size = new System.Drawing.Size(157, 26);
             this.PeopleHarvested.TabIndex = 67;
             this.PeopleHarvested.TabStop = false;
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(250, 20);
-            this.label8.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label8.Location = new System.Drawing.Point(375, 31);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(92, 13);
+            this.label8.Size = new System.Drawing.Size(135, 20);
             this.label8.TabIndex = 66;
             this.label8.Text = "People Harvested";
             // 
             // People
             // 
-            this.People.Location = new System.Drawing.Point(136, 36);
-            this.People.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.People.Location = new System.Drawing.Point(204, 55);
             this.People.Name = "People";
             this.People.ReadOnly = true;
-            this.People.Size = new System.Drawing.Size(106, 20);
+            this.People.Size = new System.Drawing.Size(157, 26);
             this.People.TabIndex = 65;
             this.People.TabStop = false;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(134, 20);
-            this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label7.Location = new System.Drawing.Point(201, 31);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(40, 13);
+            this.label7.Size = new System.Drawing.Size(58, 20);
             this.label7.TabIndex = 64;
             this.label7.Text = "People";
             // 
             // TablesCreated
             // 
-            this.TablesCreated.Location = new System.Drawing.Point(19, 36);
-            this.TablesCreated.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.TablesCreated.Location = new System.Drawing.Point(28, 55);
             this.TablesCreated.Name = "TablesCreated";
             this.TablesCreated.ReadOnly = true;
-            this.TablesCreated.Size = new System.Drawing.Size(106, 20);
+            this.TablesCreated.Size = new System.Drawing.Size(157, 26);
             this.TablesCreated.TabIndex = 63;
             this.TablesCreated.TabStop = false;
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(16, 20);
-            this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label6.Location = new System.Drawing.Point(24, 31);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(79, 13);
+            this.label6.Size = new System.Drawing.Size(117, 20);
             this.label6.TabIndex = 62;
             this.label6.Text = "Tables Created";
             // 
             // ReadRoster
             // 
-            this.ReadRoster.Location = new System.Drawing.Point(12, 232);
+            this.ReadRoster.Location = new System.Drawing.Point(18, 408);
+            this.ReadRoster.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ReadRoster.Name = "ReadRoster";
-            this.ReadRoster.Size = new System.Drawing.Size(252, 23);
-            this.ReadRoster.TabIndex = 209;
+            this.ReadRoster.Size = new System.Drawing.Size(378, 35);
+            this.ReadRoster.TabIndex = 110;
             this.ReadRoster.Text = "Step 1: Read the Roster file";
             this.ReadRoster.UseVisualStyleBackColor = true;
             this.ReadRoster.Click += new System.EventHandler(this.ReadRoster_Click);
             // 
             // FindPotentialColleagues
             // 
-            this.FindPotentialColleagues.Location = new System.Drawing.Point(12, 265);
+            this.FindPotentialColleagues.Location = new System.Drawing.Point(18, 459);
+            this.FindPotentialColleagues.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FindPotentialColleagues.Name = "FindPotentialColleagues";
-            this.FindPotentialColleagues.Size = new System.Drawing.Size(252, 23);
-            this.FindPotentialColleagues.TabIndex = 210;
+            this.FindPotentialColleagues.Size = new System.Drawing.Size(378, 35);
+            this.FindPotentialColleagues.TabIndex = 120;
             this.FindPotentialColleagues.Text = "Step 2: Find the Potential Colleagues";
             this.FindPotentialColleagues.UseVisualStyleBackColor = true;
             this.FindPotentialColleagues.Click += new System.EventHandler(this.FindPotentialColleagues_Click);
             // 
             // RetrieveColleaguePublications
             // 
-            this.RetrieveColleaguePublications.Location = new System.Drawing.Point(10, 357);
+            this.RetrieveColleaguePublications.Location = new System.Drawing.Point(15, 590);
+            this.RetrieveColleaguePublications.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.RetrieveColleaguePublications.Name = "RetrieveColleaguePublications";
-            this.RetrieveColleaguePublications.Size = new System.Drawing.Size(252, 23);
-            this.RetrieveColleaguePublications.TabIndex = 211;
+            this.RetrieveColleaguePublications.Size = new System.Drawing.Size(378, 35);
+            this.RetrieveColleaguePublications.TabIndex = 160;
             this.RetrieveColleaguePublications.Text = "Step 4: Retrieve Missing Colleague Publications";
             this.RetrieveColleaguePublications.UseVisualStyleBackColor = true;
             this.RetrieveColleaguePublications.Click += new System.EventHandler(this.RetrieveColleaguePublications_Click);
             // 
             // RosterRows
             // 
-            this.RosterRows.Location = new System.Drawing.Point(447, 235);
-            this.RosterRows.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.RosterRows.Location = new System.Drawing.Point(670, 413);
             this.RosterRows.Name = "RosterRows";
             this.RosterRows.ReadOnly = true;
-            this.RosterRows.Size = new System.Drawing.Size(55, 20);
+            this.RosterRows.Size = new System.Drawing.Size(80, 26);
             this.RosterRows.TabIndex = 213;
             this.RosterRows.TabStop = false;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(376, 237);
-            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label3.Location = new System.Drawing.Point(564, 416);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(68, 13);
+            this.label3.Size = new System.Drawing.Size(101, 20);
             this.label3.TabIndex = 212;
             this.label3.Text = "Roster Rows";
             // 
             // DiadsFound
             // 
-            this.DiadsFound.Location = new System.Drawing.Point(446, 327);
-            this.DiadsFound.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.DiadsFound.Location = new System.Drawing.Point(669, 544);
             this.DiadsFound.Name = "DiadsFound";
             this.DiadsFound.ReadOnly = true;
-            this.DiadsFound.Size = new System.Drawing.Size(56, 20);
+            this.DiadsFound.Size = new System.Drawing.Size(82, 26);
             this.DiadsFound.TabIndex = 215;
             this.DiadsFound.TabStop = false;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(306, 327);
-            this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label4.Location = new System.Drawing.Point(459, 544);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(137, 13);
+            this.label4.Size = new System.Drawing.Size(203, 20);
             this.label4.TabIndex = 214;
             this.label4.Text = "Star/Colleague Pairs Found";
             // 
             // ColleaguePublications
             // 
-            this.ColleaguePublications.Location = new System.Drawing.Point(446, 392);
-            this.ColleaguePublications.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ColleaguePublications.Location = new System.Drawing.Point(669, 644);
             this.ColleaguePublications.Name = "ColleaguePublications";
             this.ColleaguePublications.ReadOnly = true;
-            this.ColleaguePublications.Size = new System.Drawing.Size(55, 20);
+            this.ColleaguePublications.Size = new System.Drawing.Size(80, 26);
             this.ColleaguePublications.TabIndex = 217;
             this.ColleaguePublications.TabStop = false;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(267, 394);
-            this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label5.Location = new System.Drawing.Point(400, 647);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(177, 13);
+            this.label5.Size = new System.Drawing.Size(262, 20);
             this.label5.TabIndex = 216;
             this.label5.Text = "Colleague Publications Downloaded";
             // 
             // ColleaguesHarvested
             // 
-            this.ColleaguesHarvested.Location = new System.Drawing.Point(446, 359);
-            this.ColleaguesHarvested.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ColleaguesHarvested.Location = new System.Drawing.Point(669, 593);
             this.ColleaguesHarvested.Name = "ColleaguesHarvested";
             this.ColleaguesHarvested.ReadOnly = true;
-            this.ColleaguesHarvested.Size = new System.Drawing.Size(56, 20);
+            this.ColleaguesHarvested.Size = new System.Drawing.Size(82, 26);
             this.ColleaguesHarvested.TabIndex = 219;
             this.ColleaguesHarvested.TabStop = false;
             // 
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(332, 362);
-            this.label15.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label15.Location = new System.Drawing.Point(498, 598);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(111, 13);
+            this.label15.Size = new System.Drawing.Size(165, 20);
             this.label15.TabIndex = 218;
             this.label15.Text = "Colleagues Harvested";
             // 
             // GenerateReports
             // 
-            this.GenerateReports.Location = new System.Drawing.Point(10, 422);
+            this.GenerateReports.Location = new System.Drawing.Point(15, 690);
+            this.GenerateReports.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.GenerateReports.Name = "GenerateReports";
-            this.GenerateReports.Size = new System.Drawing.Size(252, 23);
-            this.GenerateReports.TabIndex = 220;
+            this.GenerateReports.Size = new System.Drawing.Size(378, 35);
+            this.GenerateReports.TabIndex = 180;
             this.GenerateReports.Text = "Step 6: Generate Reports";
             this.GenerateReports.UseVisualStyleBackColor = true;
             this.GenerateReports.Click += new System.EventHandler(this.GenerateReports_Click);
             // 
             // LogFilename
             // 
-            this.LogFilename.Location = new System.Drawing.Point(12, 549);
-            this.LogFilename.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.LogFilename.Location = new System.Drawing.Point(18, 872);
             this.LogFilename.Name = "LogFilename";
             this.LogFilename.ReadOnly = true;
-            this.LogFilename.Size = new System.Drawing.Size(379, 20);
-            this.LogFilename.TabIndex = 223;
+            this.LogFilename.Size = new System.Drawing.Size(566, 26);
+            this.LogFilename.TabIndex = 250;
             this.LogFilename.TabStop = false;
             // 
             // label12
             // 
-            this.label12.Location = new System.Drawing.Point(12, 536);
-            this.label12.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label12.Location = new System.Drawing.Point(18, 852);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(162, 19);
-            this.label12.TabIndex = 222;
+            this.label12.Size = new System.Drawing.Size(243, 29);
+            this.label12.TabIndex = 240;
             this.label12.Text = "&Log file";
             // 
             // OpenInNotepad
             // 
             this.OpenInNotepad.Enabled = false;
-            this.OpenInNotepad.Location = new System.Drawing.Point(396, 549);
+            this.OpenInNotepad.Location = new System.Drawing.Point(594, 872);
+            this.OpenInNotepad.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.OpenInNotepad.Name = "OpenInNotepad";
-            this.OpenInNotepad.Size = new System.Drawing.Size(105, 20);
-            this.OpenInNotepad.TabIndex = 224;
+            this.OpenInNotepad.Size = new System.Drawing.Size(158, 31);
+            this.OpenInNotepad.TabIndex = 260;
             this.OpenInNotepad.Text = "Open in &Notepad";
             this.OpenInNotepad.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.OpenInNotepad.UseVisualStyleBackColor = true;
@@ -512,125 +491,119 @@ namespace SCGen
             // 
             this.Log.FormattingEnabled = true;
             this.Log.HorizontalScrollbar = true;
-            this.Log.Location = new System.Drawing.Point(12, 584);
+            this.Log.ItemHeight = 20;
+            this.Log.Location = new System.Drawing.Point(18, 925);
+            this.Log.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Log.Name = "Log";
-            this.Log.Size = new System.Drawing.Size(489, 95);
-            this.Log.TabIndex = 226;
+            this.Log.Size = new System.Drawing.Size(732, 84);
+            this.Log.TabIndex = 310;
             // 
             // label13
             // 
-            this.label13.Location = new System.Drawing.Point(12, 570);
-            this.label13.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label13.Location = new System.Drawing.Point(18, 904);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(162, 17);
-            this.label13.TabIndex = 225;
+            this.label13.Size = new System.Drawing.Size(243, 26);
+            this.label13.TabIndex = 300;
             this.label13.Text = "Log";
             // 
             // RemoveFalseColleagues
             // 
-            this.RemoveFalseColleagues.Location = new System.Drawing.Point(10, 389);
+            this.RemoveFalseColleagues.Location = new System.Drawing.Point(15, 639);
+            this.RemoveFalseColleagues.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.RemoveFalseColleagues.Name = "RemoveFalseColleagues";
-            this.RemoveFalseColleagues.Size = new System.Drawing.Size(252, 23);
-            this.RemoveFalseColleagues.TabIndex = 227;
+            this.RemoveFalseColleagues.Size = new System.Drawing.Size(378, 35);
+            this.RemoveFalseColleagues.TabIndex = 170;
             this.RemoveFalseColleagues.Text = "Step 5: Remove False Colleagues";
             this.RemoveFalseColleagues.UseVisualStyleBackColor = true;
             this.RemoveFalseColleagues.Click += new System.EventHandler(this.RemoveFalseColleagues_Click);
             // 
             // CopyPublicationsFromAnotherDB
             // 
-            this.CopyPublicationsFromAnotherDB.Location = new System.Drawing.Point(10, 324);
-            this.CopyPublicationsFromAnotherDB.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.CopyPublicationsFromAnotherDB.Location = new System.Drawing.Point(15, 539);
             this.CopyPublicationsFromAnotherDB.Name = "CopyPublicationsFromAnotherDB";
-            this.CopyPublicationsFromAnotherDB.Size = new System.Drawing.Size(252, 23);
-            this.CopyPublicationsFromAnotherDB.TabIndex = 228;
+            this.CopyPublicationsFromAnotherDB.Size = new System.Drawing.Size(378, 35);
+            this.CopyPublicationsFromAnotherDB.TabIndex = 150;
             this.CopyPublicationsFromAnotherDB.Text = "Step 3: Copy Publications from Another Database";
             this.CopyPublicationsFromAnotherDB.UseVisualStyleBackColor = true;
             this.CopyPublicationsFromAnotherDB.Click += new System.EventHandler(this.CopyPublicationsFromAnotherDB_Click);
             // 
             // StarsWithColleagues
             // 
-            this.StarsWithColleagues.Location = new System.Drawing.Point(448, 267);
-            this.StarsWithColleagues.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.StarsWithColleagues.Location = new System.Drawing.Point(672, 462);
             this.StarsWithColleagues.Name = "StarsWithColleagues";
             this.StarsWithColleagues.ReadOnly = true;
-            this.StarsWithColleagues.Size = new System.Drawing.Size(54, 20);
+            this.StarsWithColleagues.Size = new System.Drawing.Size(79, 26);
             this.StarsWithColleagues.TabIndex = 230;
             this.StarsWithColleagues.TabStop = false;
             // 
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(337, 267);
-            this.label14.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label14.Location = new System.Drawing.Point(506, 462);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(108, 13);
+            this.label14.Size = new System.Drawing.Size(162, 20);
             this.label14.TabIndex = 229;
             this.label14.Text = "Stars with Colleagues";
             // 
             // LanguageList
             // 
-            this.LanguageList.Location = new System.Drawing.Point(13, 477);
-            this.LanguageList.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.LanguageList.Location = new System.Drawing.Point(20, 761);
             this.LanguageList.Name = "LanguageList";
-            this.LanguageList.Size = new System.Drawing.Size(488, 20);
-            this.LanguageList.TabIndex = 232;
+            this.LanguageList.Size = new System.Drawing.Size(730, 26);
+            this.LanguageList.TabIndex = 210;
             this.LanguageList.Text = "eng";
             // 
             // label17
             // 
-            this.label17.Location = new System.Drawing.Point(9, 463);
-            this.label17.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label17.Location = new System.Drawing.Point(14, 739);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(514, 19);
-            this.label17.TabIndex = 231;
+            this.label17.Size = new System.Drawing.Size(771, 29);
+            this.label17.TabIndex = 200;
             this.label17.Text = "Languages (list of Medline language abbreviations separated by commas, blank for " +
-                "no restriction)";
+    "no restriction)";
             // 
             // AllowedPubTypeCategories
             // 
-            this.AllowedPubTypeCategories.Location = new System.Drawing.Point(13, 515);
-            this.AllowedPubTypeCategories.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.AllowedPubTypeCategories.Location = new System.Drawing.Point(20, 819);
             this.AllowedPubTypeCategories.Name = "AllowedPubTypeCategories";
-            this.AllowedPubTypeCategories.Size = new System.Drawing.Size(488, 20);
-            this.AllowedPubTypeCategories.TabIndex = 234;
+            this.AllowedPubTypeCategories.Size = new System.Drawing.Size(730, 26);
+            this.AllowedPubTypeCategories.TabIndex = 230;
             this.AllowedPubTypeCategories.Text = "1,2,3";
             // 
             // label18
             // 
-            this.label18.Location = new System.Drawing.Point(9, 501);
-            this.label18.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label18.Location = new System.Drawing.Point(14, 798);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(514, 19);
-            this.label18.TabIndex = 233;
+            this.label18.Size = new System.Drawing.Size(771, 29);
+            this.label18.TabIndex = 220;
             this.label18.Text = "Allowed publication type categories";
             // 
             // ColleaguesFound
             // 
-            this.ColleaguesFound.Location = new System.Drawing.Point(446, 424);
-            this.ColleaguesFound.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ColleaguesFound.Location = new System.Drawing.Point(669, 693);
             this.ColleaguesFound.Name = "ColleaguesFound";
             this.ColleaguesFound.ReadOnly = true;
-            this.ColleaguesFound.Size = new System.Drawing.Size(55, 20);
+            this.ColleaguesFound.Size = new System.Drawing.Size(80, 26);
             this.ColleaguesFound.TabIndex = 236;
             this.ColleaguesFound.TabStop = false;
             // 
             // label19
             // 
             this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(314, 427);
-            this.label19.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label19.Location = new System.Drawing.Point(471, 698);
             this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(129, 13);
+            this.label19.Size = new System.Drawing.Size(193, 20);
             this.label19.TabIndex = 235;
             this.label19.Text = "Unique Colleagues Found";
             // 
             // useAlternateCheckbox
             // 
             this.useAlternateCheckbox.AutoSize = true;
-            this.useAlternateCheckbox.Location = new System.Drawing.Point(15, 294);
+            this.useAlternateCheckbox.Location = new System.Drawing.Point(22, 503);
+            this.useAlternateCheckbox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.useAlternateCheckbox.Name = "useAlternateCheckbox";
-            this.useAlternateCheckbox.Size = new System.Drawing.Size(211, 17);
-            this.useAlternateCheckbox.TabIndex = 237;
+            this.useAlternateCheckbox.Size = new System.Drawing.Size(312, 24);
+            this.useAlternateCheckbox.TabIndex = 130;
             this.useAlternateCheckbox.Text = "Use alternate PeoplePublications table:";
             this.useAlternateCheckbox.UseVisualStyleBackColor = true;
             this.useAlternateCheckbox.CheckedChanged += new System.EventHandler(this.useAlternateCheckbox_CheckedChanged);
@@ -638,17 +611,50 @@ namespace SCGen
             // alternateTableName
             // 
             this.alternateTableName.Enabled = false;
-            this.alternateTableName.Location = new System.Drawing.Point(226, 292);
+            this.alternateTableName.Location = new System.Drawing.Point(339, 500);
+            this.alternateTableName.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.alternateTableName.Name = "alternateTableName";
-            this.alternateTableName.Size = new System.Drawing.Size(277, 20);
-            this.alternateTableName.TabIndex = 238;
+            this.alternateTableName.Size = new System.Drawing.Size(414, 26);
+            this.alternateTableName.TabIndex = 140;
             this.alternateTableName.TextChanged += new System.EventHandler(this.alternateTableName_TextChanged);
+            // 
+            // ApiKeyFileButton
+            // 
+            this.ApiKeyFileButton.AutoEllipsis = true;
+            this.ApiKeyFileButton.Location = new System.Drawing.Point(610, 146);
+            this.ApiKeyFileButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ApiKeyFileButton.Name = "ApiKeyFileButton";
+            this.ApiKeyFileButton.Size = new System.Drawing.Size(24, 29);
+            this.ApiKeyFileButton.TabIndex = 90;
+            this.ApiKeyFileButton.Text = "...";
+            this.ApiKeyFileButton.Click += new System.EventHandler(this.ApiKeyFileButton_Click);
+            // 
+            // ApiKeyFile
+            // 
+            this.ApiKeyFile.Location = new System.Drawing.Point(20, 149);
+            this.ApiKeyFile.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ApiKeyFile.Name = "ApiKeyFile";
+            this.ApiKeyFile.Size = new System.Drawing.Size(578, 26);
+            this.ApiKeyFile.TabIndex = 80;
+            this.ApiKeyFile.TextChanged += new System.EventHandler(this.ApiKeyFile_TextChanged);
+            // 
+            // label20
+            // 
+            this.label20.Location = new System.Drawing.Point(16, 126);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(243, 29);
+            this.label20.TabIndex = 70;
+            this.label20.Text = "API &key file";
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(511, 704);
+            this.AutoSize = true;
+            this.ClientSize = new System.Drawing.Size(766, 1050);
+            this.Controls.Add(this.ApiKeyFileButton);
+            this.Controls.Add(this.ApiKeyFile);
+            this.Controls.Add(this.label20);
             this.Controls.Add(this.alternateTableName);
             this.Controls.Add(this.useAlternateCheckbox);
             this.Controls.Add(this.ColleaguesFound);
@@ -688,6 +694,7 @@ namespace SCGen
             this.Controls.Add(this.label1);
             this.Controls.Add(this.statusStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "Form1";
@@ -760,6 +767,9 @@ namespace SCGen
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.CheckBox useAlternateCheckbox;
         private System.Windows.Forms.TextBox alternateTableName;
+        internal System.Windows.Forms.Button ApiKeyFileButton;
+        private System.Windows.Forms.TextBox ApiKeyFile;
+        internal System.Windows.Forms.Label label20;
     }
 }
 
