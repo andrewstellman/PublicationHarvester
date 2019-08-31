@@ -271,7 +271,7 @@ namespace Com.StellmanGreene.FindRelated
                 // Write the pmid/relatedPmid pair to the related publications table.
 
                 db.ExecuteNonQuery(
-                     "INSERT INTO " + relatedTableName + " (PMID, RelatedPMID, Rank, Score) VALUES (?, ?, ?, ?)",
+                     "INSERT INTO " + relatedTableName + " (PMID, RelatedPMID, `Rank`, Score) VALUES (?, ?, ?, ?)",
                      new System.Collections.ArrayList() { 
                                             Database.Parameter(authorPublicationPmid), 
                                             Database.Parameter(relatedPublicationPmid),
@@ -337,7 +337,7 @@ namespace Com.StellmanGreene.FindRelated
             db.ExecuteNonQuery("CREATE TABLE " + relatedTableName + @" (
                 PMID int(11) NOT NULL,
                 RelatedPMID int(11) NOT NULL,
-                Rank int NOT NULL,
+                `Rank` int NOT NULL,
                 Score int NOT NULL,
                 PRIMARY KEY (PMID, RelatedPMID)
             ) CHARSET=utf8;

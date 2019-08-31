@@ -65,6 +65,7 @@ namespace Com.StellmanGreene.FindRelated
             // Get saved settings
             relatedTable.Text = Settings.GetValueString("FindRelated_RelatedTable", "relatedpublications");
             inputFileTextBox.Text = Settings.GetValueString("FindRelated_InputFile", "findrelated_input.csv");
+            apiKeyFileTextBox.Text = Settings.GetValueString("FindRelated_ApiKeyFile", "");
 
             // Set up the log
             logFilename.Text = Environment.GetEnvironmentVariable("TEMP") + @"\FindRelated_log.txt";
@@ -89,6 +90,7 @@ namespace Com.StellmanGreene.FindRelated
             // Save settings
             Settings.SetValue("FindRelated_RelatedTable", relatedTable.Text);
             Settings.SetValue("FindRelated_InputFile", inputFileTextBox.Text);
+            Settings.SetValue("FindRelated_ApiKeyFile", apiKeyFileTextBox.Text);
 
             Trace.WriteLine(DateTime.Now + " - form closed (stopping any currently running jobs)");
             backgroundWorker1.CancelAsync();
@@ -166,6 +168,8 @@ namespace Com.StellmanGreene.FindRelated
 
         private void startButton_Click(object sender, EventArgs e)
         {
+            if (!SetApiKeyFromFormField()) return;
+
             if (String.IsNullOrWhiteSpace(outputFileTextBox.Text))
             {
                 MessageBox.Show("Please specify an output filename. This file will be overwritten.");
@@ -426,6 +430,63 @@ namespace Com.StellmanGreene.FindRelated
         private void OutputFileTextBox_TextChanged(object sender, EventArgs e)
         {
             CheckFieldsAndEnableButtons();
+        }
+
+        private void InputFileTextBox_TextChanged(object sender, EventArgs e)
+        {
+            CheckFieldsAndEnableButtons();
+        }
+
+
+        /// <summary>
+        /// Sets the NCBI API key from the field on the form
+        /// </summary>
+        /// <returns>
+        /// True if the API key file in the field is found or empty, false if the API it's invalid
+        /// </returns>
+        private bool SetApiKeyFromFormField()
+        {
+            if (!string.IsNullOrWhiteSpace(apiKeyFileTextBox.Text.Trim()))
+            {
+                if (File.Exists(apiKeyFileTextBox.Text.Trim()))
+                {
+                    NCBI.GetApiKey(apiKeyFileTextBox.Text.Trim());
+                }
+                else
+                {
+                    MessageBox.Show($"API key file not found: {apiKeyFileTextBox.Text.Trim()}");
+                    return false;
+                }
+            }
+
+
+            if (NCBI.ApiKeyExists)
+            {
+                Trace.WriteLine("Using API key: " + NCBI.ApiKeyPath);
+            }
+            else
+            {
+                Trace.WriteLine("Performance is limited to under 3 requests per second.");
+                Trace.WriteLine("Consider pasting an API key into " + NCBI.ApiKeyPath);
+                Trace.WriteLine("Or set the NCBI_API_KEY_FILE environemnt variable to the API key file path");
+                Trace.WriteLine("For more information, see https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/");
+            }
+
+            return true;
+        }
+
+        private void ApiKeyFileButton_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.FileName = apiKeyFileTextBox.Text;
+            openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
+            openFileDialog.Title = "Select API key file";
+            openFileDialog.CheckFileExists = true;
+            openFileDialog.CheckPathExists = true;
+            DialogResult result = openFileDialog.ShowDialog();
+            if (result == DialogResult.Cancel)
+                return;
+            apiKeyFileTextBox.Text = openFileDialog.FileName;
         }
     }
 }
