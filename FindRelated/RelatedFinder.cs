@@ -143,15 +143,19 @@ namespace Com.StellmanGreene.FindRelated
                     }
                 }
                 if (failed)
+                {
                     Trace.WriteLine(DateTime.Now + " - successfully recovered from the error, continuing execution");
+                }
+                else
+                {
+                    Dictionary<int, List<int>> relatedSearchResults = GetIdsFromXml(xml, out Dictionary<int, Dictionary<int, RankAndScore>> relatedRanks);
 
-                Dictionary<int, List<int>> relatedSearchResults = GetIdsFromXml(xml, out Dictionary<int, Dictionary<int, RankAndScore>> relatedRanks);
+                    bool completed;
 
-                bool completed;
-
-                completed = WriteRelatedRanksToOutputFileAndDatabase(db, relatedTableName, relatedSearchResults, relatedRanks, outputFilename, inputQueue);
-                if (!completed) // WriteRelatedRankToOutputFile() returns false if the user stopped the operation
-                    break;
+                    completed = WriteRelatedRanksToOutputFileAndDatabase(db, relatedTableName, relatedSearchResults, relatedRanks, outputFilename, inputQueue);
+                    if (!completed) // WriteRelatedRankToOutputFile() returns false if the user stopped the operation
+                        break;
+                }
             }
             BackgroundWorker.ReportProgress(100);
         }
