@@ -131,9 +131,12 @@ namespace Com.StellmanGreene.PubMed
         /// <returns>A string containing the XML result header</returns>
         private static EsearchResults ExecuteEsearch(string query, string apiKeyParam)
         {
-            string sURL = "http://www.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi";
+            string sURL = "https://www.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi";
 
             WebRequest request = null;
+
+            // Set the securty protocol to avoid SSL errors ("Could not create SSL/TLS secure channel")
+            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072; // SecurityProtocolType.Tls12
 
             // If we're using a GET request (default) instead of a POST request, create the query with the request term
             if (!UsePostRequest)
@@ -169,7 +172,10 @@ namespace Com.StellmanGreene.PubMed
         /// <returns>A string containing the results in NCBI text format</returns>
         private string ExecuteFetch(EsearchResults results)
         {
-            string sURL = "http://www.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?rettype=" + this.FetchMethod + "&retmode=text&restart=0&db=Pubmed";
+            // Set the securty protocol to avoid SSL errors ("Could not create SSL/TLS secure channel")
+            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072; // SecurityProtocolType.Tls12
+
+            string sURL = "https://www.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?rettype=" + this.FetchMethod + "&retmode=text&restart=0&db=Pubmed";
             sURL = sURL + ApiKeyParam;
             sURL = sURL + "&retmax=" + results.Count;
             sURL = sURL + "&query_key=" + results.QueryKey;

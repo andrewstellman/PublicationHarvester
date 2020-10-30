@@ -384,7 +384,10 @@ namespace Com.StellmanGreene.FindRelated
             query.Append("&cmd=neighbor_score");
 
             query.Append(NCBI.ApiKeyParam);
-            
+
+            // Set the securty protocol to avoid SSL errors ("Could not create SSL/TLS secure channel")
+            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072; // SecurityProtocolType.Tls12
+
             WebRequest request = WebRequest.Create(ELINK_URL);
             request.Method = "POST";
             request.ContentType = "application/x-www-form-urlencoded";
