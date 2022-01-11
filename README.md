@@ -37,4 +37,4 @@ The Publication Harvester project is maintained by Andrew Stellman of Stellman &
 
 We gratefully acknowledge the financial support of the National Science Foundation (Award SBE-0738142).
 
-© 2019 Stellman & Greene Consulting LLC - http://www.stellman-greene.com
+© 2022 Stellman & Greene Consulting LLC - http://www.stellman-greene.com
